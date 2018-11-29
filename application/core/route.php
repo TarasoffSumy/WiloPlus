@@ -36,7 +36,7 @@ class Route
         //Проверем доступ
         $valid_request = 0;
         //ниже указанны имена контроллеров, к которым есть доступ без авторизации
-        if (($controller_name === 'login')||($controller_name === 'main')||($controller_name ==='discount')|| ($controller_name==='404')||($controller_name==='warranty')||($action_name==='getPumpNameByArticle')) {
+        if (($controller_name === 'login')||($controller_name === 'main')||($controller_name==='404')) {
             $valid_request = 1;
         }
         //Защита уровня 0 от неавторизированных пользователей

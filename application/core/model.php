@@ -6,7 +6,7 @@ class Model
 {
     protected $_db;
     protected $_sql;
-    public $role;
+//    public $role;
     
     //Конвертирует обычный массив в массив JSON с паралельной конвертацией из UNICODE -> UTF8
     public function utf8_json($array)
@@ -23,7 +23,7 @@ class Model
         
         global $dbObject;
         $this->_db = $dbObject;
-        $this->getSessionRole();
+//        $this->getSessionRole();
     }
     
     //Метод класса для установки в свойство класса Модель строки запроса
@@ -98,23 +98,23 @@ class Model
         return $result;
     }
     
-    public function getSessionRole(){
-    $sql = "select wli.lib_item_cd role
-            from ".DB_NAME.".w_login_sessions ls, ".DB_NAME.".w_users wu, ".DB_NAME.".w_lib_item wli
-            where ls.session_id = :session
-            and ls.login = wu.login
-            and wu.status = 'A'
-            and wli.lib_item_id = wu.user_role_id
-            and wli.lib_id = 1"
-            ;
-    $this->_setSql($sql);
-    $sess_id = session_id();
-    $data = $this->getRow(array("session"=>$sess_id));
-    if(!empty($data['role'])){
-        $this->role =  $data['role'];
-    }
-    else{
-        $this->role = 'unknown';
-    }
-    }
+//    public function getSessionRole(){
+//    $sql = "select wli.lib_item_cd role
+//            from ".DB_NAME.".w_login_sessions ls, ".DB_NAME.".w_users wu, ".DB_NAME.".w_lib_item wli
+//            where ls.session_id = :session
+//            and ls.login = wu.login
+//            and wu.status = 'A'
+//            and wli.lib_item_id = wu.user_role_id
+//            and wli.lib_id = 1"
+//            ;
+//    $this->_setSql($sql);
+//    $sess_id = session_id();
+//    $data = $this->getRow(array("session"=>$sess_id));
+//    if(!empty($data['role'])){
+//        $this->role =  $data['role'];
+//    }
+//    else{
+//        $this->role = 'unknown';
+//    }
+//    }
 }

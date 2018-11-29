@@ -1,0 +1,13 @@
+{
+    "name": "vendor/wilo-plus",
+    "description": "Описание проекта WiloPlus.",
+    "authors": [
+        {
+            "name": "Talavas",
+            "email": "o.talavas@gmail.com"
+        }
+    ],
+    "require": {
+        "composer-plugin-api": "* 1.1.0"
+    }
+}

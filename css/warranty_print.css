@@ -1,0 +1,62 @@
+div#code{
+    margin: 0 0 0 85px;
+    padding: 475px 0 0 0;
+}
+
+div#code_cardnumber{
+    margin: 0 0 0 510px;
+    padding: 272px 0 0 0;
+}
+
+p#code{
+    font-size: 28px;
+}
+
+p#code_cardnumber{
+    font-size: 24px;
+}
+
+div#sertificate{
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+div#w_number{
+    margin: 0 0 0 130px;
+    padding: 375px 0 0 0;
+}
+div#expdate{
+    margin: 0 0 0 275px;
+    padding: -25px 0 0 0;
+}
+
+div#pumpname{
+    margin: 0 0 0 275px;
+    padding: -32px 0 0 0;        
+}
+
+div#article{
+    margin: 0 0 0 275px;
+    padding: -31px 0 0 0;
+}
+
+div#cardnumber{
+    margin: 0 0 0 275px;
+    padding: -31px 0 0 0;
+}
+
+div#date_sale{
+    margin: 0 0 0 130px;
+    padding: 38px 0 0 0;
+}
+
+p#w_number{
+    font-size: 44px;
+}
+p#expdate{
+    font-size: 24px;
+}
+
+body{
+    margin: 0 0 0 0;
+}

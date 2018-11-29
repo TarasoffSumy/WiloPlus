@@ -1,0 +1,95 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 15.04.2015, 22:02:39
+    Author     : talavas
+*/
+.footer {
+    background-color: #444444;
+    color: #FFB400;
+}
+.footer a:hover{
+    color: #ffffff;
+}
+
+.condition {
+    color: #009C82;
+    text-decoration: underline;
+}
+
+.banner{
+    margin-bottom: 20px;
+}
+.btn-success:hover{
+  color: #ffffff;
+  background-color: #ffb400;
+  border-color: #ffb400;  
+}
+#center-xs{
+  background-image: url(../img/i_WE_768px.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  -moz-background-size: contain;  /* Firefox 3.6 */
+  background-position: top;  /* Internet Explorer 7/8 */
+  padding-top: 0%;
+}
+
+#center-sm-md-lg{
+  background-image: url(../img/i_wilo_expert.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  -moz-background-size: contain;  /* Firefox 3.6 */
+  background-position: top;  /* Internet Explorer 7/8 */
+  padding-top: 0%;
+}
+
+#leftbar{
+  background-image: url(../img/Pumps_pict_01.jpg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  -moz-background-size: contain;  /* Firefox 3.6 */
+  background-position: top;  /* Internet Explorer 7/8 */
+  padding-top: 0%;
+}
+
+#rightbar{
+  background-image: url(../img/WE_pict_01.jpg);
+  background-repeat: no-repeat;
+  background-size: 50% 50%;
+  -moz-background-size: contain;  /* Firefox 3.6 */
+  background-position: top;  /* Internet Explorer 7/8 */
+  padding-top: 0%;
+}
+
+#bannerleft{
+  background-color: #ffb400;
+  background-image: url(../img/uptodate-arrow.png);
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: 100% 50%;
+  height: 107px;
+}
+
+#bannerright{
+    color: #ffffff;
+    background-color: #545454;
+    background-image: url(../img/uptodate-bg.png);
+  background-size: auto 100%;
+  background-repeat: x-repeat 0% 0%;
+  background-position: 100% 50%;
+  height: 107px;
+}
+
+.workspaces a{
+    color: #009c82;
+}
+
+
+.workspaces a:hover{
+    color: #FFB400;
+}
+    
+
