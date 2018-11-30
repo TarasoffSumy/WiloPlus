@@ -1,0 +1,122 @@
+<template>
+<div>
+    <Step1-helper v-if='helperStep1==true' class="transition-box"/> 
+    <el-row>
+    <div class="circle_numder">
+        <svg height="55" width="53" class="circle">
+        <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
+        </svg> <span>1 </span>            
+    </div>
+    <h2 class="title">Витрата насоса</h2>   
+    </el-row> 
+    <el-row>
+        <el-col :span="12">
+             <div class="greyBox">
+                 <h3>Необхідна витрата насоса</h3>
+                 <p>Витрата  <el-input-number v-model="num1" @change="handleChange" :min="1" :max="10"></el-input-number>
+                 м<sup>3</sup>/ч 
+                 </p>
+                 <p class="alert"><i type="info" class="el-icon-info"></i>
+                 Як необхідно розраховувати витрату насоса. Беремо напір <el-button type="text" @click="open">констативний</el-button>, та множимо на число
+                 </p>
+             </div>
+        </el-col>
+        <el-col :span="12">
+                 <div class="greyBox">
+                 <p style="text-align:left">Якщо необхідно розрахувати витрату, скористайтесь послугами нашого помічника</p>
+                 <div class="container-button">
+                 <el-button type="primary" @click="ActiveHelperStep1">Розрахувати</el-button>                                     
+                 </div>
+             </div>
+        </el-col>
+    </el-row>        
+</div>        
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        num1: 1,
+        helperStep1: false
+      };
+    },
+    methods: {
+      handleChange(value) {
+        console.log(value)
+      }, 
+      ActiveHelperStep1() {
+          this.helperStep1=!this.helperStep1
+      },       
+      open() {
+        this.$alert('This is a message', 'Title', {
+          confirmButtonText: 'OK',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${ action }`
+            });
+          }
+        });
+      }
+      }
+    }
+</script>
+
+<style scoped>
+.title {
+    display: inline-block;
+    float: left;
+    padding: 15px;
+}
+.circle {
+    fill: #009c81;
+    stroke: transparent
+}
+.circle_numder {
+    padding-top: 20px;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+.circle_numder span {
+    position: relative;
+    top: -53px;
+    left: 0px;
+    font-size: 25px;
+    color: #fff
+}
+.greyBox {
+    padding: 20px;
+    background: #f6f6f6;
+    display: block;
+    color: #212121;
+    margin: 20px;
+    min-height: 185px;
+}
+.el-input-number {
+    width: 150px;
+    margin: 0 5px;
+}
+.alert {
+    padding: 10px;
+    text-align: left;
+    line-height: 1.2;
+    font-size: 13px;
+}
+button.el-button.el-button--text {
+    text-decoration: underline;
+    font-size: 15.5px;
+    color: #50b9f0;
+    padding: 0;
+}
+i.el-icon-info {
+    color: #fbc002;
+}
+.container-button {
+    text-align: right;
+    padding: 35px 20px 10px;
+}
+</style>
+
