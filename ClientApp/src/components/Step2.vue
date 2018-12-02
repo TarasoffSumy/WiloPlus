@@ -42,7 +42,7 @@
         <el-col :span="12">
                  <div class="greyBox">
                   <font-awesome-icon icon="lightbulb" />
-                 <p style="text-align:left">Якщо необхідно розрахувати витрату, скористайтесь послугами нашого помічника</p>
+                 <p style="text-align:left">Якщо необхідно розрахувати напір, скористайтесь послугами нашого помічника</p>
                  <div class="container-button">
                  <el-button type="primary" @click="dialogVisible = true">Розрахувати</el-button>                                     
                  </div>

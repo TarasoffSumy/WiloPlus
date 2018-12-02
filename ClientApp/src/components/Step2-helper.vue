@@ -13,9 +13,9 @@
         </el-col>
     </el-row> 
     <el-row >
-        <p class="computed-vitrata">
+        <p class="computed-volumeFlow">
           <span class="label">Розрахована витрата</span>
-          <span class="number"> {{vitrataValTotal}}</span> м<sup>3</sup>/ч 
+          <span class="number"> {{volumeFlowValTotal}}</span> м<sup>3</sup>/ч 
         </p>     
     </el-row>
      
@@ -25,20 +25,20 @@
   export default {
     data() {
       return {
-          vitrata: {
+          volumeFlow: {
               
           },         
-        vitrataValTotal: 0
+        volumeFlowValTotal: 0
       };
     },
     methods: {
       handleChange(value) {
-        var source=Object.values(this.vitrata);
+        var source=Object.values(this.volumeFlow);
         var result=source.reduce(function(sum, current) {
             return sum + current ;
         });
-        this.vitrataValTotal=result
-        this.$emit('onComputeVitrata', this.vitrataValTotal)
+        this.volumeFlowValTotal=result
+        this.$emit('onComputevolumeFlow', this.volumeFlowValTotal)
         console.log(value)
       },
       open() {
@@ -62,14 +62,14 @@
     display: inline-table;
     margin: 15px 0;
 }
-.computed-vitrata {
+.computed-volumeFlow {
     font-size: 16px;
 }
-.computed-vitrata .label, .computed-vitrata .number {    
+.computed-volumeFlow .label, .computed-volumeFlow .number {    
     font-weight: 600;
     font-size: 18px;
 }
-.computed-vitrata .number {
+.computed-volumeFlow .number {
     border-bottom: 1px solid #b9b8b8;
     padding: 2PX 15px;
     font-size: 18px;

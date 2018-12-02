@@ -7,41 +7,41 @@
     <el-row>
         <el-col :span="12" class="side-side1-helper">
             <p><span>Мийка кухні/умивальник </span>    
-                <el-input-number v-model="vitrata.Val1" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val1" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
             <p><span>Ванна/душова кабіна </span>   
-                <el-input-number v-model="vitrata.Val2" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val2" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
             <p><span>Посудомийна машина </span>  
-                <el-input-number v-model="vitrata.Val3" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val3" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
             <p><span><el-button type="text" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></span>  
-                <el-input-number v-model="vitrata.Val7" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val7" @change="handleChange" :min="0" :max="10"></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
         </el-col>
         <el-col :span="10" class="side-side1-helper">
             <p><span>Пральна машина</span>   
-                <el-input-number v-model="vitrata.Val4" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val4" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
             <p><span>Биде</span> 
-                <el-input-number v-model="vitrata.Val5" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val5" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
             <p><span>Унитаз  </span>  
-                <el-input-number v-model="vitrata.Val6" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val6" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
         </el-col>
     </el-row> 
     <el-row >
-        <p class="computed-vitrata">
+        <p class="computed-volumeFlow">
           <span class="label">Розрахована витрата</span>
-          <span class="number"> {{vitrataValTotal}}</span> м<sup>3</sup>/ч 
+          <span class="number"> {{volumeFlowValTotal}}</span> м<sup>3</sup>/ч 
         </p>     
     </el-row>
      
@@ -51,7 +51,7 @@
   export default {
     data() {
       return {
-          vitrata: {
+          volumeFlow: {
             Val1: 0,
             Val2: 0,
             Val3: 0,
@@ -60,17 +60,17 @@
             Val6: 0,
             Val7: 0                
           },         
-        vitrataValTotal: 0
+        volumeFlowValTotal: 0
       };
     },
     methods: {
       handleChange(value) {
-        var source=Object.values(this.vitrata);
+        var source=Object.values(this.volumeFlow);
         var result=source.reduce(function(sum, current) {
             return sum + current ;
         });
-        this.vitrataValTotal=result
-        this.$emit('onComputeVitrata', this.vitrataValTotal)
+        this.volumeFlowValTotal=result
+        this.$emit('onComputeVolumeFlow', this.volumeFlowValTotal)
         console.log(value)
       },
       open() {
@@ -94,14 +94,14 @@
     display: inline-table;
     margin: 15px 0;
 }
-.computed-vitrata {
+.computed-volumeFlow {
     font-size: 16px;
 }
-.computed-vitrata .label, .computed-vitrata .number {    
+.computed-volumeFlow .label, .computed-volumeFlow .number {    
     font-weight: 600;
     font-size: 18px;
 }
-.computed-vitrata .number {
+.computed-volumeFlow .number {
     border-bottom: 1px solid #b9b8b8;
     padding: 2PX 15px;
     font-size: 18px;

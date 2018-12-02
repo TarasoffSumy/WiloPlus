@@ -9,13 +9,13 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        homeData {{vitrata}}
+        homeData {{volumeFlow}}
 
 
     
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
-                :vitrata="vitrata"
+                :volumeFlow="volumeFlow"
                 @inputData="inputData"
                 class="transition-box"/>              
         <Step2 v-else-if='current==2' class="transition-box"/>         
@@ -61,7 +61,8 @@ export default {
                 errorClass: 'text-danger',
                 isActive: false,
                 helperStep1: false,
-                vitrata:0
+                deliveryHead:0,
+                volumeFlow:0
             }
         },
         created: function() {
@@ -69,7 +70,7 @@ export default {
         },
         methods: {           
             inputData(val) {
-                this.vitrata=val
+                this.volumeFlow=val
             },
             fetchData: function() {
                 const getPromise = Axios.get('http://wilocore/name/getAllNames');
@@ -97,8 +98,8 @@ export default {
             step (n) {
                this.current = n               
             },
-            onGetVitrata(value) {
-                this.vitrata=value
+            onGetvolumeFlow(value) {
+                this.volumeFlow=value
             }
         }
 }

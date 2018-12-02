@@ -6,7 +6,7 @@
     :visible.sync="dialogVisible"
     width="80%"
     >
-    <Step1-helper @onComputeVitrata="onComputeVitrata"/> 
+    <Step1-helper @onComputeVolumeFlow="onComputeVolumeFlow"/> 
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
         <el-col :span="12">
@@ -26,13 +26,12 @@
         </svg> <span>1 </span>            
     </div>
     <h2 class="title">Витрата насоса</h2> 
-    <p>computeVitrata - {{computeVitrata}}   </p>   
     </el-row> 
     <el-row>
         <el-col :span="12">
              <div class="greyBox">
                  <h3>Необхідна витрата насоса</h3>                
-                 <p>Витрата  <el-input-number v-model="vitrataStep1" @change="handleChange" controls-position="right" :min="1" :max="10"></el-input-number>
+                 <p>Витрата  <el-input-number v-model="volumeFlowStep1" @change="handleChange" controls-position="right" :min="1" :max="10"></el-input-number>
                  м<sup>3</sup>/ч 
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
@@ -55,24 +54,24 @@
 
 <script>
   export default {
-    props: ['vitrata'],
+    props: ['volumeFlow'],
     data() {
       return {
-        vitrataStep1: this.vitrata,
-        computeVitrata: null,
+        volumeFlowStep1: this.volumeFlow,
+        computevolumeFlow: null,
         helperStep1: false,
         dialogVisible: false
       };
     },
     methods: {
       handleChange(value) {
-        this.$emit('inputData', this.vitrataStep1)
+        this.$emit('inputData', this.volumeFlowStep1)
        
       },
-      onComputeVitrata(value){
-          this.vitrataStep1=value
-          this.computeVitrata=value
-          this.$emit('inputData', this.computeVitrata)
+      onComputeVolumeFlow(value){
+          this.volumeFlowStep1=value
+          this.computevolumeFlow=value
+          this.$emit('inputData', this.computevolumeFlow)
           console.log('compVit', value)
       }, 
       ActiveHelperStep1() {
