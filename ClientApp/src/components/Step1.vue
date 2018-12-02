@@ -10,10 +10,10 @@
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
         <el-col :span="12">
-            <el-button @click="dialogVisible = false">Назад</el-button>
+            <el-button @click="dialogCancel"  icon="el-icon-d-arrow-left">Назад</el-button>
         </el-col>
         <el-col :span="12">
-            <el-button type="primary" @click="dialogVisible = false">Підтвердити</el-button>
+            <el-button type="primary" @click="onDialogAccept">Підтвердити <i class="el-icon-d-arrow-right el-icon-right"/></el-button>
         </el-col>
         </el-row>   
     </span>
@@ -30,8 +30,8 @@
     <el-row>
         <el-col :span="12">
              <div class="greyBox">
-                 <h3>Необхідна витрата насоса</h3>                
-                 <p>Витрата  <el-input-number v-model="volumeFlowStep1" @change="handleChange" :min="1" :max="10"></el-input-number>
+                 <h3>Необхідна витрата насоса</h3>         
+                 <p>Витрата  <el-input-number v-model="volumeFlowStep1" @change="handleChange" :min="0" ></el-input-number>
                  м<sup>3</sup>/ч 
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
@@ -64,15 +64,22 @@
       };
     },
     methods: {
+      dialogCancel() {
+          this.dialogVisible=false 
+          this.$emit('inputData', this.volumeFlowStep1)
+      },
       handleChange(value) {
-        this.$emit('inputData', this.volumeFlowStep1)
+        this.$emit('inputData', value)
        
       },
+      onDialogAccept() {
+        this.$emit('inputData', this.computevolumeFlow)
+        this.volumeFlowStep1=this.computevolumeFlow
+        this.dialogVisible=false 
+      },
       onComputeVolumeFlow(value){
-          this.volumeFlowStep1=value
+          //this.volumeFlowStep1=value
           this.computevolumeFlow=value
-          this.$emit('inputData', this.computevolumeFlow)
-          console.log('compVit', value)
       }, 
       ActiveHelperStep1() {
           this.helperStep1=!this.helperStep1

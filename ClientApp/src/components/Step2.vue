@@ -9,12 +9,12 @@
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
         <el-col :span="12">
-            <el-button @click="dialogVisible = false">Назад</el-button>
+            <el-button @click="dialogVisible = false"><el-button  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад</el-button>
         </el-col>
         <el-col :span="12">
-            <el-button type="primary" @click="dialogVisible = false">Підтвердити</el-button>
+            <el-button type="primary" @click="dialogVisible = false">Підтвердити<i class="el-icon-d-arrow-right el-icon-right"></el-button>
         </el-col>
-        </el-row>   
+        </el-row>
     </span>
     </el-dialog>
 
@@ -31,7 +31,7 @@
         <el-col :span="12">
              <div class="greyBox">
                  <h3>Необхідний напір насоса</h3>                
-                 <p>Напір  <el-input-number v-model="vitrataStep1" @change="handleChange" controls-position="right" :min="1" :max="10"></el-input-number>
+                 <p>Напір  <el-input-number v-model="vitrataStep1" @change="handleChange" :min="1" :max="10"></el-input-number>
                  м<sup>3</sup>/ч 
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>

@@ -25,7 +25,7 @@
         </el-col>
         <el-col :span="10" class="side-side1-helper">
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Пральна машина</span>   
-                <el-input-number v-model="volumeFlow.Val4" @change="handleChange" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val4" @change="handleChange" :min="10" :max="10"></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Биде</span> 

@@ -9,7 +9,7 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        homeData {{volumeFlow}}
+        55homeData {{volumeFlow}}
 
 
     
@@ -67,7 +67,6 @@ export default {
         },
         created: function() {
             this.fetchData();
-            console.log(posts)
         },
         methods: {           
             inputData(val) {
@@ -163,8 +162,11 @@ button.el-button.el-button--primary {
     min-width: 190px;
     font-size: 18px
 }
-.navigation-footer button.el-button.el-button--primary {
+.navigation-footer button.el-button.el-button--primary, .navigation-footer button.el-button.el-button--default  {
     background: #363640;
+    color: #fff;
+    border-radius: 0;
+    font-size: 16px;
 }
 i.el-icon-info, i.el-icon-question {
     color: #fbc002;
@@ -182,5 +184,12 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
 .el-input-number {
     width: 150px;
     margin: 0 5px;
+}
+.el-dialog__body {
+    padding: 0
+}
+.el-dialog__footer {
+    text-align: center;
+    padding: 20px 0
 }
 </style>
