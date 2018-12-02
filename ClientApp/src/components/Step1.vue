@@ -31,7 +31,7 @@
         <el-col :span="12">
              <div class="greyBox">
                  <h3>Необхідна витрата насоса</h3>                
-                 <p>Витрата  <el-input-number v-model="volumeFlowStep1" @change="handleChange" controls-position="right" :min="1" :max="10"></el-input-number>
+                 <p>Витрата  <el-input-number v-model="volumeFlowStep1" @change="handleChange" :min="1" :max="10"></el-input-number>
                  м<sup>3</sup>/ч 
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>

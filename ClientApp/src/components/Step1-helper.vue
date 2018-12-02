@@ -6,33 +6,33 @@
     </p>
     <el-row>
         <el-col :span="12" class="side-side1-helper">
-            <p><span>Мийка кухні/умивальник </span>    
+            <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Мийка кухні/умивальник </span>    
                 <el-input-number v-model="volumeFlow.Val1" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
-            <p><span>Ванна/душова кабіна </span>   
+            <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Ванна/душова кабіна </span>   
                 <el-input-number v-model="volumeFlow.Val2" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
-            <p><span>Посудомийна машина </span>  
+            <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Посудомийна машина </span>  
                 <el-input-number v-model="volumeFlow.Val3" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
-            <p><span><el-button type="text" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></span>  
+            <p><span class="additional-volume-flow"><el-button type="text" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></span>  
                 <el-input-number v-model="volumeFlow.Val7" @change="handleChange" :min="0" :max="10"></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
         </el-col>
         <el-col :span="10" class="side-side1-helper">
-            <p><span>Пральна машина</span>   
+            <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Пральна машина</span>   
                 <el-input-number v-model="volumeFlow.Val4" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
-            <p><span>Биде</span> 
+            <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Биде</span> 
                 <el-input-number v-model="volumeFlow.Val5" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
-            <p><span>Унитаз  </span>  
+            <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Унитаз  </span>  
                 <el-input-number v-model="volumeFlow.Val6" @change="handleChange" :min="0" :max="10"></el-input-number>
                 шт 
             </p>
@@ -88,11 +88,11 @@
   };
 </script>
 <style scoped>
-.side-side1-helper span {
-    min-width: 200px;
+.side-side1-helper .item {
+    min-width: 230px;
     text-align: left;
     display: inline-table;
-    margin: 15px 0;
+    margin: 3px 0;
 }
 .computed-volumeFlow {
     font-size: 16px;
@@ -120,6 +120,16 @@ p.sub-title {
 }
 .side-side1-helper p {
     text-align: center
+}
+.side-side1-helper img {
+    vertical-align: middle;
+    display: inline-block;
+}
+.additional-volume-flow {
+    padding: 0 28px 0 64px
+}
+.additional-volume-flow button {
+    color: #363640
 }
 </style>
 

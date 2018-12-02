@@ -39,7 +39,7 @@
     </div>
 
         <ul v-for="item in posts" :value="item" :key="item.id" >
-            <li>{{item.name}}</li>
+            <li>{{item}}</li>
         </ul>
   </div>
 </template>
@@ -54,7 +54,7 @@ export default {
   data () {
         return {
                 url:'',
-                posts:"",
+                posts:[],
                 current: 1,
                 showStep: 0,
                 activeClass: 'active',
@@ -67,13 +67,14 @@ export default {
         },
         created: function() {
             this.fetchData();
+            console.log(posts)
         },
         methods: {           
             inputData(val) {
                 this.volumeFlow=val
             },
             fetchData: function() {
-                const getPromise = Axios.get('http://wilocore/name/getAllNames');
+                const getPromise = Axios.get('http://www.wiloexpert.com.ua/wilo/db/getAllPumps');
                 getPromise.then(response => {
                 this.posts = response.data;
                 });
