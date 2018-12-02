@@ -9,12 +9,15 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-
+        homeData {{vitrata}}
 
 
     
         <transition name="flip" mode="out-in">
-        <Step1 v-if='current==1' class="transition-box"/>              
+        <Step1 v-if='current==1'  
+                :vitrata="vitrata"
+                @inputData="inputData"
+                class="transition-box"/>              
         <Step2 v-else-if='current==2' class="transition-box"/>         
         <Step3 v-else-if='current==3' class="transition-box"/>
         <Step4 v-else-if='current==4' class="transition-box"/> 
@@ -50,21 +53,24 @@ export default {
   }, 
   data () {
         return {
-              url:'',
+                url:'',
                 posts:"",
                 current: 1,
                 showStep: 0,
                 activeClass: 'active',
                 errorClass: 'text-danger',
                 isActive: false,
-                helperStep1: false
+                helperStep1: false,
+                vitrata:0
             }
         },
         created: function() {
             this.fetchData();
         },
-        methods: {
-            
+        methods: {           
+            inputData(val) {
+                this.vitrata=val
+            },
             fetchData: function() {
                 const getPromise = Axios.get('http://wilocore/name/getAllNames');
                 getPromise.then(response => {
@@ -90,6 +96,9 @@ export default {
             },
             step (n) {
                this.current = n               
+            },
+            onGetVitrata(value) {
+                this.vitrata=value
             }
         }
 }
@@ -97,7 +106,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-h1, h2 {
+h1, h2, p {
     color: #363640
 }
 .first .rect::after {
@@ -155,5 +164,21 @@ button.el-button.el-button--primary {
 .navigation-footer button.el-button.el-button--primary {
     background: #363640;
 }
+i.el-icon-info, i.el-icon-question {
+    color: #fbc002;
+    padding: 0 5px;
+    font-size: 20px;
+}
 
+svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
+    float: left;
+    font-size: 34px;
+    color: #febf00;
+    height: 50px;
+    padding: 12px 15px;
+}
+.el-input-number {
+    width: 150px;
+    margin: 0 5px;
+}
 </style>

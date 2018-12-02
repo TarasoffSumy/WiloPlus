@@ -1,15 +1,14 @@
 import Vue from 'vue'
 import App from './App.vue'
 import axios from "axios";
-
-// import iView from 'iview';
-// import locale from "iview/dist/locale/en-US";
-// import 'iview/dist/styles/iview.css';
-
-// import '../my-theme/index.less';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/element-variables.scss';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCoffee, faPhoneSlash, faBug, faLightbulb } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+
 
 import Home from './components/Home.vue';
 import HeaderPart from './components/Header.vue';
@@ -30,15 +29,19 @@ Vue.component('Step3', Step3);
 Vue.component('Step4', Step4);
 Vue.component('Step1-helper', Step1Helper);
 
+
+library.add(faCoffee);
+library.add(faLightbulb);
+
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
 Vue.prototype.$http = axios;
 
 Vue.config.productionTip = true;
 
 
 Vue.use(ElementUI);
-// Vue.use(iView, {
-//   locale
-// });
 
 new Vue({
   render: h => h(App),
