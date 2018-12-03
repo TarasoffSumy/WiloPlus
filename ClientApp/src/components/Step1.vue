@@ -134,8 +134,8 @@
 .alert {
     padding: 10px;
     text-align: left;
-    line-height: 1.2;
-    font-size: 13px;
+    line-height: 1.5;
+    font-size: 15px;
 }
 button.el-button.el-button--text {
     text-decoration: underline;

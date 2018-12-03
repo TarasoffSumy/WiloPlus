@@ -9,7 +9,7 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        55homeData {{volumeFlow}}
+        <!-- 55homeData {{volumeFlow}} -->
 
 
     
@@ -18,7 +18,10 @@
                 :volumeFlow="volumeFlow"
                 @inputData="inputData"
                 class="transition-box"/>              
-        <Step2 v-else-if='current==2' class="transition-box"/>         
+        <Step2 v-else-if='current==2' 
+                :deliveryHead="deliveryHead"
+                @inputData="inputData"
+        class="transition-box"/>         
         <Step3 v-else-if='current==3' class="transition-box"/>
         <Step4 v-else-if='current==4' class="transition-box"/> 
         </transition>
@@ -61,7 +64,7 @@ export default {
                 errorClass: 'text-danger',
                 isActive: false,
                 helperStep1: false,
-                deliveryHead:0,
+                deliveryHead: 20,
                 volumeFlow:0
             }
         },
@@ -110,6 +113,9 @@ export default {
 h1, h2, p {
     color: #363640
 }
+span {
+    font-size: 16px;
+}
 .first .rect::after {
     display: none
 }
@@ -125,6 +131,7 @@ h1, h2, p {
     font-size: 33px;
     color: #555;
 }
+
   .transition-box {
     margin-bottom: 10px;
     width: 100%;
