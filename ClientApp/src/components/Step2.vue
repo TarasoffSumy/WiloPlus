@@ -5,7 +5,7 @@
     :visible.sync="dialogVisible"
     width="80%"
     >
-    <Step2-helper @onComputeVitrata="onComputeVitrata"/> 
+    <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"/> 
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
         <el-col :span="12">
@@ -31,7 +31,7 @@
              <div class="greyBox">
                  <h3>Необхідний напір насоса</h3>                
                  <p>Напір  
-                     <el-input-number v-model="deliveryHeadStep2" @change="handleChange" :min="20" :max="10"></el-input-number>
+                     <el-input-number v-model="deliveryHeadStep2" @change="handleChange"  ></el-input-number>
                  м<sup>3</sup>/ч 
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
@@ -58,20 +58,23 @@
     data() {
       return {
         deliveryHeadStep2: this.deliveryHead,
-        computeVitrata: null,
+        deliveryHeadCompute: null,
         helperStep1: false,
         dialogVisible: false
       };
     },
     methods: {
       handleChange(value) {
-        this.$emit('inputData', this.vitrataStep1)
+        this.$emit('inputDataHead', this.deliveryHeadStep2)
        
       },
-      onComputeVitrata(value){
-          this.vitrataStep1=value
-          this.computeVitrata=value
-          this.$emit('inputData', this.computeVitrata)
+      onComputeDeliveryHead(value){
+          if (value>=20) {
+          this.deliveryHeadStep2=value
+          this.deliveryHeadComputed=value
+          this.$emit('inputDataHead', value)              
+          }
+
           console.log('compVit', value)
       }, 
       ActiveHelperStep1() {

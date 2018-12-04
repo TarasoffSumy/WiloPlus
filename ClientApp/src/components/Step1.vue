@@ -31,7 +31,7 @@
         <el-col :span="12">
              <div class="greyBox">
                  <h3>Необхідна витрата насоса</h3>         
-                 <p>Витрата  <el-input-number v-model="volumeFlowStep1" @change="handleChange" :min="0" ></el-input-number>
+                 <p>Витрата  <el-input-number v-model="volumeFlowStep1" @change="handleChange" :min="0" :max="17"></el-input-number>
                  м<sup>3</sup>/ч 
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
@@ -66,14 +66,14 @@
     methods: {
       dialogCancel() {
           this.dialogVisible=false 
-          this.$emit('inputData', this.volumeFlowStep1)
+          this.$emit('inputDataVolume', this.volumeFlowStep1)
       },
       handleChange(value) {
-        this.$emit('inputData', value)
+        this.$emit('inputDataVolume', value)
        
       },
       onDialogAccept() {
-        this.$emit('inputData', this.computevolumeFlow)
+        this.$emit('inputDataVolume', this.computevolumeFlow)
         this.volumeFlowStep1=this.computevolumeFlow
         this.dialogVisible=false 
       },

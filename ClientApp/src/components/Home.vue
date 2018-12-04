@@ -9,18 +9,18 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        <!-- 55homeData {{volumeFlow}} -->
-
+        homeData {{volumeFlow}}
+        homeData {{deliveryHead}}
 
     
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
-                @inputData="inputData"
+                @inputDataVolume="inputDataVolume"
                 class="transition-box"/>              
         <Step2 v-else-if='current==2' 
                 :deliveryHead="deliveryHead"
-                @inputData="inputData"
+                @inputDataHead="inputDataHead"
         class="transition-box"/>         
         <Step3 v-else-if='current==3' class="transition-box"/>
         <Step4 v-else-if='current==4' class="transition-box"/> 
@@ -64,7 +64,7 @@ export default {
                 errorClass: 'text-danger',
                 isActive: false,
                 helperStep1: false,
-                deliveryHead: 20,
+                deliveryHead: 0,
                 volumeFlow:0
             }
         },
@@ -72,8 +72,11 @@ export default {
             this.fetchData();
         },
         methods: {           
-            inputData(val) {
+            inputDataVolume(val) {
                 this.volumeFlow=val
+            },
+            inputDataHead(val) {
+                this.deliveryHead=val
             },
             fetchData: function() {
                 const getPromise = Axios.get('http://www.wiloexpert.com.ua/wilo/db/getAllPumps');

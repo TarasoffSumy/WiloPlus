@@ -2,64 +2,37 @@
 <div>
     <h2>Помічник визначення напору насоса</h2>
     <el-row>
-        <el-col :span="12" class="side-side2-helper">
-            <div class="row-item" :class="[{ active: focusInput==1}]">
-                <div class="circle_numder">
+        <el-col :span="12" class="side-left-helper">
+            <div v-for="item in helperHead" class="row-item" :class="[{ active: focusInput==item.id}]">
+                <div class="circle_numder">                   
                     <svg height="36" width="36" class="circle">
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
-                    </svg><div class="symbolInCircle">A </div>            
+                    </svg><div class="symbolInCircle">{{item.letter}} </div> 
+                           <div ></div>    
                 </div>
-                <span class="item"> Висота від землі до рівня води в свердловині </span>    
-                <el-input-number  @focus="onFocusInput_1" v-model="volumeFlow.Val1" @change="handleChange" :min="0" :max="17"></el-input-number>
-                м 
-            </div>
-            <div class="row-item" :class="[{ active: focusInput==2}]">
-                <div class="circle_numder">
-                    <svg height="36" width="36" class="circle">
-                    <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
-                    </svg> <div class="symbolInCircle">B </div>            
-                </div>
-                <span class="item">Відстань від будинку до свердловини </span>   
-                <el-input-number  @focus="onFocusInput_2" v-model="volumeFlow.Val2" @change="handleChange" :min="0" :max="17"></el-input-number>
-                м 
-            </div>
-            <div class="row-item" :class="[{ active: focusInput==3}]">
-                <div class="circle_numder" >
-                    <svg height="36" width="36" class="circle">
-                    <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
-                    </svg> <div class="symbolInCircle">C </div>            
-                </div>
-                <span class="item">Висота між землею і найвище розташованим приладом водоспоживання </span>  
-                <el-input-number :class="[{ active: focusInput==3}]"  @focus="onFocusInput_3"  v-model="volumeFlow.Val3" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <span class="item">{{item.title}}</span>    
+                <el-input-number @focus="onFocusInput(item.id)" v-model="item.valueHead" @change="handleChange(item.id)"  :precision="2" :min="0" ></el-input-number>
                 м 
             </div>
             <div class="row-item"><div class="additional-volume-flow"><el-button type="text" class="link" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></div>  
-                <el-input-number v-model="volumeFlow.Val7" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <el-input-number v-model="additionalHead"  @input="handleChange(4)"  @change="handleChange(4)"  :precision="2" :min="0"></el-input-number>
                 м             
             </div>
             <div class="row-item">
                 <div class="computed-deliveryHead">
                 <span class="label">Розрахований напір</span>
-                <span class="number"> {{volumeFlowValTotal}}</span> м 
+                <span class="number"> {{HeadValTotal}}</span> м 
                 </div>                
             </div>
-
         </el-col>
-        <el-col :span="10" class="side-side2-helper">
-            <el-button @click="onFocusInput_1"  class="circle_numder number_A" :class="[{ active: focusInput==1}]" type="text">
-                    <svg height="36" width="36" class="circle">
+        <el-col :span="10" class="side-right-helper">
+            <el-button  v-for="item in helperHead" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_numder number_'+item.letter, {green: focusInput==item.id}]" type="text">
+                    <!-- <div class="active"></div> -->
+                    <div :class="[{ active: focusInput==item.id}]"></div>
+                    <svg height="36" width="36" class="circle" >
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
-                    </svg><div class="symbolInCircle">A </div>                            
-            </el-button>
-            <el-button @click="onFocusInput_2"  class="circle_numder number_B"  type="text" :class="[{ active: focusInput==2}]">
-                    <svg height="36" width="36" class="circle">
-                    <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
-                    </svg><div class="symbolInCircle">B </div>                            
-            </el-button>
-            <el-button @click="onFocusInput_3"   class="circle_numder number_C"  type="text" :class="[{ active: focusInput==3}]">
-                    <svg height="36" width="36" class="circle">
-                    <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
-                    </svg><div class="symbolInCircle">C </div>                            
+                    </svg><div class="symbolInCircle">{{item.letter}}</div>
+                                                
             </el-button>
             <img class="pos-img" src="assets/head_scheme.jpg" alt="">
         </el-col>
@@ -74,28 +47,50 @@
       return {
           volumeFlow: {
               
-          },         
-        volumeFlowValTotal: 0,
-        focusInput:1
+          },
+        helperHead: {
+            item1: {
+                id:1,
+                letter: 'A',
+                title: 'Висота від землі до рівня води в свердловині',
+                valueHead: 0
+            },
+            item2: {
+                id:2,
+                letter: 'B',
+                title: 'Висота між землею і найвище розташованим приладом водоспоживання',
+                valueHead: 0
+            },
+            item3: {
+                id:3,
+                letter: 'C',
+                title: 'Висота від землі до рівня води в свердловині',
+                valueHead: 0
+            }
+        },
+        additionalHead:0 ,
+        HeadValTotal: 0,
+        focusInput: 1
       };
     },
+    created:  function(){
+        this.focusInput=1;
+        console.log(this.focusInput)
+    },
     methods: {
-      handleChange(value) {
-        var source=Object.values(this.volumeFlow);
-        var result=source.reduce(function(sum, current) {
-            return sum + current ;
-        });
-        this.volumeFlowValTotal=result
-        this.$emit('onComputevolumeFlow', this.volumeFlowValTotal)
+      handleChange(val) {
+       this.focusInput=val  
+       console.log( Object.values(this.helperHead))
+       let sum=this.helperHead.item1.valueHead
+                         +this.helperHead.item2.valueHead
+                         +this.helperHead.item3.valueHead
+                         +this.additionalHead
+        this.HeadValTotal=sum.toFixed(1)
+        this.$emit('onComputeDeliveryHead', this.HeadValTotal)
       },
-      onFocusInput_1() {
-          this.focusInput=1  
-      },
-      onFocusInput_2() {
-          this.focusInput=2  
-      },
-        onFocusInput_3() {
-          this.focusInput=3  
+      onFocusInput(val) {
+          this.focusInput=val  
+           console.log(this.focusInput)
       },
       open() {
         this.$alert('This is a message', 'Title', {
@@ -116,9 +111,59 @@
     position: relative; 
     z-index: 5
 }
-.active {
-    background: #009c82;
+
+@-webkit-keyframes pulse1 {
+    0% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0;
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+    }
 }
+
+@keyframes pulse1 {
+    0% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0;
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+    }
+}
+.side-right-helper .active {
+    position: absolute;
+    top: -5px;
+    background: #fff;
+    width: 20px;
+    padding: 12px;
+    height: 20px;
+    border-radius: 50%;
+    left: 0.5px;
+    -webkit-animation: pulse1 2s linear infinite;
+    -moz-animation: pulse1 2s linear infinite;
+    animation: pulse1 2s linear infinite;
+}
+.side-left-helper .active .circle, .side-right-helper .green .circle   {
+    fill: #009c82;
+}
+
 
 .circle_numder.number_A .symbolInCircle, 
 .circle_numder.number_B .symbolInCircle,

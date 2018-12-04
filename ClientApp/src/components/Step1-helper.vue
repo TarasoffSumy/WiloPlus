@@ -89,7 +89,7 @@
 </script>
 <style scoped>
 .side-side1-helper .item {
-    min-width: 230px;
+    min-width: 250px;
     text-align: left;
     display: inline-table;
     margin: 3px 0;
