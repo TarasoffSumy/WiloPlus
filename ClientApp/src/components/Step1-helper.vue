@@ -71,7 +71,6 @@
         });
         this.volumeFlowValTotal=result
         this.$emit('onComputeVolumeFlow', this.volumeFlowValTotal)
-        console.log(value)
       },
       open() {
         this.$alert('This is a message', 'Title', {

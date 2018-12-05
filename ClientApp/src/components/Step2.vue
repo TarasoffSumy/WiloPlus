@@ -22,7 +22,7 @@
     <div class="circle_numder">
         <svg height="55" width="53" class="circle">
         <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
-        </svg> <span>1 </span>            
+        </svg> <span>2 </span>            
     </div>
     <h2 class="title">Напір насоса</h2> 
     </el-row> 

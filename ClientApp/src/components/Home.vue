@@ -1,7 +1,7 @@
 <template>
   <div>  <p>Step {{ current  }} </p>
       <div style="width: 1200px; margin: auto;">
- 
+        <el-button @click="postData" type="success">Success</el-button>
         <el-row :gutter="20" >
         
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
@@ -84,6 +84,15 @@ export default {
                 this.posts = response.data;
                 });
                 return getPromise;
+                },
+            postData: function(id) {
+                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/getHelp', {"help_id" : 1});
+                getPromise.then(response => {
+                console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
                 },
             next () {
                 if (this.current == 4) {
