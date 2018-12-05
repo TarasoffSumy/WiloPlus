@@ -2,3 +2,6 @@
 nbproject/project.properties
 *.xml
 /ClientApp/node_modules/
+
+# temprory files
+.json
