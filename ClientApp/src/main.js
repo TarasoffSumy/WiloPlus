@@ -21,6 +21,8 @@ import Step4 from './components/Step4.vue';
 import Step1Helper from './components/Step1-helper.vue';
 import Step2Helper from './components/Step2-helper.vue';
 import Step3Helper from './components/Step3-helper.vue';
+import Step3Accessoreis from './components/Step3-accessoreis.vue';
+
 
 
 Vue.component('Home', Home);
@@ -33,6 +35,7 @@ Vue.component('Step4', Step4);
 Vue.component('Step1-helper', Step1Helper);
 Vue.component('Step2-helper', Step2Helper);
 Vue.component('Step3-helper', Step3Helper);
+Vue.component('Step3-accessoreis', Step3Accessoreis);
 
 
 library.add(faCoffee);

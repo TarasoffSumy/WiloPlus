@@ -1,5 +1,6 @@
 <template>
 <div>
+
     <el-dialog
     title=""
     :visible.sync="dialogVisible"
@@ -45,6 +46,9 @@
              </div>
         </el-col>
     </el-row> 
+        <Step3-accessoreis 
+
+                /> 
 </div> 
 </template>
 
