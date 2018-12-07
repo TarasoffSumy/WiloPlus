@@ -1,7 +1,7 @@
 /nbproject/private/
 nbproject/project.properties
 *.xml
-/ClientApp/node_modules/
+node_modules/
 
 # temprory files
 .json

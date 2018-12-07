@@ -5,6 +5,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/element-variables.scss';
 import { library } from '@fortawesome/fontawesome-svg-core'
+import Vuelidate from "vuelidate";
 import { faCoffee, faPhoneSlash, faBug, faLightbulb } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -42,8 +43,8 @@ Vue.prototype.$http = axios;
 
 Vue.config.productionTip = true;
 
-
 Vue.use(ElementUI);
+Vue.use(Vuelidate);
 
 new Vue({
   render: h => h(App),

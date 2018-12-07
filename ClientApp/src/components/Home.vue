@@ -16,17 +16,20 @@
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
-                @inputDataVolume="inputDataVolume"
+                :modelFlowItems="modelFlowItems"
+                :maxVolumeFlow="maxVolumeFlow"
+                @onInputDataVolume="onInputDataVolume"
+                @onInputFlowItems="onInputFlowItems"
                 class="transition-box"/>              
         <Step2 v-else-if='current==2' 
                 :deliveryHead="deliveryHead"
-                @inputDataHead="inputDataHead"
+                :modelHeadItems="modelHeadItems"
+                @onInputDataHead="onInputDataHead"
+                @onInputHeadItems="onInputHeadItems"
         class="transition-box"/>         
         <Step3 v-else-if='current==3' class="transition-box"/>
         <Step4 v-else-if='current==4' class="transition-box"/> 
-        </transition>
-
-       
+        </transition>     
 
         <el-row class="navigation-footer">
         <el-col :span="12">
@@ -35,10 +38,7 @@
         <el-col :span="12">
             <el-button @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
         </el-col>
-        </el-row>
-
-       
-         
+        </el-row>       
     </div>
 
         <ul v-for="item in posts" :value="item" :key="item.id" >
@@ -65,17 +65,39 @@ export default {
                 isActive: false,
                 helperStep1: false,
                 deliveryHead: 0,
-                volumeFlow:0
+                volumeFlow:0,
+                maxVolumeFlow: 17,
+                modelFlowItems: {
+                    val1:0,
+                    val2:0,
+                    val3:0,
+                    val4:0,
+                    val5:0,
+                    val6:0,
+                    val7:0
+                },
+                modelHeadItems: {
+                    val1:0,
+                    val2:0,
+                    val3:0,
+                    val4:0
+                }
             }
         },
         created: function() {
             this.fetchData();
         },
         methods: {           
-            inputDataVolume(val) {
+            onInputDataVolume(val) {
                 this.volumeFlow=val
             },
-            inputDataHead(val) {
+            onInputFlowItems(id, val){
+                this.modelFlowItems['val'+id]=val;
+            },
+            onInputHeadItems(id, val){
+                this.modelHeadItems['val'+id]=val;
+            },
+            onInputDataHead(val) {
                 this.deliveryHead=val
             },
             fetchData: function() {
@@ -130,6 +152,10 @@ span {
 }
 .first .rect::after {
     display: none
+}
+.exeption-validation{
+    color: #f16262;
+    font-size: 14px;
 }
 .rect:after {
     width: 20px;

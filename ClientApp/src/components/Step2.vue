@@ -5,14 +5,17 @@
     :visible.sync="dialogVisible"
     width="80%"
     >
-    <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"/> 
+    <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"
+                  @onInputHeadItems="onInputHeadItems" 
+                  :modelHeadItems="modelHeadItems"
+    /> 
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
         <el-col :span="12">
             <el-button @click="dialogVisible = false">Назад</el-button>
         </el-col>
         <el-col :span="12">
-            <el-button type="primary" @click="dialogVisible = false">Підтвердити</el-button>
+            <el-button :disabled="disabledAccept" type="primary" @click="onDialogAccept">Підтвердити</el-button>
         </el-col>
         </el-row>   
     </span>
@@ -31,7 +34,7 @@
              <div class="greyBox">
                  <h3>Необхідний напір насоса</h3>                
                  <p>Напір  
-                     <el-input-number v-model="deliveryHeadStep2" @change="handleChange"  ></el-input-number>
+                     <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead"  ></el-input-number>
                  м<sup>3</sup>/ч 
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
@@ -54,32 +57,52 @@
 </template>
 <script>
   export default {
-    props: ['deliveryHead'],
+    props: ['deliveryHead', 'modelHeadItems'],
     data() {
       return {
-        deliveryHeadStep2: this.deliveryHead,
-        deliveryHeadCompute: null,
+        deliveryHeadInput: this.deliveryHead,
+        deliveryHeadComputed: null,
         helperStep1: false,
-        dialogVisible: false
+        dialogVisible: false,
+        minDeliveryHead: 20,
+        maxDeliveryHead: 200,
+        disabledAccept: true
       };
     },
     methods: {
-      handleChange(value) {
-        this.$emit('inputDataHead', this.deliveryHeadStep2)
-       
-      },
-      onComputeDeliveryHead(value){
-          if (value>=20) {
-          this.deliveryHeadStep2=value
-          this.deliveryHeadComputed=value
-          this.$emit('inputDataHead', value)              
-          }
-
-          console.log('compVit', value)
+    dialogCancel() {
+        this.dialogVisible=false 
+    },
+    onInputDeliveryHead(value) {
+        this.$emit('onInputDataHead', value)     
+    },
+    onInputHeadItems(id, value){
+        this.$emit('onInputHeadItems', id, value )
+    },
+    onSaveComputedHead(){
+        this.$emit('onInputDataHead', this.deliveryHeadComputed)
+        this.deliveryHeadInput=this.deliveryHeadComputed        
+    },
+    onDialogAccept() {
+        this.onSaveComputedHead()
+        this.dialogVisible=false       
+    }, 
+    onComputeDeliveryHead(value){        
+        this.onDisableButtonAccept(value) 
+        this.deliveryHeadComputed=value
       }, 
-      ActiveHelperStep1() {
-          this.helperStep1=!this.helperStep1
-      },       
+    onDisableButtonAccept(value){
+        if ((value <= this.maxDeliveryHead) && (value > this.minDeliveryHead)) {
+            this.disabledAccept=false      
+        }
+        else {
+            this.disabledAccept=true 
+        }
+          console.log(this.disabledAccept)
+      },
+    //   ActiveHelperStep1() {
+    //       this.helperStep1=!this.helperStep1
+    //   },       
       open() {
         this.$alert('This is a message', 'Title', {
           confirmButtonText: 'OK',

@@ -7,70 +7,87 @@
     <el-row>
         <el-col :span="12" class="side-side1-helper">
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Мийка кухні/умивальник </span>    
-                <el-input-number v-model="volumeFlow.Val1" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val1" @change="handleChange(volumeFlow.Val1, 1)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Ванна/душова кабіна </span>   
-                <el-input-number v-model="volumeFlow.Val2" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val2" @change="handleChange(volumeFlow.Val2, 2)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Посудомийна машина </span>  
-                <el-input-number v-model="volumeFlow.Val3" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val3" @change="handleChange(volumeFlow.Val3, 3)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="additional-volume-flow"><el-button type="text" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></span>  
-                <el-input-number v-model="volumeFlow.Val7" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val7" @change="handleChange(volumeFlow.Val7, 7)" :min="0" ></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
         </el-col>
         <el-col :span="10" class="side-side1-helper">
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Пральна машина</span>   
-                <el-input-number v-model="volumeFlow.Val4" @change="handleChange" :min="10" :max="17"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val4" @change="handleChange(volumeFlow.Val4, 4)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Биде</span> 
-                <el-input-number v-model="volumeFlow.Val5" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val5" @change="handleChange(volumeFlow.Val5, 5)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Унитаз  </span>  
-                <el-input-number v-model="volumeFlow.Val6" @change="handleChange" :min="0" :max="17"></el-input-number>
+                <el-input-number v-model="volumeFlow.Val6" @change="handleChange(volumeFlow.Val7, 6)" :min="0" ></el-input-number>
                 шт 
             </p>
         </el-col>
     </el-row> 
-    <el-row >
+    <el-row class="row-before-nav">
         <p class="computed-volumeFlow">
           <span class="label">Розрахована витрата</span>
-          <span class="number"> {{volumeFlowValTotal}}</span> м<sup>3</sup>/ч 
-        </p>     
+          <span class="number"> {{compTotal}}</span> м<sup>3</sup>/ч 
+       </p>
+        <span class="exeption-validation" v-if="!$v.volumeFlowValTotal.between">Нажаль серія насосів Actun SPU4 не може задовільнити ваші потреби, 
+                 витрата не повинна перевищувати <strong>17 м<sup>3</sup>/ч</strong></span> 
+     
     </el-row>
      
 </div>
 </template>
 <script>
+import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
+    props: ['maxVolumeFlow', 'modelFlowItems'],
     data() {
       return {
           volumeFlow: {
-            Val1: 0,
-            Val2: 0,
-            Val3: 0,
-            Val4: 0,
-            Val5: 0,
-            Val6: 0,
-            Val7: 0                
+            Val1: this.modelFlowItems.val1,
+            Val2: this.modelFlowItems.val2,
+            Val3: this.modelFlowItems.val3,
+            Val4: this.modelFlowItems.val4,
+            Val5: this.modelFlowItems.val5,
+            Val6: this.modelFlowItems.val6,
+            Val7: this.modelFlowItems.val7                
           },         
         volumeFlowValTotal: 0
-      };
+      }
+    },
+    validations: {
+        volumeFlowValTotal: {
+        required,
+        between: between(0, 17)
+        }
+    },
+    computed: {
+        compTotal: function() {
+            var source=Object.values(this.volumeFlow);
+            var result=source.reduce(function(sum, current) {
+            return sum + current ;
+            });
+            this.volumeFlowValTotal=result
+            this.$emit('onComputeVolumeFlow', this.volumeFlowValTotal)
+            return result
+        }
     },
     methods: {
-      handleChange(value) {
-        var source=Object.values(this.volumeFlow);
-        var result=source.reduce(function(sum, current) {
-            return sum + current ;
-        });
-        this.volumeFlowValTotal=result
-        this.$emit('onComputeVolumeFlow', this.volumeFlowValTotal)
+      handleChange(value, id) {
+        this.$emit('onInputFlowItems', id ,value)
       },
       open() {
         this.$alert('This is a message', 'Title', {
@@ -87,6 +104,9 @@
   };
 </script>
 <style scoped>
+.row-before-nav {
+    height: 100px;
+}
 .side-side1-helper .item {
     min-width: 250px;
     text-align: left;
