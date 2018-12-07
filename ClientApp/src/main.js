@@ -6,7 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './assets/element-variables.scss';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import Vuelidate from "vuelidate";
-import { faCoffee, faPhoneSlash, faBug, faLightbulb } from '@fortawesome/free-solid-svg-icons'
+import { faCoffee, faPhoneSlash, faBug, faLightbulb, faServer } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 
@@ -20,6 +20,7 @@ import Step3 from './components/Step3.vue';
 import Step4 from './components/Step4.vue';
 import Step1Helper from './components/Step1-helper.vue';
 import Step2Helper from './components/Step2-helper.vue';
+import Step3Helper from './components/Step3-helper.vue';
 
 
 Vue.component('Home', Home);
@@ -31,10 +32,12 @@ Vue.component('Step3', Step3);
 Vue.component('Step4', Step4);
 Vue.component('Step1-helper', Step1Helper);
 Vue.component('Step2-helper', Step2Helper);
+Vue.component('Step3-helper', Step3Helper);
 
 
 library.add(faCoffee);
 library.add(faLightbulb);
+library.add(faServer);
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

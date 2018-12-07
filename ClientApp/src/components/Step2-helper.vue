@@ -175,14 +175,6 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     z-index: 5;
     position: relative;
 }
-.circle_numder.number_A .symbolInCircle, 
-.circle_numder.number_B .symbolInCircle,
-.circle_numder.number_C .symbolInCircle
-{
-    top: -34px;
-    left: -1px;
-    position: relative;
-}
 .circle_numder.number_A {
     top: 355px;
     left: -176px;
@@ -217,11 +209,17 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 }
 .circle_numder .symbolInCircle {
     position: relative;
-    top: -38px;
-    left: -2px;
+    top: -33px;
+    left: -1px;
     font-size: 20px;
     color: #fff;
     z-index: 6;
+}
+
+.side-left-helper .circle_numder .symbolInCircle
+{
+    top: -38px;
+    left: -1px;
 }
 .item {
     width: 250px;

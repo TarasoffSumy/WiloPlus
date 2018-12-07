@@ -119,43 +119,7 @@
 </script>
 
 <style scoped>
-.title {
-    display: inline-block;
-    float: left;
-    padding: 15px;
-}
-.circle {
-    fill: #009c81;
-    stroke: transparent
-}
-.circle_numder {
-    padding-top: 20px;
-    margin: auto;
-    width: 50px;
-    height: 50px;
-    float: left;
-}
-.circle_numder span {
-    position: relative;
-    top: -53px;
-    left: 0px;
-    font-size: 25px;
-    color: #fff
-}
-.greyBox {
-    padding: 20px;
-    background: #f6f6f6;
-    display: block;
-    color: #212121;
-    margin: 20px;
-    min-height: 185px;
-}
-.alert {
-    padding: 10px;
-    text-align: left;
-    line-height: 1.2;
-    font-size: 13px;
-}
+
 button.el-button.el-button--text {
     text-decoration: underline;
     font-size: 15.5px;

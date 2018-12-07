@@ -1,18 +1,13 @@
 <template>
-  <div>  <p>Step {{ current  }} </p>
+  <div>
       <div style="width: 1200px; margin: auto;">
-        <el-button @click="postData" type="success">Success</el-button>
-        <el-row :gutter="20" >
-        
+        <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
         <a href="#" @click="step(2, $event)"><stepTile title="Напір насоса" number="2" :class="[{ active: current==2}]"/></a> 
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        homeData {{volumeFlow}}
-        homeData {{deliveryHead}}
-
-    
+   
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
@@ -26,7 +21,7 @@
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
-        class="transition-box"/>         
+                class="transition-box"/>         
         <Step3 v-else-if='current==3' class="transition-box"/>
         <Step4 v-else-if='current==4' class="transition-box"/> 
         </transition>     
@@ -41,9 +36,9 @@
         </el-row>       
     </div>
 
-        <ul v-for="item in posts" :value="item" :key="item.id" >
+        <!-- <ul v-for="item in posts" :value="item" :key="item.id" >
             <li>{{item}}</li>
-        </ul>
+        </ul> -->
   </div>
 </template>
 
@@ -144,6 +139,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.el-message-box {
+    width: 800px;
+}
+.el-message-box__title {
+    font-weight: 600;
+}
 h1, h2, p {
     color: #363640
 }
@@ -177,7 +178,7 @@ span {
     background-color: #ffffff;
     text-align: center;
     color: #fff;
-    padding: 40px 20px;
+    padding: 20px 20px;
     box-sizing: border-box;
     margin-right: 20px;
   }
@@ -236,5 +237,42 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
 .el-dialog__footer {
     text-align: center;
     padding: 20px 0
+}
+.transition-box .title {
+    display: inline-block;
+    float: left;
+    padding: 15px;
+}
+.transition-box .circle {
+    fill: #009c81;
+    stroke: transparent
+}
+.transition-box .circle_numder {
+    padding-top: 20px;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+.transition-box .circle_numder span {
+    position: relative;
+    top: -53px;
+    left: 0px;
+    font-size: 25px;
+    color: #fff
+}
+.greyBox {
+    padding: 20px;
+    background: #f6f6f6;
+    display: block;
+    color: #212121;
+    margin: 20px;
+    min-height: 185px;
+}
+.alert {
+    padding: 10px;
+    text-align: left;
+    line-height: 1.5;
+    font-size: 15px;
 }
 </style>
