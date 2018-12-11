@@ -32,8 +32,25 @@
     <el-row>
         <el-col :span="12">
              <div class="greyBox">
-                 <h3>Підбраний насос</h3>         
-
+        <h3>Підбраний насос</h3>     
+        <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
+       <p>{{objSelectedPump.shortName}}</p>
+        <div v-for="item in pump" :value="item" :key="item.id" >
+            <el-radio v-model="selectedPumpId" :label="item.id">
+                            <span v-if="item.features.phase=='1'">однофазный</span>
+                            <span v-else>трехфазный</span>
+            </el-radio>       
+        </div>
+        <p>Напор {{deliveryHead}} м3/ч</p>
+        <p>Расход {{volumeFlow}}</p>
+        <p> 
+        Цена {{objSelectedPump.price}} грн 
+        </p>
+        <p>
+        {{objSelectedPump.name}}
+        </p>
+                 
+                    
              </div>
         </el-col>
         <el-col :span="12">
@@ -53,8 +70,9 @@
 </template>
 
 <script>
+import Axios from 'axios';
   export default {
-    props: ['deliveryHead', 'modelHeadItems'],
+    props: ['volumeFlow', 'deliveryHead','modelHeadItems'],
     data() {
       return {
         deliveryHeadInput: this.deliveryHead,
@@ -63,10 +81,52 @@
         dialogVisible: false,
         minDeliveryHead: 20,
         maxDeliveryHead: 200,
-        disabledAccept: true
+        disabledAccept: true,
+        pump:'',
+        selectedPumpId: '',
       };
     },
+    created: function() {
+        this.postDataPump(this.volumeFlow, this.deliveryHead);    
+    },
+    computed: {
+            objSelectedPump: function() {
+                let pumpsArr=[]
+                let source=this.pump
+                for (let key in source){
+                        pumpsArr.push(source[key])                
+                }
+                let obj={}
+                for (let key in pumpsArr){
+                    if (pumpsArr[key].id==this.selectedPumpId) {
+                        obj.name=pumpsArr[key].pump_name
+                        obj.price=pumpsArr[key].price
+                        obj.shortName=obj.name.split('/')[0]
+                    }
+                }
+             return obj            
+            }           
+        },
     methods: {
+    OnGetFirstSelectedId(){
+                let pumpsArr=[]
+                let source=this.pump
+                for (let key in source){
+                        pumpsArr.push(source[key])
+                }
+                this.selectedPumpId= pumpsArr[0].id
+            }, 
+    postDataPump: function(volumeFlow, deliveryHead) {
+                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
+                getPromise.then(response => {
+                this.pump = response.data;
+                this.OnGetFirstSelectedId()
+                console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+                },
     dialogCancel() {
         this.dialogVisible=false 
     },

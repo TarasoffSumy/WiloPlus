@@ -7,7 +7,7 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-   
+        <button @click="OnGet">Go</button>
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
@@ -15,14 +15,18 @@
                 :maxVolumeFlow="maxVolumeFlow"
                 @onInputDataVolume="onInputDataVolume"
                 @onInputFlowItems="onInputFlowItems"
-                class="transition-box"/>              
+                class="transition-box step1"/>              
         <Step2 v-else-if='current==2' 
                 :deliveryHead="deliveryHead"
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
-                class="transition-box"/>         
-        <Step3 v-else-if='current==3' class="transition-box"/>
+                class="transition-box step2"/>         
+        <Step3 v-else-if='current==3' 
+                :pump="pump"
+                :volumeFlow="volumeFlow"
+                :deliveryHead="deliveryHead"
+                class="transition-box"/>
         <Step4 v-else-if='current==4' class="transition-box"/> 
         </transition>     
 
@@ -35,10 +39,23 @@
         </el-col>
         </el-row>       
     </div>
-
-        <!-- <ul v-for="item in posts" :value="item" :key="item.id" >
-            <li>{{item}}</li>
-        </ul> -->
+      
+       <!-- <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
+       <p>{{objSelectedPump.shortName}}</p>
+        <div v-for="item in pump" :value="item" :key="item.id" >
+            <el-radio v-model="selectedPumpId" :label="item.id">
+                            <span v-if="item.features.phase=='1'">однофазный</span>
+                            <span v-else>трехфазный</span>
+            </el-radio>       
+        </div>
+        <p> 
+        Цена {{objSelectedPump.price}} грн 
+        </p>
+        <p>
+        Имя {{objSelectedPump.name}}
+        </p> -->
+        
+        
   </div>
 </template>
 
@@ -59,8 +76,8 @@ export default {
                 errorClass: 'text-danger',
                 isActive: false,
                 helperStep1: false,
-                deliveryHead: 0,
-                volumeFlow:0,
+                deliveryHead: '',
+                volumeFlow: 0.5,
                 maxVolumeFlow: 17,
                 modelFlowItems: {
                     val1:0,
@@ -76,13 +93,45 @@ export default {
                     val2:0,
                     val3:0,
                     val4:0
-                }
+                },
+                pump:[],
+                selectedPumpId: "",
+                selectedPump:{}
             }
         },
         created: function() {
-            this.fetchData();
+            this.postDataPump(this.volumeFlow, this.deliveryHead);              
         },
-        methods: {           
+        computed: {
+            objSelectedPump: function() {
+                let pumpsArr=[]
+                let source=this.pump
+                for (let key in source){
+                        pumpsArr.push(source[key])                
+                }
+                let obj={}
+                for (let key in pumpsArr){
+                    if (pumpsArr[key].id==this.selectedPumpId) {
+                        obj.name=pumpsArr[key].pump_name
+                        obj.price=pumpsArr[key].price
+                        obj.shortName=obj.name.split('/')[0]
+                    }
+                }
+             return obj            
+            }            
+        },
+        methods: {
+            OnGet() {
+
+            },     
+            OnGetFirstSelectedId(){
+                let pumpsArr=[]
+                let source=this.pump
+                for (let key in source){
+                        pumpsArr.push(source[key])
+                }
+                this.selectedPumpId= pumpsArr[0].id
+            },      
             onInputDataVolume(val) {
                 this.volumeFlow=val
             },
@@ -105,7 +154,17 @@ export default {
             postData: function(id) {
                 const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/getHelp', {"help_id" : 1});
                 getPromise.then(response => {
-                console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+                },
+            postDataPump: function(volumeFlow, deliveryHead) {
+                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
+                getPromise.then(response => {
+                this.pump = response.data;
+                this.OnGetFirstSelectedId()
+                console.log(response.data);
                 })
                 .catch(error => {
                     console.log(error);
@@ -148,8 +207,9 @@ export default {
 h1, h2, p {
     color: #363640
 }
+
 span {
-    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
 }
 .first .rect::after {
     display: none
@@ -238,27 +298,27 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
     text-align: center;
     padding: 20px 0
 }
-.transition-box .title {
-    display: inline-block;
+ .transition-box .title {
     float: left;
     padding: 15px;
 }
+
 .transition-box .circle {
     fill: #009c81;
     stroke: transparent
 }
+.transition-box .circle_numder {
+    float: left;
+}
+/*
 .transition-box .circle_numder {
     padding-top: 20px;
     margin: auto;
     width: 50px;
     height: 50px;
     float: left;
-}
+}}*/
 .transition-box .circle_numder span {
-    position: relative;
-    top: -53px;
-    left: 0px;
-    font-size: 25px;
     color: #fff
 }
 .greyBox {
@@ -267,12 +327,12 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
     display: block;
     color: #212121;
     margin: 20px;
-    min-height: 185px;
+    min-height: 225px;
 }
 .alert {
     padding: 10px;
     text-align: left;
-    line-height: 1.5;
-    font-size: 15px;
-}
+    font-size: 13px;
+    margin-top: 35px;
+} 
 </style>

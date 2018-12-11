@@ -117,6 +117,9 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
   };
 </script>
 <style scoped>
+.transition-box .circle_numder {
+    float: none;
+}
 @-webkit-keyframes pulse1 {
     0% {
         opacity: 1;
