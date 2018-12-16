@@ -35,7 +35,7 @@
                  <h3>Необхідний напір насоса</h3>                
                  <p>Напір  
                      <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead"  ></el-input-number>
-                 м<sup>3</sup>/ч 
+                 м
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
                  Як необхідно розраховувати витрату насоса. Беремо напір 

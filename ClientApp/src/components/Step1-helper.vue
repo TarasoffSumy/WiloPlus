@@ -7,39 +7,40 @@
     <el-row>
         <el-col :span="12" class="side-side1-helper">
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Мийка кухні/умивальник </span>    
-                <el-input-number v-model="volumeFlow.Val1" @change="handleChange(volumeFlow.Val1, 1)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val1.val" @change="handleChange(volumeFlow.Val1.val, 1)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Ванна/душова кабіна </span>   
-                <el-input-number v-model="volumeFlow.Val2" @change="handleChange(volumeFlow.Val2, 2)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val2.val" @change="handleChange(volumeFlow.Val2.val, 2)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Посудомийна машина </span>  
-                <el-input-number v-model="volumeFlow.Val3" @change="handleChange(volumeFlow.Val3, 3)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val3.val" @change="handleChange(volumeFlow.Val3.val, 3)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="additional-volume-flow"><el-button type="text" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></span>  
-                <el-input-number v-model="volumeFlow.Val7" @change="handleChange(volumeFlow.Val7, 7)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val7.val" @change="handleChange(volumeFlow.Val7.val, 7)" :min="0" ></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
         </el-col>
         <el-col :span="10" class="side-side1-helper">
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Пральна машина</span>   
-                <el-input-number v-model="volumeFlow.Val4" @change="handleChange(volumeFlow.Val4, 4)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val4.val" @change="handleChange(volumeFlow.Val4.val, 4)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Биде</span> 
-                <el-input-number v-model="volumeFlow.Val5" @change="handleChange(volumeFlow.Val5, 5)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val5.val" @change="handleChange(volumeFlow.Val5.val, 5)" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img src="assets/itemVolumeFlow1.png" alt=""> Унитаз  </span>  
-                <el-input-number v-model="volumeFlow.Val6" @change="handleChange(volumeFlow.Val7, 6)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val6.val" @change="handleChange(volumeFlow.Val6.val, 6)" :min="0" ></el-input-number>
                 шт 
             </p>
         </el-col>
     </el-row> 
     <el-row class="row-before-nav">
         <p class="computed-volumeFlow">
+            {{Qrez}}
           <span class="label">Розрахована витрата</span>
           <span class="number"> {{compTotal}}</span> м<sup>3</sup>/ч 
        </p>
@@ -57,15 +58,44 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     data() {
       return {
           volumeFlow: {
-            Val1: this.modelFlowItems.val1,
-            Val2: this.modelFlowItems.val2,
-            Val3: this.modelFlowItems.val3,
-            Val4: this.modelFlowItems.val4,
-            Val5: this.modelFlowItems.val5,
-            Val6: this.modelFlowItems.val6,
-            Val7: this.modelFlowItems.val7                
+            Val1: {
+                val: this.modelFlowItems.val1,
+                constantQ: 0.504,
+                label: 'Мийка кухні/умивальник'
+                },
+            Val2: {
+                val: this.modelFlowItems.val2,
+                constantQ: 1.080,
+                label: 'Ванна/душова кабіна'               
+            },
+            Val3: {
+                val: this.modelFlowItems.val3,
+                constantQ: 0.252,
+                label: 'Посудомийна машина'
+            },                
+            Val4: {
+                val: this.modelFlowItems.val4,
+                constantQ: 0.540,
+                label: 'Пральна машина'
+                } ,
+            Val5: {
+                val: this.modelFlowItems.val5,
+                constantQ: 0.504,
+                label: 'Биде'               
+            },
+            Val6: {
+                val: this.modelFlowItems.val6,
+                constantQ: 0.504,
+                label: ''
+            },
+            Val7: {
+                val: this.modelFlowItems.val7,
+                constantQ: 1,
+                label: 'Унитаз'
+            }                 
           },         
-        volumeFlowValTotal: 0
+        volumeFlowValTotal: 0,
+        Qrez: 0
       }
     },
     validations: {
@@ -77,12 +107,31 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     computed: {
         compTotal: function() {
             var source=Object.values(this.volumeFlow);
-            var result=source.reduce(function(sum, current) {
-            return sum + current ;
-            });
-            this.volumeFlowValTotal=result
+
+             let Qrez=0;
+             for (let i in source){
+                 Qrez=Qrez+source[i].val*source[i].constantQ
+             }
+            function getLog(y) {
+                return Math.log(y) ;
+            }
+            if (Qrez <= 0.55) {
+                this.volumeFlowValTotal=Qrez
+            }
+            else if ((Qrez > 0.55) && (Qrez <= 6.50)) {
+                this.volumeFlowValTotal=0.937*getLog(Qrez)+0.7689
+            }
+            else if ((Qrez > 6.50) && (Qrez <= 15.00)) {
+                this.volumeFlowValTotal=1.2291*getLog(Qrez)+0.2642
+            }
+            else if ((Qrez > 15.00) && (Qrez <= 50)) {
+                this.volumeFlowValTotal=1.4844*getLog(Qrez)+0.4326
+            }
+            else if ((Qrez > 50.0) && (Qrez <= 150)) {
+                this.volumeFlowValTotal=1.8644*getLog(Qrez)+0.4326
+            }
             this.$emit('onComputeVolumeFlow', this.volumeFlowValTotal)
-            return result
+            return this.volumeFlowValTotal.toFixed(2)
         }
     },
     methods: {

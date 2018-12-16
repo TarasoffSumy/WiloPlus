@@ -1,5 +1,12 @@
 <template>
-  <div>
+  <div id="content">
+      <!-- <button
+            @click="logContent"
+        >
+            log content
+        </button> -->
+      <button class="btn btn-primary pl-5 pr-5" @click="download">Download PDF</button>
+      <div id="editor"></div>
       <div style="width: 1200px; margin: auto;">
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
@@ -7,7 +14,7 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        <button @click="OnGet">Go</button>
+        <!-- <button @click="OnGet">Go</button> -->
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
@@ -31,11 +38,12 @@
         </transition>     
 
         <el-row class="navigation-footer">
-        <el-col :span="12">
-             <el-button  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад </el-button>
+        <el-col :span="12" style="width:50%">
+
+             <el-button :disabled="current == 1"  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад </el-button>
         </el-col>
-        <el-col :span="12">
-            <el-button @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
+        <el-col :span="12" style="width:50%">
+            <el-button :disabled="current == 4"  @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
         </el-col>
         </el-row>       
     </div>
@@ -65,9 +73,11 @@ export default {
   name: 'Home',
   props: {
     msg: String
-  }, 
+  },
   data () {
         return {
+            currentPage: 0,
+            pageCount: 0,
                 url:'',
                 posts:[],
                 current: 1,
@@ -96,11 +106,37 @@ export default {
                 },
                 pump:[],
                 selectedPumpId: "",
-                selectedPump:{}
+                selectedPump:{},
+                dataCart:
+                {
+                    x:[40, 39, 10, 40, 39, 80, 40],
+                    y: [40, 39, 10, 40, 39, 80, 40]
+                },
+                docDefinition : {
+                        content: [
+                            // if you don't need styles, you can use a simple string to define a paragraph
+                            'This is a standard paragraph, using default style',
+
+                            // using a { text: '...' } object lets you set styling properties
+                            { text: 'This paragraph will have a bigger font', fontSize: 15 },
+
+                            // if you set the value of text to an array instead of a string, you'll be able
+                            // to style any part individually
+                            {
+                            text: [
+                                'This paragraph is defined as an array of elements to make it possible to ',
+                                { text: 'restyle part of it and make it bigger ', fontSize: 15 },
+                                'than the rest.'
+                            ]
+                            }
+                        ]
+                        } 
             }
         },
         created: function() {
-            this.postDataPump(this.volumeFlow, this.deliveryHead);              
+            // this.postDataPump(this.volumeFlow, this.deliveryHead); 
+            console.log('44')
+                         
         },
         computed: {
             objSelectedPump: function() {
@@ -121,17 +157,42 @@ export default {
             }            
         },
         methods: {
+             logContent() {
+                let pdfName = 'test'; 
+                var specialElementHandlers = {
+                    '#editor': function (element, renderer) {
+                        return true;
+                    }
+                };
+                var doc = new jsPDF();
+                doc.text(20, 20, 'Привет');
+                var el=document.getElementById("content");
+                doc.fromHTML(el, 20, 20, {
+                        'width': 300,
+                            'elementHandlers': specialElementHandlers
+                    });
+                
+                doc.save(pdfName + '.pdf');
+            },
             OnGet() {
-
-            },     
-            OnGetFirstSelectedId(){
-                let pumpsArr=[]
-                let source=this.pump
-                for (let key in source){
-                        pumpsArr.push(source[key])
+                 let Qrez=2
+                function getLog(y) {
+                return Math.log(y) ;
                 }
-                this.selectedPumpId= pumpsArr[0].id
-            },      
+                console.log(0.937*getLog(Qrez)+0.7689)
+
+            },  
+            download () { 
+            pdfMake.createPdf(this.docDefinition).download();
+            },
+            // OnGetFirstSelectedId(){
+            //     let pumpsArr=[]
+            //     let source=this.pump
+            //     for (let key in source){
+            //             pumpsArr.push(source[key])
+            //     }
+            //     this.selectedPumpId= pumpsArr[0].id
+            // },      
             onInputDataVolume(val) {
                 this.volumeFlow=val
             },
@@ -164,7 +225,6 @@ export default {
                 getPromise.then(response => {
                 this.pump = response.data;
                 this.OnGetFirstSelectedId()
-                console.log(response.data);
                 })
                 .catch(error => {
                     console.log(error);
@@ -204,8 +264,9 @@ export default {
 .el-message-box__title {
     font-weight: 600;
 }
-h1, h2, p {
-    color: #363640
+h1, h2, h3, h4 p {
+    color: #363640;
+    text-align: center;
 }
 
 span {
@@ -237,7 +298,6 @@ span {
     border-radius: 4px;
     background-color: #ffffff;
     text-align: center;
-    color: #fff;
     padding: 20px 20px;
     box-sizing: border-box;
     margin-right: 20px;
