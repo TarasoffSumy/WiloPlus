@@ -7,7 +7,8 @@
     width="80%"
     >
     <Step3-helper 
-
+        :url="url"
+        :selectedPumpCurrent="selectedPumpCurrent"
                 /> 
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
@@ -34,7 +35,6 @@
              <div class="greyBox">
         <h3>Підбраний насос</h3>
         {{selectedPumpCurrent}}
-        {{controlSelect}}
         <div v-if="selectedPumpId">
             <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
             <p>{{objSelectedPump.shortName}}</p>
@@ -75,15 +75,15 @@
         </el-col>
     </el-row> 
         <Step3-accessoreis 
-
-                /> 
+            :url="url"
+        /> 
 </div> 
 </template>
 
 <script>
 import Axios from 'axios';
   export default {
-    props: ['volumeFlow', 'deliveryHead','modelHeadItems'],
+    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url'],
     data() {
       return {
         deliveryHeadInput: this.deliveryHead,
@@ -96,7 +96,6 @@ import Axios from 'axios';
         pump:'',
         selectedPumpId: '',
         selectedPumpCurrent: '',
-        controlSelect: [],
       };
     },
     created: function() {
@@ -120,7 +119,8 @@ import Axios from 'axios';
                     }
                 }
                 this.selectedPumpCurrent=obj.current
-                this.postDataControlSelect(this.selectedPumpCurrent)
+                console.log(this.selectedPumpCurrent +'step3')
+               
              return obj            
             }           
         },
@@ -139,16 +139,6 @@ import Axios from 'axios';
                 this.pump = response.data;
                  console.log(this.pump );
                 this.OnGetFirstSelectedId()
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-                },
-    postDataControlSelect: function(current) {
-                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/controlSelect', {"current" : current});
-                getPromise.then(response => {
-                this.controlSelect = response.data;
-                console.log(this.controlSelect );
                 })
                 .catch(error => {
                     console.log(error);

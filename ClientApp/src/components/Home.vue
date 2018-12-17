@@ -18,23 +18,28 @@
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
+                :url="url"
                 :modelFlowItems="modelFlowItems"
                 :maxVolumeFlow="maxVolumeFlow"
                 @onInputDataVolume="onInputDataVolume"
                 @onInputFlowItems="onInputFlowItems"
                 class="transition-box step1"/>              
         <Step2 v-else-if='current==2' 
+                :url="url"
                 :deliveryHead="deliveryHead"
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
                 class="transition-box step2"/>         
-        <Step3 v-else-if='current==3' 
+        <Step3 v-else-if='current==3'
+                :url="url" 
                 :pump="pump"
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
                 class="transition-box"/>
-        <Step4 v-else-if='current==4' class="transition-box"/> 
+        <Step4 v-else-if='current==4' 
+                :url="url"
+                class="transition-box"/> 
         </transition>     
 
         <el-row class="navigation-footer">
@@ -76,9 +81,9 @@ export default {
   },
   data () {
         return {
-            currentPage: 0,
-            pageCount: 0,
-                url:'',
+                url:'http://wiloexpert.com.ua/wilo/',
+                currentPage: 0,
+                pageCount: 0,
                 posts:[],
                 current: 1,
                 showStep: 0,

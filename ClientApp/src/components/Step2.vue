@@ -8,6 +8,7 @@
     <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"
                   @onInputHeadItems="onInputHeadItems" 
                   :modelHeadItems="modelHeadItems"
+                  :url="url"
     /> 
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
@@ -57,7 +58,7 @@
 </template>
 <script>
   export default {
-    props: ['deliveryHead', 'modelHeadItems'],
+    props: ['deliveryHead', 'modelHeadItems', 'url'],
     data() {
       return {
         deliveryHeadInput: this.deliveryHead,

@@ -34,7 +34,7 @@
                     </svg><div class="symbolInCircle">{{item.letter}}</div>
                     <div :class="[{ active: focusInput==item.id}]"></div>                            
             </el-button>
-            <img class="pos-img" src="assets/head_scheme.jpg" alt="">
+            <img class="pos-img" :src="url+'assets/head_scheme.jpg'" alt="">
         </el-col>
     </el-row> 
     <el-row >    
@@ -44,7 +44,7 @@
 <script>
 import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
-    props: ['modelHeadItems'],
+    props: ['modelHeadItems', 'url'],
     data() {
       return {
           volumeFlow: {
