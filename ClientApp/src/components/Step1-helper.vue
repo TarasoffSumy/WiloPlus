@@ -47,8 +47,7 @@
         <span class="exeption-validation" v-if="!$v.volumeFlowValTotal.between">Нажаль серія насосів Actun SPU4 не може задовільнити ваші потреби, 
                  витрата не повинна перевищувати <strong>17 м<sup>3</sup>/ч</strong></span> 
      
-    </el-row>
-     
+    </el-row>  
 </div>
 </template>
 <script>
