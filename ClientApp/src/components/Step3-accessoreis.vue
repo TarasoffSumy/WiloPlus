@@ -10,7 +10,7 @@
                     <el-col :span="2" :offset="6"><el-button @click="onDelete(item.id)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="5"><img :src="url+item.img" width="100px" alt=""></el-col>
                     <el-col :span="5">
-                        <p>detail</p>
+                        <p>{{item.idController}}</p>
                         <div>{{item.price}}</div>
                         
                         </el-col>                    
@@ -21,10 +21,10 @@
     </el-row> 
 </div>
 </template>
-<script>
 
+<script>
   export default {
-    props: ['url'],
+    props: ['url', 'selectedControllerId'],
     data() {
       return {
         selectedAccessories: {
@@ -34,27 +34,31 @@
                 img:'assets/controller.jpg',
                 price: '2500 грн',
                 selected:true,
+                idController: this.selectedControllerId
             },
             item2: {
                 id:2,
                 title: 'Кабель',
                 img:'assets/cable.jpg',
                 price: '2500 грн',
-                selected:true
+                selected:true,
+                idController: "this.selectedControllerId"
             },
             item3: {
                 id:3,
                 title: 'З’єднання насоса',
                 img:'assets/mufta.jpg',
                 price: '2500 грн',
-                selected:true
+                selected:true,
+                idController: "this.selectedControllerId"
             },
             item4: {
                 id:4,
                 title: 'Мембранний напірний бак',
                 img:'assets/bak.jpg',
                 price: '2500 грн',
-                selected:true
+                selected:true,
+                idController: "this.selectedControllerId"
             }
         },
 
@@ -63,6 +67,7 @@
       }
     },
     computed: {
+        
     },
     created:  function(){
     },

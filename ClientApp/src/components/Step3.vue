@@ -9,6 +9,7 @@
     <Step3-helper 
         :url="url"
         :selectedPumpCurrent="selectedPumpCurrent"
+        @onSelectController="onSelectController"
                 /> 
     <span slot="footer" class="dialog-footer">       
         <el-row class="navigation-footer">
@@ -76,6 +77,7 @@
     </el-row> 
         <Step3-accessoreis 
             :url="url"
+            :selectedControllerId="selectedControllerId"
         /> 
 </div> 
 </template>
@@ -96,6 +98,7 @@ import Axios from 'axios';
         pump:'',
         selectedPumpId: '',
         selectedPumpCurrent: '',
+        selectedControllerId: ''
       };
     },
     created: function() {
@@ -125,6 +128,10 @@ import Axios from 'axios';
             }           
         },
     methods: {
+    onSelectController(val){
+        this.selectedControllerId=val
+        console.log('emit'+val)
+        },
     OnGetFirstSelectedId(){
                 let pumpsArr=[]
                 let source=this.pump

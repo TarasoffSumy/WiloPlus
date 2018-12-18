@@ -23,20 +23,24 @@
         </el-col>
     </el-row> 
     <el-row>
-        <h3>{{activeAccessories}}</h3>
+        <h4>{{activeAccessories}}</h4>
         <div v-if="focusInput==1">
-        Прилад керування і захисту насоса
-        {{controllers}} 55
-        {{selectedPumpCurrent}}
-        <div  v-for="item in controllers" :key="item.id">
-
-                    <el-radio v-model="selectedController" :label="item.id">
-
-                    </el-radio> 
-
+        <div class="block-accessoreis"  v-for="item in controllers" :key="item.id">
+            <el-row>                     
+                    <el-col :span="4" >
+                     <el-radio  v-model="selectedController"  @change="handleChange(item.id)" :label="item.id"><span class="name-item">{{item.name}}</span></el-radio>
+                    
+                    </el-col>
+                    <el-col :span="5">
+                    <img :src="url+'assets/controller.jpg'" width="100px" alt=""></el-col>
+                    <el-col :span="12" :offset="2">
+                        <p>Ціна <strong>{{item.price}} грн</strong></p>                           
+                        <p>Ток мінімальний  <strong>{{item.features.current_min}}</strong> </p>
+                        <p>Ток максимальний <strong>{{item.features.current_max}}</strong> </p>
+                        <el-button type="primary">Детальніше</el-button>                       
+                    </el-col>                    
+                </el-row>               
         </div>
-
-
         </div> 
         <div  v-if="focusInput==2" class="Accessories-cable">
         <p> Довжина кабелю <el-input-number v-model="accessories.cablelength" @change="handleChange(accessories.cablelength)" :min="0" ></el-input-number> м</p>
@@ -77,7 +81,7 @@ import Axios from 'axios';
         focusInput: 0,
         activeAccessories:'',
         controllers:'',
-        selectedController:''
+        selectedController:'456'
       }
     },
     computed: {
@@ -88,13 +92,17 @@ import Axios from 'axios';
     //   this.postDataControllers(this.selectedPumpCurrent)
     },
     methods: {
-    handleChange(){},
+    handleChange(id){
+        this.onSelectController(id)
+    },
     onFocusInput(value) {
         this.focusInput=value  
         this.activeAccessories=this.helperHead['item'+value].title
         console.log(this.focusInput)
-    }
-    ,
+    },
+    onSelectController(id){
+         this.$emit('onSelectController', id)
+    },
     postDataControllers: function(current) {
                 const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/controlSelect', {"current" : current});
                 getPromise.then(response => {
@@ -274,6 +282,19 @@ p.sub-title {
 }
 .side-side1-helper p {
     text-align: center
+}
+.block-accessoreis {
+    display: inline-block;
+    margin: auto;
+    padding: 20px;
+}
+.block-accessoreis p {
+    text-align: left    
+}
+span.name-item {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
 }
 </style>
 

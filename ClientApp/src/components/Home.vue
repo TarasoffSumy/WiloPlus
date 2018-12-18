@@ -269,11 +269,14 @@ export default {
 .el-message-box__title {
     font-weight: 600;
 }
-h1, h2, h3, h4 p {
+h1, h2, h3,  p {
     color: #363640;
     text-align: center;
 }
-
+h4 {
+    font-size: 19px;
+    color: #009c81;
+}
 span {
     font-family: 'Open Sans', sans-serif;
 }
@@ -328,10 +331,13 @@ span {
 }
 
 button.el-button.el-button--primary {
- 
     border-radius: 0;
-    min-width: 190px;
-    font-size: 18px
+    min-width: 135px;
+    font-size: 14px;
+}
+button.el-button.el-button--success {
+    background-color: #009c82;
+    border-radius: 0;
 }
 .navigation-footer button.el-button.el-button--primary, .navigation-footer button.el-button.el-button--default  {
     background: #363640;
