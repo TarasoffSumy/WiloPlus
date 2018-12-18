@@ -1,69 +1,66 @@
 <template>
 <div>
-
     <el-dialog
-    title=""
-    :visible.sync="dialogVisible"
-    width="80%"
-    >
-    <Step3-helper 
-        :url="url"
-        :selectedPumpCurrent="selectedPumpCurrent"
-        @onSelectController="onSelectController"
-                /> 
-    <span slot="footer" class="dialog-footer">       
-        <el-row class="navigation-footer">
-        <el-col :span="12">
-            <el-button @click="dialogCancel"  icon="el-icon-d-arrow-left">Назад</el-button>
-        </el-col>
-        <el-col :span="12">
-            <el-button :disabled="disabledAccept" type="primary" @click="onDialogAccept">Підтвердити <i class="el-icon-d-arrow-right el-icon-right"/></el-button>
-        </el-col>
-        </el-row>   
-    </span>
+        title=""
+        :visible.sync="dialogVisible"
+        width="80%">
+        <Step3-helper 
+            :url="url"
+            :selectedPumpCurrent="selectedPumpCurrent"
+            :selectedAccessories="selectedAccessories"
+            @onSelectController="onSelectController"
+            /> 
+        <span slot="footer" class="dialog-footer">       
+            <el-row class="navigation-footer">
+            <el-col :span="12">
+                <el-button @click="dialogCancel"  icon="el-icon-d-arrow-left">Назад</el-button>
+            </el-col>
+            <el-col :span="12">
+                <el-button type="primary" @click="onDialogAccept">Підтвердити <i class="el-icon-d-arrow-right el-icon-right"/></el-button>
+            </el-col>
+            </el-row>   
+        </span>
     </el-dialog>
 
     <el-row>
-    <div class="circle_numder">
-        <svg height="55" width="53" class="circle">
-        <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
-        </svg> <span>3 </span>            
-    </div>
-    <h2 class="title">Підбір насоса та приладдя </h2> 
-    </el-row> 
+        <div class="circle_numder">
+            <svg height="55" width="53" class="circle">
+            <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
+            </svg> <span>3 </span>            
+        </div>
+        <h2 class="title">Підбір насоса та приладдя </h2> 
+    </el-row>
+
     <el-row>
         <el-col :span="12">
-             <div class="greyBox">
-        <h3>Підбраний насос</h3>
-        {{selectedPumpCurrent}}
-        <div v-if="selectedPumpId">
-            <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
-            <p>{{objSelectedPump.shortName}}</p>
-            {{objSelectedPump.current}}
-                <div v-for="item in pump" :value="item" :key="item.id" >
-                    <el-radio v-model="selectedPumpId" :label="item.id">
-                                    <span v-if="item.features.phase=='1'">однофазный</span>
-                                    <span v-if="item.features.phase=='3'">трехфазный</span>
-                    </el-radio>       
-                </div>
-                <p>Напор {{deliveryHead}} м</p>
-                <p>Расход {{volumeFlow}} м<sup>3</sup>/ч </p>
-                <p> 
-                Цена {{objSelectedPump.price}} грн 
-                </p>
-                <p>
-                {{objSelectedPump.name}}
-                </p>
-                <Chart  />       
-        </div>
-        <div v-else>
-            Насос не знайден!
-            Скорегуйте напор та витрату
-        </div>     
-
-                 
-                    
-             </div>
+            <div class="greyBox">
+            <h3>Підбраний насос</h3>
+            {{selectedPumpCurrent}}
+            <div v-if="selectedPumpId">
+                <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
+                <p>{{objSelectedPump.shortName}}</p>
+                {{objSelectedPump.current}}
+                    <div v-for="item in pump" :value="item" :key="item.id" >
+                        <el-radio v-model="selectedPumpId" :label="item.id">
+                                        <span v-if="item.features.phase=='1'">однофазный</span>
+                                        <span v-if="item.features.phase=='3'">трехфазный</span>
+                        </el-radio>       
+                    </div>
+                    <p>Напор {{deliveryHead}} м</p>
+                    <p>Расход {{volumeFlow}} м<sup>3</sup>/ч </p>
+                    <p> 
+                    Цена {{objSelectedPump.price}} грн 
+                    </p>
+                    <p>
+                    {{objSelectedPump.name}}
+                    </p>
+                    <Chart  />       
+            </div>
+            <div v-else>
+                Насос не знайден!
+                Скорегуйте напор та витрату
+            </div>                   
+            </div>
         </el-col>
         <el-col :span="12">
                  <div class="greyBox">
@@ -75,9 +72,10 @@
              </div>
         </el-col>
     </el-row> 
-        <Step3-accessoreis 
+        <Step3-accessoreis v-if="existAccessories"
             :url="url"
-            :selectedControllerId="selectedControllerId"
+            :selectedAccessories="selectedAccessories"
+             @onSelectController="onSelectController"
         /> 
 </div> 
 </template>
@@ -98,15 +96,51 @@ import Axios from 'axios';
         pump:'',
         selectedPumpId: '',
         selectedPumpCurrent: '',
-        selectedControllerId: ''
-      };
+        selectedAccessories: {
+            item1: {
+                id:1,
+                title: 'Прилад керування і захисту насоса',
+                img:'assets/controller.jpg',
+                price: '',
+                selected:false,
+                idController: this.selectedControllerId,
+                current_min:'',
+                current_max:''
+            },
+            item2: {
+                id:2,
+                title: 'Кабель',
+                img:'assets/cable.jpg',
+                price: '2500 грн',
+                selected:false,
+                idController: "this.selectedControllerId"
+            },
+            item3: {
+                id:3,
+                title: 'З’єднання насоса',
+                img:'assets/mufta.jpg',
+                price: '2500 грн',
+                selected:false,
+                idController: "this.selectedControllerId"
+            },
+            item4: {
+                id:4,
+                title: 'Мембранний напірний бак',
+                img:'assets/bak.jpg',
+                price: '2500 грн',
+                selected:false,
+                idController: "this.selectedControllerId"
+            }
+        },
+        }
     },
     created: function() {
         this.postDataPump(this.volumeFlow, this.deliveryHead);
+        console.log("exist"+this.selectedAccessories.item1.idController)
         
     },
     computed: {
-            objSelectedPump: function() {
+        objSelectedPump: function() {
                 let pumpsArr=[]
                 let source=this.pump
                 for (let key in source){
@@ -121,17 +155,25 @@ import Axios from 'axios';
                         obj.shortName=obj.name.split('/')[0]
                     }
                 }
-                this.selectedPumpCurrent=obj.current
-                console.log(this.selectedPumpCurrent +'step3')
-               
+                this.selectedPumpCurrent=obj.current               
              return obj            
-            }           
+        },
+        existAccessories: function() {
+            console.log("exist"+this.selectedAccessories.item1.idController)
+            if ( this.selectedAccessories.item1.idController!=undefined)
+            return true
+        }                   
         },
     methods: {
-    onSelectController(val){
-        this.selectedControllerId=val
-        console.log('emit'+val)
-        },
+    onSelectController(val, dataControlBox){
+        this.selectedAccessories.item1.idController=val
+        this.selectedAccessories.item1.price=dataControlBox[0].price
+        this.selectedAccessories.item2.price=dataControlBox[0].price
+        this.selectedAccessories.item1.selected=true
+    },
+    onGetDataController(val) {
+
+    },
     OnGetFirstSelectedId(){
                 let pumpsArr=[]
                 let source=this.pump
@@ -155,7 +197,6 @@ import Axios from 'axios';
         this.dialogVisible=false 
     },
     onDialogAccept() {
-        this.onSaveComputedHead()
         this.dialogVisible=false       
     },        
     open() {
