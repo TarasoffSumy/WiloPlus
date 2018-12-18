@@ -269,7 +269,10 @@ export default {
 .el-message-box__title {
     font-weight: 600;
 }
-h1, h2, h3,  p {
+p {
+    color: #363640;
+}
+h1, h2, h3 {
     color: #363640;
     text-align: center;
 }

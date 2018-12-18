@@ -1,23 +1,25 @@
 <template>
 <div>
     <h2>Підібране приладдя</h2>
-    
     <el-row>       
-            <div v-for="item in selectedAccessories" :key="item.id" class="item" >
-                <el-row v-if="item.selected"> 
+        <div class="item">    
+                <el-row v-if="selectedAccessories.selected"> 
                     <h3>
-                        {{item.title}}
+                        {{selectedAccessories.title}}
                     </h3>
-                    <el-col :span="2" :offset="6"><el-button @click="onDelete(item.id)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
-                    <el-col :span="5"><img :src="url+item.img" width="100px" alt=""></el-col>
-                    <el-col :span="5">
-                        <div>{{item.price}}</div>
-                        
-                        </el-col>                    
-                </el-row>                            
-            </div>  
-    </el-row> 
-    <el-row >    
+                    <el-col :span="2" :offset="6"><el-button @click="onDelete()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                    <!-- <el-col :span="5"><img :src="url+item.img" width="100px" alt=""></el-col> -->
+                <el-col :span="3">
+                                <img :src="url+'assets/controller.jpg'" width="100px" alt="">
+                </el-col>
+                <el-col :span="9" :offset="1">
+                                    <p>Ціна <strong>{{selectedAccessories.price}} грн</strong></p>                           
+                                    <p>Ток мінімальний  <strong>{{selectedAccessories.features.current_min}}</strong> </p>
+                                    <p>Ток максимальний <strong>{{selectedAccessories.features.current_max}}</strong> </p>
+                                    <el-button type="primary">Детальніше</el-button>                       
+                </el-col>                    
+                </el-row> 
+        </div>
     </el-row> 
 </div>
 </template>
@@ -25,25 +27,22 @@
 <script>
   export default {
     props: ['url', 'selectedAccessories' ],
-    data() {
+    data() {        
       return {
+        newData: this.selectedAccessories,
         HeadValTotal: 0,
         focusInput: 0
       }
     },
     computed: {
-        reloadData:  function() {
-            return
-            this.selectedAccessories.item1.idController="5445"
-        }
         
     },
     created:  function(){
     },
     methods: {
-    onDelete(id){
-        this.selectedAccessories['item'+id].selected=false
-        this.selectedAccessories['item'+id].idController=undefined
+    onDelete(){
+        // this.selectedAccessories['item'+id].selected=false
+        // this.selectedAccessories['item'+id].idController=undefined
 
         }
     }

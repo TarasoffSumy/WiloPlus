@@ -28,9 +28,8 @@
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
             </svg> <span>3 </span>            
         </div>
-        <h2 class="title">Підбір насоса та приладдя </h2> 
+        <h2 class="title">Підбір насоса та приладдя </h2>
     </el-row>
-
     <el-row>
         <el-col :span="12">
             <div class="greyBox">
@@ -74,7 +73,7 @@
     </el-row> 
         <Step3-accessoreis v-if="existAccessories"
             :url="url"
-            :selectedAccessories="selectedAccessories"
+            :selectedAccessories="selectedAccessories.item1"
              @onSelectController="onSelectController"
         /> 
 </div> 
@@ -100,12 +99,15 @@ import Axios from 'axios';
             item1: {
                 id:1,
                 title: 'Прилад керування і захисту насоса',
+                name:'',
                 img:'assets/controller.jpg',
-                price: '',
+                price: '45',
                 selected:false,
                 idController: this.selectedControllerId,
-                current_min:'',
-                current_max:''
+                features: {
+                current_min: "",
+                current_max: "'"                    
+                }
             },
             item2: {
                 id:2,
@@ -166,9 +168,12 @@ import Axios from 'axios';
         },
     methods: {
     onSelectController(val, dataControlBox){
+        console.log(dataControlBox)
         this.selectedAccessories.item1.idController=val
+        this.selectedAccessories.item1.name=dataControlBox[0].name
         this.selectedAccessories.item1.price=dataControlBox[0].price
-        this.selectedAccessories.item2.price=dataControlBox[0].price
+        this.selectedAccessories.item1.features.current_min=dataControlBox[0].features.current_min
+        this.selectedAccessories.item1.features.current_max=dataControlBox[0].features.current_max
         this.selectedAccessories.item1.selected=true
     },
     onGetDataController(val) {

@@ -3,7 +3,7 @@
     <h2>Підбір приладдя до свердловинного насосу</h2>
     <el-row>
         <el-col :span="12" class="side-left-helper">
-            <el-button  v-for="item in selectedAccessories" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_numder number_'+item.id, {green: focusInput==item.id}]" type="text">                   
+            <el-button  v-for="item in accessories" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_numder number_'+item.id, {green: focusInput==item.id}]" type="text">                   
                     <svg height="36" width="36" class="circle" >
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                     </svg><div class="symbolInCircle">{{item.id}}</div>
@@ -12,7 +12,7 @@
         <img style="margin-top:-20px;text-align: left; position: absolute; left: 54px;" :src="url+'assets/accessories.jpg'" width="450" alt="">
         </el-col>
         <el-col :span="10" class="side-right-helper">
-            <div v-for="item in selectedAccessories" class="row-item" :class="[{activeLeftCircle: focusInput==item.id}]">
+            <div v-for="item in accessories" class="row-item" :class="[{activeLeftCircle: focusInput==item.id}]">
                         <div class="circle_numder">                   
                             <svg height="36" width="36" class="circle">
                             <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
@@ -28,10 +28,10 @@
         <div class="block-accessoreis"  v-for="item in controllers" :key="item.id">
             <el-row>                     
                     <el-col :span="4" >
-                     <el-radio  v-model="selectedAccessories.item1.idController"  @change="handleChange(item.id)" :label="item.id">
+                     <el-radio  v-model="selectedAccessories.idController"  @change="handleChange(item.id)" :label="item.id">
                          <span class="name-item">{{item.name}}</span></el-radio>                    
                     </el-col>
-                    <el-col :span="5">
+                    <!-- <el-col :span="5">
                     <img :src="url+'assets/controller.jpg'" width="100px" alt="">
                     </el-col>
                     <el-col :span="12" :offset="2">
@@ -39,15 +39,20 @@
                         <p>Ток мінімальний  <strong>{{item.features.current_min}}</strong> </p>
                         <p>Ток максимальний <strong>{{item.features.current_max}}</strong> </p>
                         <el-button type="primary">Детальніше</el-button>                       
-                    </el-col>                    
+                    </el-col>  -->
+                    <ControlBox 
+                        :controllers="item"
+                        :url="url"
+                        />
                 </el-row>               
         </div>
         </div>
         <div  v-if="focusInput==2" class="Accessories-cable">
-        <p> Довжина кабелю <el-input-number v-model="accessories.cablelength" @change="handleChange(accessories.cablelength)" :min="0" ></el-input-number> м</p>
+        <p> Довжина кабелю <el-input-number v-model="cablelength" @change="handleChange(cablelength)" :min="0" ></el-input-number> м</p>
         <p class="detail-title"> Перетин кабелю <span>4 х 1.5 мм<sup>2</sup></span> </p>
         </div>     
     </el-row>
+    {{selectedAccessories}}
 </div>
 </template>
 
@@ -57,14 +62,29 @@ import Axios from 'axios';
     props: ['url', 'selectedPumpCurrent', "selectedAccessories"],
     data() {
       return {
-        accessories :{
-            cablelengtch:''
+        accessories: {
+            item1: {
+                id:1,
+                title: 'Прилад керування і захисту насоса',
+            },
+            item2: {
+                id:2,
+                title: 'Кабель',
+            },
+            item3: {
+                id:3,
+                title: 'З’єднання насоса',
+            },
+            item4: {
+                id:4,
+                title: 'Мембранний напірний бак',
+            }
         },
-        HeadValTotal: 0,
         focusInput: 0,
         activeAccessories:'',
         controllers:'',
-        selectedController:'456'
+        selectedController:'456',
+        cablelengtch:''
       }
     },
     computed: {
