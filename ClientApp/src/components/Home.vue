@@ -18,23 +18,28 @@
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
+                :url="url"
                 :modelFlowItems="modelFlowItems"
                 :maxVolumeFlow="maxVolumeFlow"
                 @onInputDataVolume="onInputDataVolume"
                 @onInputFlowItems="onInputFlowItems"
                 class="transition-box step1"/>              
         <Step2 v-else-if='current==2' 
+                :url="url"
                 :deliveryHead="deliveryHead"
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
                 class="transition-box step2"/>         
-        <Step3 v-else-if='current==3' 
+        <Step3 v-else-if='current==3'
+                :url="url" 
                 :pump="pump"
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
                 class="transition-box"/>
-        <Step4 v-else-if='current==4' class="transition-box"/> 
+        <Step4 v-else-if='current==4' 
+                :url="url"
+                class="transition-box"/> 
         </transition>     
 
         <el-row class="navigation-footer">
@@ -76,9 +81,9 @@ export default {
   },
   data () {
         return {
-            currentPage: 0,
-            pageCount: 0,
-                url:'',
+                url:'http://wiloexpert.com.ua/wilo/',
+                currentPage: 0,
+                pageCount: 0,
                 posts:[],
                 current: 1,
                 showStep: 0,
@@ -264,11 +269,14 @@ export default {
 .el-message-box__title {
     font-weight: 600;
 }
-h1, h2, h3, h4 p {
+h1, h2, h3,  p {
     color: #363640;
     text-align: center;
 }
-
+h4 {
+    font-size: 19px;
+    color: #009c81;
+}
 span {
     font-family: 'Open Sans', sans-serif;
 }
@@ -323,10 +331,13 @@ span {
 }
 
 button.el-button.el-button--primary {
- 
     border-radius: 0;
-    min-width: 190px;
-    font-size: 18px
+    min-width: 135px;
+    font-size: 14px;
+}
+button.el-button.el-button--success {
+    background-color: #009c82;
+    border-radius: 0;
 }
 .navigation-footer button.el-button.el-button--primary, .navigation-footer button.el-button.el-button--default  {
     background: #363640;

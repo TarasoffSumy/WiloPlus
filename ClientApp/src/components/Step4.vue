@@ -49,6 +49,7 @@
 
 <script>
   export default {
+    props: ['url'],
     data() {
       return {
         tableData: {

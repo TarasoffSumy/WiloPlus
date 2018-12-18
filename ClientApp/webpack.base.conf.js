@@ -12,7 +12,7 @@ module.exports = {
       config.plugins.delete('html')
       config.plugins.delete('preload')
       config.plugins.delete('prefetch')
-    }
+    },
     entry: {
         main: './src/main',
         vendors: './src/vendors'
