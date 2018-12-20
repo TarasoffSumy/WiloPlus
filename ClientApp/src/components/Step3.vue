@@ -53,7 +53,7 @@
                     <p>
                     {{objSelectedPump.name}}
                     </p>
-                    <Chart  />       
+                    
             </div>
             <div v-else>
                 Насос не знайден!
@@ -195,7 +195,6 @@ import Axios from 'axios';
                 this.OnGetFirstSelectedId()
                 })
                 .catch(error => {
-                    console.log(error);
                 });
                 },
     dialogCancel() {

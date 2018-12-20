@@ -117,7 +117,6 @@ import Axios from 'axios';
                 console.log(this.controllers );
                 })
                 .catch(error => {
-                    console.log(error);
                 });
     }
     }

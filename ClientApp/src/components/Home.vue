@@ -15,6 +15,7 @@
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
         <!-- <button @click="OnGet">Go</button> -->
+          <Chart  />     
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
@@ -189,15 +190,7 @@ export default {
             },  
             download () { 
             pdfMake.createPdf(this.docDefinition).download();
-            },
-            // OnGetFirstSelectedId(){
-            //     let pumpsArr=[]
-            //     let source=this.pump
-            //     for (let key in source){
-            //             pumpsArr.push(source[key])
-            //     }
-            //     this.selectedPumpId= pumpsArr[0].id
-            // },      
+            },    
             onInputDataVolume(val) {
                 this.volumeFlow=val
             },
@@ -217,12 +210,9 @@ export default {
                 });
                 return getPromise;
                 },
-            postData: function(id) {
+            postData: function() {
                 const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/getHelp', {"help_id" : 1});
                 getPromise.then(response => {
-                })
-                .catch(error => {
-                    console.log(error);
                 });
                 },
             postDataPump: function(volumeFlow, deliveryHead) {
@@ -230,9 +220,6 @@ export default {
                 getPromise.then(response => {
                 this.pump = response.data;
                 this.OnGetFirstSelectedId()
-                })
-                .catch(error => {
-                    console.log(error);
                 });
                 },
             next () {

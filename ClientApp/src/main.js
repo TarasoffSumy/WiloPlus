@@ -13,6 +13,7 @@ import { Line } from 'vue-chartjs';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// import ApexCharts from 'apexcharts';
 
 import Chart from './components/Chart.vue';
 import Home from './components/Home.vue';
