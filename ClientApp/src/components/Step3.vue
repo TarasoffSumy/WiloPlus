@@ -53,7 +53,15 @@
                     <p>
                     {{objSelectedPump.name}}
                     </p>
-                    
+                    <div style="margin-left:45px">
+                        <Chart style=""
+                            :Hnas="Hnas"
+                            :WorkPoint="WorkPoint"
+                            :CalcPoint="CalcPoint"  
+                            :Hsis="Hsis"   
+                        />   
+                    </div>
+     
             </div>
             <div v-else>
                 Насос не знайден!
@@ -82,7 +90,7 @@
 <script>
 import Axios from 'axios';
   export default {
-    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url'],
+    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url',"Hnas", "WorkPoint", "CalcPoint", "Hsis"],
     data() {
       return {
         deliveryHeadInput: this.deliveryHead,
