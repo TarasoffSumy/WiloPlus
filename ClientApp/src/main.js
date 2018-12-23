@@ -10,10 +10,8 @@ import { faCoffee, faPhoneSlash, faBug, faLightbulb, faServer } from '@fortaweso
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueCharts from 'vue-chartjs';
 import { Line } from 'vue-chartjs';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-// import ApexCharts from 'apexcharts';
+
+
 
 import Chart from './components/Chart.vue';
 import Home from './components/Home.vue';
@@ -29,8 +27,6 @@ import Step3Helper from './components/Step3-helper.vue';
 import Step3Accessoreis from './components/Step3-accessoreis.vue';
 import ControlBox from './components/accessories/controlBox.vue';
 
-
-// Vue.use(VueHtml2Canvas);
 Vue.component('Home', Home);
 Vue.component('HeaderPart', HeaderPart);
 Vue.component('stepTile', stepTile);

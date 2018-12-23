@@ -1,12 +1,8 @@
 <template>
-  <div id="content">
-      <!-- <button
-            @click="logContent"
-        >
-            log content
-        </button> -->
-      <button class="btn btn-primary pl-5 pr-5" @click="download">Download PDF</button>
-      <div id="editor"></div>
+  <div>
+   
+      <button class="btn btn-primary pl-5 pr-5" @click="logContent">Download PDF</button>
+     {{volumeFlow}}  {{deliveryHead}}
       <div style="width: 1200px; margin: auto;">
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
@@ -34,6 +30,7 @@
         <Step3 v-else-if='current==3'
                 :url="url" 
                 :pump="pump"
+                :selectedPumpId="selectedPumpId"
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
                 :Hnas="Hnas"
@@ -68,6 +65,7 @@ export default {
   },
   data () {
         return {
+                output: null,
                 url:'http://wiloexpert.com.ua/wilo/',
                 currentPage: 0,
                 pageCount: 0,
@@ -91,7 +89,7 @@ export default {
                     val7:0
                 },
                 modelHeadItems: {
-                    val1:0,
+                    val1:10,
                     val2:0,
                     val3:0,
                     val4:0
@@ -102,30 +100,12 @@ export default {
                 CalcPoint:'',
                 Hnas:'',
                 Hsis:'',
-                WorkPoint:'',
-                docDefinition : {
-                        content: [
-                            // if you don't need styles, you can use a simple string to define a paragraph
-                            'This is a standard paragraph, using default style',
-
-                            // using a { text: '...' } object lets you set styling properties
-                            { text: 'This paragraph will have a bigger font', fontSize: 15 },
-
-                            // if you set the value of text to an array instead of a string, you'll be able
-                            // to style any part individually
-                            {
-                            text: [
-                                'This paragraph is defined as an array of elements to make it possible to ',
-                                { text: 'restyle part of it and make it bigger ', fontSize: 15 },
-                                'than the rest.'
-                            ]
-                            }
-                        ]
-                        } 
+                WorkPoint:''
             }
         },
         created: function() {
-           // this.postDataPump(this.volumeFlow, this.deliveryHead);  
+           // this.postDataPump(this.volumeFlow, this.deliveryHead); 
+           this.postDataCableSelect()
            this.onGetDataChart()                      
         },
         computed: {
@@ -148,21 +128,16 @@ export default {
         },
         methods: {
              logContent() {
-                let pdfName = 'test'; 
-                var specialElementHandlers = {
-                    '#editor': function (element, renderer) {
-                        return true;
-                    }
-                };
-                var doc = new jsPDF();
-                doc.text(20, 20, 'Привет');
-                var el=document.getElementById("content");
-                doc.fromHTML(el, 20, 20, {
-                        'width': 300,
-                            'elementHandlers': specialElementHandlers
-                    });
-                
-                doc.save(pdfName + '.pdf');
+                // Get the element.
+                var element = document.getElementById('print');
+
+                // Generate the PDF.
+                html2pdf().from(element).set({
+                margin: 1,
+                filename: 'test.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true}
+                }).save();
             },
             OnGet() {
                  let Qrez=2
@@ -199,14 +174,36 @@ export default {
                 getPromise.then(response => {
                 });
                 },
+            postDataCableSelect: function() {
+                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/cableSelect', {"section":"1,5"});
+                getPromise.then(response => {
+                    console.log(response.data)
+                });
+                },
+            OnGetFirstSelectedId(){
+                let pumpsArr=[]
+                let source=this.pump
+                for (let key in source){
+                        pumpsArr.push(source[key].id)
+                }
+                this.selectedPumpId= pumpsArr[0]
+            }, 
             postDataPump: function(volumeFlow, deliveryHead) {
                 const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
                 getPromise.then(response => {
                 this.pump = response.data;
+                console.log(this.pump );
                 this.OnGetFirstSelectedId()
+                })
+                .catch(error => {
                 });
                 },
             next () {
+                if  (this.current == 3) {
+                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);
+
+                } 
                 if (this.current == 4) {
                     this.current = 1;
                 } else {
@@ -223,12 +220,18 @@ export default {
                 }
             },
             step (n) {
-               this.current = n               
+               this.current = n   
+                if  (this.current == 3) {                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);
+                    this.onGetDataChart()
+                }            
             },
             onGetvolumeFlow(value) {
                 this.volumeFlow=value
             },
             onGetDataChart(){
+                console.log(this.deliveryHead)
+                 console.log(this.volumeFlow)
             let Q=1.5
             let A=-16.76
             let B=-9.0825
