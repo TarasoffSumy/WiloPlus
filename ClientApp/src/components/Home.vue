@@ -14,7 +14,7 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        <!-- <button @click="OnGet">Go</button> -->
+        <!-- <button @click="OnGet">Go</button> -->   
         <transition name="flip" mode="out-in">
         <Step1 v-if='current==1'  
                 :volumeFlow="volumeFlow"
@@ -36,6 +36,10 @@
                 :pump="pump"
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
+                :Hnas="Hnas"
+                :WorkPoint="WorkPoint"
+                :CalcPoint="CalcPoint"  
+                :Hsis="Hsis" 
                 class="transition-box"/>
         <Step4 v-else-if='current==4' 
                 :url="url"
@@ -51,24 +55,7 @@
             <el-button :disabled="current == 4"  @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
         </el-col>
         </el-row>       
-    </div>
-      
-       <!-- <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
-       <p>{{objSelectedPump.shortName}}</p>
-        <div v-for="item in pump" :value="item" :key="item.id" >
-            <el-radio v-model="selectedPumpId" :label="item.id">
-                            <span v-if="item.features.phase=='1'">однофазный</span>
-                            <span v-else>трехфазный</span>
-            </el-radio>       
-        </div>
-        <p> 
-        Цена {{objSelectedPump.price}} грн 
-        </p>
-        <p>
-        Имя {{objSelectedPump.name}}
-        </p> -->
-        
-        
+    </div>        
   </div>
 </template>
 
@@ -91,8 +78,8 @@ export default {
                 errorClass: 'text-danger',
                 isActive: false,
                 helperStep1: false,
-                deliveryHead: '',
-                volumeFlow: 0.5,
+                deliveryHead: 30,
+                volumeFlow: 1,
                 maxVolumeFlow: 17,
                 modelFlowItems: {
                     val1:0,
@@ -112,11 +99,10 @@ export default {
                 pump:[],
                 selectedPumpId: "",
                 selectedPump:{},
-                dataCart:
-                {
-                    x:[40, 39, 10, 40, 39, 80, 40],
-                    y: [40, 39, 10, 40, 39, 80, 40]
-                },
+                CalcPoint:'',
+                Hnas:'',
+                Hsis:'',
+                WorkPoint:'',
                 docDefinition : {
                         content: [
                             // if you don't need styles, you can use a simple string to define a paragraph
@@ -139,9 +125,8 @@ export default {
             }
         },
         created: function() {
-            // this.postDataPump(this.volumeFlow, this.deliveryHead); 
-            console.log('44')
-                         
+           // this.postDataPump(this.volumeFlow, this.deliveryHead);  
+           this.onGetDataChart()                      
         },
         computed: {
             objSelectedPump: function() {
@@ -189,15 +174,7 @@ export default {
             },  
             download () { 
             pdfMake.createPdf(this.docDefinition).download();
-            },
-            // OnGetFirstSelectedId(){
-            //     let pumpsArr=[]
-            //     let source=this.pump
-            //     for (let key in source){
-            //             pumpsArr.push(source[key])
-            //     }
-            //     this.selectedPumpId= pumpsArr[0].id
-            // },      
+            },    
             onInputDataVolume(val) {
                 this.volumeFlow=val
             },
@@ -217,12 +194,9 @@ export default {
                 });
                 return getPromise;
                 },
-            postData: function(id) {
+            postData: function() {
                 const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/getHelp', {"help_id" : 1});
                 getPromise.then(response => {
-                })
-                .catch(error => {
-                    console.log(error);
                 });
                 },
             postDataPump: function(volumeFlow, deliveryHead) {
@@ -230,9 +204,6 @@ export default {
                 getPromise.then(response => {
                 this.pump = response.data;
                 this.OnGetFirstSelectedId()
-                })
-                .catch(error => {
-                    console.log(error);
                 });
                 },
             next () {
@@ -256,6 +227,51 @@ export default {
             },
             onGetvolumeFlow(value) {
                 this.volumeFlow=value
+            },
+            onGetDataChart(){
+            let Q=1.5
+            let A=-16.76
+            let B=-9.0825
+            let C=64.506
+            let Qmax=[0, Q/5, 2*Q/5, 3*Q/5, 5*Q/5]
+            function Hn(d){
+                return  A*Math.pow(d, 2)+B*d+C
+            }
+            let arrHn=[]
+            for (let i=0; i <= Qmax.length-1; i++){
+                let point={
+                    x: Qmax[i].toFixed(2),
+                    y: Hn(Qmax[i]).toFixed(2)
+                }
+                arrHn.push(point)
+            }
+            this.Hnas=arrHn
+            let Ah=this.modelHeadItems.val1
+            let Ch=this.modelHeadItems.val2
+            let Bh=this.modelHeadItems.val3
+            let deliveryHead=this.deliveryHead
+            let volumeFlow=this.volumeFlow
+            let Ksys=(deliveryHead-Ah-Ch)/Math.pow(volumeFlow, 2)
+            let Deskr=Math.pow(B, 2)-4*(A-Ksys)*(C-Ah-Ch)
+            let Flow=(-B-Math.sqrt(Deskr))/(2*(A-Ksys))
+            let Head=(Ah+Ch)+Ksys*Math.pow(Flow, 2)
+            this.CalcPoint=[{x: Flow.toFixed(1), y: Head.toFixed(1)}]
+            this.WorkPoint=[{ x: volumeFlow.toFixed(1), y: deliveryHead.toFixed(1)}]
+
+            let Qf=[0,  0.3*Flow, 0.6*Flow, 0.9*Flow, 1.2*Flow]
+            function Hf(i) {
+                return (Ah+Ch)+Ksys*Math.pow(i, 2)
+            }
+            let arr=[]
+            for (let i=0; i<=Qf.length-1; i++) {
+                let point= 
+                {
+                    x: Qf[i].toFixed(2),
+                    y: Hf(Qf[i].toFixed(2))
+                }
+                arr.push(point)
+            }
+            this.Hsis=arr
             }
         }
 }
@@ -269,7 +285,10 @@ export default {
 .el-message-box__title {
     font-weight: 600;
 }
-h1, h2, h3,  p {
+p {
+    color: #363640;
+}
+h1, h2, h3 {
     color: #363640;
     text-align: center;
 }

@@ -3,7 +3,7 @@
     <h2>Підбір приладдя до свердловинного насосу</h2>
     <el-row>
         <el-col :span="12" class="side-left-helper">
-            <el-button  v-for="item in helperHead" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_numder number_'+item.id, {green: focusInput==item.id}]" type="text">                   
+            <el-button  v-for="item in accessories" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_numder number_'+item.id, {green: focusInput==item.id}]" type="text">                   
                     <svg height="36" width="36" class="circle" >
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                     </svg><div class="symbolInCircle">{{item.id}}</div>
@@ -12,7 +12,7 @@
         <img style="margin-top:-20px;text-align: left; position: absolute; left: 54px;" :src="url+'assets/accessories.jpg'" width="450" alt="">
         </el-col>
         <el-col :span="10" class="side-right-helper">
-            <div v-for="item in helperHead" class="row-item" :class="[{activeLeftCircle: focusInput==item.id}]">
+            <div v-for="item in accessories" class="row-item" :class="[{activeLeftCircle: focusInput==item.id}]">
                         <div class="circle_numder">                   
                             <svg height="36" width="36" class="circle">
                             <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
@@ -28,60 +28,63 @@
         <div class="block-accessoreis"  v-for="item in controllers" :key="item.id">
             <el-row>                     
                     <el-col :span="4" >
-                     <el-radio  v-model="selectedController"  @change="handleChange(item.id)" :label="item.id"><span class="name-item">{{item.name}}</span></el-radio>
-                    
+                     <el-radio  v-model="selectedAccessories.idController"  @change="handleChange(item.id)" :label="item.id">
+                         <span class="name-item">{{item.name}}</span></el-radio>                    
                     </el-col>
-                    <el-col :span="5">
-                    <img :src="url+'assets/controller.jpg'" width="100px" alt=""></el-col>
+                    <!-- <el-col :span="5">
+                    <img :src="url+'assets/controller.jpg'" width="100px" alt="">
+                    </el-col>
                     <el-col :span="12" :offset="2">
                         <p>Ціна <strong>{{item.price}} грн</strong></p>                           
                         <p>Ток мінімальний  <strong>{{item.features.current_min}}</strong> </p>
                         <p>Ток максимальний <strong>{{item.features.current_max}}</strong> </p>
                         <el-button type="primary">Детальніше</el-button>                       
-                    </el-col>                    
+                    </el-col>  -->
+                    <ControlBox 
+                        :controllers="item"
+                        :url="url"
+                        />
                 </el-row>               
         </div>
-        </div> 
+        </div>
         <div  v-if="focusInput==2" class="Accessories-cable">
-        <p> Довжина кабелю <el-input-number v-model="accessories.cablelength" @change="handleChange(accessories.cablelength)" :min="0" ></el-input-number> м</p>
+        <p> Довжина кабелю <el-input-number v-model="cablelength" @change="handleChange(cablelength)" :min="0" ></el-input-number> м</p>
         <p class="detail-title"> Перетин кабелю <span>4 х 1.5 мм<sup>2</sup></span> </p>
         </div>     
     </el-row>
+    {{selectedAccessories}}
 </div>
 </template>
 
 <script>
 import Axios from 'axios';
   export default {
-    props: ['url', 'selectedPumpCurrent'],
+    props: ['url', 'selectedPumpCurrent', "selectedAccessories"],
     data() {
       return {
-        helperHead: {
+        accessories: {
             item1: {
                 id:1,
-                title: 'Прилад керування і захисту насоса'
+                title: 'Прилад керування і захисту насоса',
             },
             item2: {
                 id:2,
-                title: 'Кабель'
+                title: 'Кабель',
             },
             item3: {
                 id:3,
-                title: 'З’єднання насоса'
+                title: 'З’єднання насоса',
             },
             item4: {
                 id:4,
-                title: 'Мембранний напірний бак'
+                title: 'Мембранний напірний бак',
             }
         },
-        accessories :{
-            cablelengtch:''
-        },
-        HeadValTotal: 0,
         focusInput: 0,
         activeAccessories:'',
         controllers:'',
-        selectedController:'456'
+        selectedController:'456',
+        cablelengtch:''
       }
     },
     computed: {
@@ -89,7 +92,6 @@ import Axios from 'axios';
     created:  function(){
         console.log(this.selectedPumpCurrent)
         this.postDataControllers('11A')
-    //   this.postDataControllers(this.selectedPumpCurrent)
     },
     methods: {
     handleChange(id){
@@ -97,20 +99,24 @@ import Axios from 'axios';
     },
     onFocusInput(value) {
         this.focusInput=value  
-        this.activeAccessories=this.helperHead['item'+value].title
-        console.log(this.focusInput)
+        this.activeAccessories=this.selectedAccessories['item'+value].title
     },
     onSelectController(id){
-         this.$emit('onSelectController', id)
+        let sourse=this.controllers
+        let dataControlBox=sourse.filter( function(el) {
+              return el.id==id
+            }
+        )
+        console.log(dataControlBox)
+        this.$emit('onSelectController', id, dataControlBox )
     },
     postDataControllers: function(current) {
                 const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/controlSelect', {"current" : current});
                 getPromise.then(response => {
                 this.controllers = response.data;
-                console.log(this.controlSelect );
+                console.log(this.controllers );
                 })
                 .catch(error => {
-                    console.log(error);
                 });
     }
     }

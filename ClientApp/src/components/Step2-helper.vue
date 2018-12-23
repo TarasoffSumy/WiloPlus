@@ -51,19 +51,19 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
               
           },
         helperHead: {
-            item1: {
+            item_A: {
                 id:1,
                 letter: 'A',
                 title: 'Висота від землі до рівня води в свердловині',
                 valueHead: this.modelHeadItems.val1
             },
-            item2: {
+            item_B: {
                 id:2,
                 letter: 'B',
                 title: 'Висота між землею і найвище розташованим приладом водоспоживання',
                 valueHead: this.modelHeadItems.val2
             },
-            item3: {
+            item_C: {
                 id:3,
                 letter: 'C',
                 title: 'Висота від землі до рівня води в свердловині',
@@ -82,10 +82,10 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     },
     computed: {
         compTotal: function() {
-            let sum=this.helperHead.item1.valueHead
-                         +this.helperHead.item2.valueHead
-                         +this.helperHead.item3.valueHead
-                         +this.additionalHead
+            let sum=this.helperHead.item_A.valueHead
+                         +this.helperHead.item_B.valueHead
+                         +this.helperHead.item_C.valueHead
+                         +this.additionalHead+18
             this.HeadValTotal=sum.toFixed(2)
             this.$emit('onComputeDeliveryHead', this.HeadValTotal)
             return sum

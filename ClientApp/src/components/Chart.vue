@@ -1,52 +1,56 @@
+
 <script>
 import { Line, Bar } from 'vue-chartjs'
 
 export default {
-  props: ['dataCart', 'options'],
+  props: ['WorkPoint', 'CalcPoint', 'Hnas', 'Hsis'],
   extends: Line,
   mounted () {
-    this.renderChart({
-      labels: [0.5, 1, 1.5, 2, 2.5, 3], 
-      label: '',    
+  this.renderChart({  
       type: 'line',
       datasets: [
-      { // one line graph
-
-        label: 'Напір',
-        data: [65, 60, 55, 45, 30],
-        backgroundColor: [           
-          'rgba(0,156,129,.5)', // Blue
-          'rgba(0,156,129,.5)',
-          'rgba(0,156,129,.5)',
-          'rgba(0,156,129,.5)',
-          'rgba(0,156,129,.5)'
-        ],
-        borderColor: [
-          '#36495d',
-          '#36495d',
-          '#36495d',
-          '#36495d',
-          '#36495d'
-        ],
+      { 
+        label: 'Напір насоса',
+        backgroundColor: 'transparent',
+        borderColor: '#ef9119',
+        data: this.Hnas,
+      },
+      { 
+        label: 'Напір системи',
+        backgroundColor: 'transparent',
+        borderColor: '#3283d5',
+        data: this.Hsis,
+      },
+      {
+        label: 'Фактична точка',
+        backgroundColor: 'transparent', 
+        pointStyle: 'star',
+        radius: 10,
+        borderColor: 'red',
+        data: this.WorkPoint,
         borderWidth: 3
       },
-      { // another line graph
-        label: 'Робочий напір',
-        type: 'line',
-        data: [58, 58, 58, 58, 58],
-        backgroundColor: [
-          'rgba(0,156,129,.0)', // Blue
-         'rgba(0,156,129,.0)'
-        ],
-        borderColor: [
-          '#009c81',
-        ],
+      {
+        label: 'Розрахована точка',
+        backgroundColor: 'transparent', 
+        pointStyle: 'rectRot',
+        radius: 15,
+        borderColor: 'green',
+        data:this.CalcPoint,
         borderWidth: 3
       }
       ]
     },
     {
     responsive: false,
+    layout: {
+      padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+            }
+    },
     lineTension: 1,
     scales: {
       yAxes: [{
@@ -54,9 +58,17 @@ export default {
           beginAtZero: true,
           padding: 5,
         }
-      }]
+      }],
+        xAxes: [{
+                type: 'linear',
+                beginAtZero: true,
+                max: 50,
+                position: 'bottom'
+            }]
     }
     })
+  },
+  created : function(){
   } 
 }
 </script>
