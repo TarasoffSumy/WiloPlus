@@ -111,7 +111,7 @@ import Axios from 'axios';
         this.$emit('onSelectController', id, dataControlBox )
     },
     postDataControllers: function(current) {
-                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/controlSelect', {"current" : current});
+                const getPromise = Axios.post(this.url+'controlSelect', {"current" : current});
                 getPromise.then(response => {
                 this.controllers = response.data;
                 console.log(this.controllers );

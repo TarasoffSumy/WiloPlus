@@ -1,12 +1,10 @@
 <template>
-  <div id="content">
-      <!-- <button
-            @click="logContent"
-        >
-            log content
-        </button> -->
-      <button class="btn btn-primary pl-5 pr-5" @click="download">Download PDF</button>
-      <div id="editor"></div>
+  <div>
+      {{current}}
+      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF</button>
+      {{deliveryHead}} - {{volumeFlow}}
+     {{pump}}  
+     {{selectedPumpId}}
       <div style="width: 1200px; margin: auto;">
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
@@ -16,16 +14,16 @@
         </el-row>
         <!-- <button @click="OnGet">Go</button> -->   
         <transition name="flip" mode="out-in">
-        <Step1 v-if='current==1'  
+        <Step1 v-if='current==1'
+                :url="url" 
                 :volumeFlow="volumeFlow"
-                :url="url"
                 :modelFlowItems="modelFlowItems"
                 :maxVolumeFlow="maxVolumeFlow"
                 @onInputDataVolume="onInputDataVolume"
                 @onInputFlowItems="onInputFlowItems"
                 class="transition-box step1"/>              
         <Step2 v-else-if='current==2' 
-                :url="url"
+                :url="url" 
                 :deliveryHead="deliveryHead"
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
@@ -34,12 +32,11 @@
         <Step3 v-else-if='current==3'
                 :url="url" 
                 :pump="pump"
+                :selectedPumpId="selectedPumpId"
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
-                :Hnas="Hnas"
-                :WorkPoint="WorkPoint"
-                :CalcPoint="CalcPoint"  
-                :Hsis="Hsis" 
+                :dataChart="dataChart" 
+                @onSaveSelectedPumpId="onSaveSelectedPumpId"
                 class="transition-box"/>
         <Step4 v-else-if='current==4' 
                 :url="url"
@@ -68,18 +65,15 @@ export default {
   },
   data () {
         return {
-                url:'http://wiloexpert.com.ua/wilo/',
-                currentPage: 0,
-                pageCount: 0,
-                posts:[],
+                output: null,
+                url:'http://www.wiloexpert.com.ua/wilo/',
                 current: 1,
                 showStep: 0,
                 activeClass: 'active',
                 errorClass: 'text-danger',
                 isActive: false,
-                helperStep1: false,
-                deliveryHead: 30,
-                volumeFlow: 1,
+                deliveryHead: 20,
+                volumeFlow: 0.5,
                 maxVolumeFlow: 17,
                 modelFlowItems: {
                     val1:0,
@@ -91,78 +85,60 @@ export default {
                     val7:0
                 },
                 modelHeadItems: {
-                    val1:0,
+                    val1:10,
                     val2:0,
                     val3:0,
                     val4:0
                 },
                 pump:[],
-                selectedPumpId: "",
-                selectedPump:{},
+                selectedPumpId: 0,
+                dataChart: {
                 CalcPoint:'',
                 Hnas:'',
                 Hsis:'',
-                WorkPoint:'',
-                docDefinition : {
-                        content: [
-                            // if you don't need styles, you can use a simple string to define a paragraph
-                            'This is a standard paragraph, using default style',
-
-                            // using a { text: '...' } object lets you set styling properties
-                            { text: 'This paragraph will have a bigger font', fontSize: 15 },
-
-                            // if you set the value of text to an array instead of a string, you'll be able
-                            // to style any part individually
-                            {
-                            text: [
-                                'This paragraph is defined as an array of elements to make it possible to ',
-                                { text: 'restyle part of it and make it bigger ', fontSize: 15 },
-                                'than the rest.'
-                            ]
-                            }
-                        ]
-                        } 
+                WorkPoint:''                    
+                }
             }
         },
         created: function() {
-           // this.postDataPump(this.volumeFlow, this.deliveryHead);  
-           this.onGetDataChart()                      
+            let n=30
+
+            console.log(Math.ceil((n)/10) * 10); 
+                   // 60
+           //this.postDataPump(this.volumeFlow, this.deliveryHead); 
+           //this.postDataGetDetail()
+        //   this.onGetDataChart()                      
         },
         computed: {
-            objSelectedPump: function() {
-                let pumpsArr=[]
-                let source=this.pump
-                for (let key in source){
-                        pumpsArr.push(source[key])                
-                }
-                let obj={}
-                for (let key in pumpsArr){
-                    if (pumpsArr[key].id==this.selectedPumpId) {
-                        obj.name=pumpsArr[key].pump_name
-                        obj.price=pumpsArr[key].price
-                        obj.shortName=obj.name.split('/')[0]
-                    }
-                }
-             return obj            
-            }            
+        //     objSelectedPump: function() {
+        //         let pumpsArr=[]
+        //         let source=this.pump
+        //         for (let key in source){
+        //                 pumpsArr.push(source[key])                
+        //         }
+        //         let obj={}
+        //         for (let key in pumpsArr){
+        //             if (pumpsArr[key].id==this.selectedPumpId) {
+        //                 obj.name=pumpsArr[key].pump_name
+        //                 obj.price=pumpsArr[key].price
+        //                 obj.shortName=obj.name.split('/')[0]
+        //                 // this.selectedPump=obj
+        //             }
+        //         }
+        //      return obj            
+        //     }            
         },
         methods: {
-             logContent() {
-                let pdfName = 'test'; 
-                var specialElementHandlers = {
-                    '#editor': function (element, renderer) {
-                        return true;
-                    }
-                };
-                var doc = new jsPDF();
-                doc.text(20, 20, 'Привет');
-                var el=document.getElementById("content");
-                doc.fromHTML(el, 20, 20, {
-                        'width': 300,
-                            'elementHandlers': specialElementHandlers
-                    });
-                
-                doc.save(pdfName + '.pdf');
+             makePdf() {
+                // Get the element.
+                var element = document.getElementById('print');
+                // Generate the PDF.
+                html2pdf().from(element).set({
+                margin: 1,
+                filename: 'test.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true}
+                }).save();
             },
             OnGet() {
                  let Qrez=2
@@ -170,10 +146,6 @@ export default {
                 return Math.log(y) ;
                 }
                 console.log(0.937*getLog(Qrez)+0.7689)
-
-            },  
-            download () { 
-            pdfMake.createPdf(this.docDefinition).download();
             },    
             onInputDataVolume(val) {
                 this.volumeFlow=val
@@ -185,28 +157,58 @@ export default {
                 this.modelHeadItems['val'+id]=val;
             },
             onInputDataHead(val) {
-                this.deliveryHead=val
+                this.deliveryHead=Math.ceil((val)/10) * 10
             },
-            fetchData: function() {
-                const getPromise = Axios.get('http://www.wiloexpert.com.ua/wilo/db/getAllPumps');
-                getPromise.then(response => {
-                this.posts = response.data;
-                });
-                return getPromise;
-                },
+            onSaveSelectedPumpId(val){
+                this.selectedPumpId=val 
+            },
             postData: function() {
-                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/getHelp', {"help_id" : 1});
+                const getPromise = Axios.post(this.url+'db/getHelp', {"help_id" : 1});
                 getPromise.then(response => {
                 });
+                },                
+            postDataCableSelect: function() {
+                const getPromise = Axios.post(this.url+'db/cableSelect', {"section":"1,5"});
+                getPromise.then(response => {
+                console.log(response.data)
+                });
                 },
+            postDataGetDetail: function() {
+                const getPromise = Axios.post(this.url+'db/getDetails', {"id":"311"});
+                getPromise.then(response => {
+                    console.log(response.data)
+                });
+                },
+            OnGetFirstSelectedId(){
+                let pumpsArr=[]
+                let source=this.pump
+                for (let key in source){
+                        pumpsArr.push(source[key].id)
+                }
+                this.selectedPumpId= pumpsArr[0]
+            }, 
             postDataPump: function(volumeFlow, deliveryHead) {
-                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
+                this.selectedPumpId=undefined
+                const getPromise = Axios.post(this.url+'db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
                 getPromise.then(response => {
                 this.pump = response.data;
-                this.OnGetFirstSelectedId()
+                if (this.pump) {
+                    console.log('get')                   
+                    this.OnGetFirstSelectedId()
+                    this.onGetDataChart()                    
+                }
+
+                })
+                .catch(error => {
                 });
                 },
+
             next () {
+                if  (this.current == 3) {
+                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);
+
+                } 
                 if (this.current == 4) {
                     this.current = 1;
                 } else {
@@ -223,29 +225,53 @@ export default {
                 }
             },
             step (n) {
-               this.current = n               
+               this.current = n   
+                if  (this.current == 3) {                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);
+                    
+                }            
             },
             onGetvolumeFlow(value) {
                 this.volumeFlow=value
             },
             onGetDataChart(){
-            let Q=1.5
-            let A=-16.76
-            let B=-9.0825
-            let C=64.506
+                let pumpsArr=[]
+                let source=this.pump
+                for (let key in source){
+                        pumpsArr.push(source[key])                
+                }
+                let obj={}
+                for (let key in pumpsArr){
+                    if (pumpsArr[key].id==this.selectedPumpId) {
+                        obj.Qmax=pumpsArr[key].features.Qmax
+                        obj.Ax2=pumpsArr[key].features.Ax2
+                        obj.Bx=pumpsArr[key].features.Bx
+                        obj.C=pumpsArr[key].features.C
+                    }
+                }
+            
+            function getFloat(value){
+                return parseFloat(value .replace(/,/, '.'));
+                }
+            let Q=getFloat(obj.Qmax)
+            let A=getFloat(obj.Ax2)
+            let B=getFloat(obj.Bx)
+            let C=getFloat(obj.C)
+           
             let Qmax=[0, Q/5, 2*Q/5, 3*Q/5, 5*Q/5]
+            
             function Hn(d){
                 return  A*Math.pow(d, 2)+B*d+C
             }
             let arrHn=[]
             for (let i=0; i <= Qmax.length-1; i++){
                 let point={
-                    x: Qmax[i].toFixed(2),
-                    y: Hn(Qmax[i]).toFixed(2)
+                    x: Qmax[i],
+                    y: Hn(Qmax[i])
                 }
                 arrHn.push(point)
             }
-            this.Hnas=arrHn
+            this.dataChart.Hnas=arrHn
             let Ah=this.modelHeadItems.val1
             let Ch=this.modelHeadItems.val2
             let Bh=this.modelHeadItems.val3
@@ -255,8 +281,8 @@ export default {
             let Deskr=Math.pow(B, 2)-4*(A-Ksys)*(C-Ah-Ch)
             let Flow=(-B-Math.sqrt(Deskr))/(2*(A-Ksys))
             let Head=(Ah+Ch)+Ksys*Math.pow(Flow, 2)
-            this.CalcPoint=[{x: Flow.toFixed(1), y: Head.toFixed(1)}]
-            this.WorkPoint=[{ x: volumeFlow.toFixed(1), y: deliveryHead.toFixed(1)}]
+            this.dataChart.CalcPoint=[{x: Flow.toFixed(1), y: Head.toFixed(1)}]
+            this.dataChart.WorkPoint=[{ x: volumeFlow.toFixed(1), y: deliveryHead.toFixed(1)}]
 
             let Qf=[0,  0.3*Flow, 0.6*Flow, 0.9*Flow, 1.2*Flow]
             function Hf(i) {
@@ -271,7 +297,8 @@ export default {
                 }
                 arr.push(point)
             }
-            this.Hsis=arr
+            this.dataChart.Hsis=arr
+             
             }
         }
 }

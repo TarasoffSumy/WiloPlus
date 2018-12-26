@@ -18,8 +18,6 @@
     "element-ui": "^2.4.11",
     "install": "^0.12.2",
     "jslint": "^0.12.0",
-    "jspdf": "^1.4.1",
-    "pdfmake": "^0.1.39",
     "vue": "^2.5.17",
     "vue-chartjs": "^3.4.0",
     "vue-html2canvas": "0.0.4",

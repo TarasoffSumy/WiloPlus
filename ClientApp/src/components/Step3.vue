@@ -31,16 +31,16 @@
         <h2 class="title">Підбір насоса та приладдя </h2>
     </el-row>
     <el-row>
-        <el-col :span="12">
+        <el-col :span="12" >
             <div class="greyBox">
             <h3>Підбраний насос</h3>
-            {{selectedPumpCurrent}}
-            <div v-if="selectedPumpId">
+            {{selectedPumpCurrent}} - {{idPump}}
+            <div v-if="idPump">
                 <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
                 <p>{{objSelectedPump.shortName}}</p>
                 {{objSelectedPump.current}}
                     <div v-for="item in pump" :value="item" :key="item.id" >
-                        <el-radio v-model="selectedPumpId" :label="item.id">
+                        <el-radio v-model="idPump" :label="item.id" @change="handleChange(item.id)">
                                         <span v-if="item.features.phase=='1'">однофазный</span>
                                         <span v-if="item.features.phase=='3'">трехфазный</span>
                         </el-radio>       
@@ -53,12 +53,9 @@
                     <p>
                     {{objSelectedPump.name}}
                     </p>
-                    <div style="margin-left:45px">
-                        <Chart style=""
-                            :Hnas="Hnas"
-                            :WorkPoint="WorkPoint"
-                            :CalcPoint="CalcPoint"  
-                            :Hsis="Hsis"   
+                    <div id="print" style="margin-left:45px;position: relative; width:300px">
+                        <Chart 
+                            :dataChart="dataChart" 
                         />   
                     </div>
      
@@ -90,9 +87,10 @@
 <script>
 import Axios from 'axios';
   export default {
-    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url',"Hnas", "WorkPoint", "CalcPoint", "Hsis"],
+    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url',"dataChart", 'pump', 'selectedPumpId'],
     data() {
       return {
+        idPump: this.selectedPumpId,
         deliveryHeadInput: this.deliveryHead,
         deliveryHeadComputed: null,
         helperStep1: false,
@@ -100,8 +98,6 @@ import Axios from 'axios';
         minDeliveryHead: 20,
         maxDeliveryHead: 200,
         disabledAccept: true,
-        pump:'',
-        selectedPumpId: '',
         selectedPumpCurrent: '',
         selectedAccessories: {
             item1: {
@@ -145,8 +141,8 @@ import Axios from 'axios';
         }
     },
     created: function() {
-        this.postDataPump(this.volumeFlow, this.deliveryHead);
-        console.log("exist"+this.selectedAccessories.item1.idController)
+        // this.postDataPump(this.volumeFlow, this.deliveryHead);
+        //console.log("exist"+this.selectedAccessories.item1.idController)
         
     },
     computed: {
@@ -158,7 +154,9 @@ import Axios from 'axios';
                 }
                 let obj={}
                 for (let key in pumpsArr){
-                    if (pumpsArr[key].id==this.selectedPumpId) {
+                    if (pumpsArr[key].id==this.idPump) {
+                        this.onSaveSelectedPumpId(pumpsArr[key].id)
+                        console.log('id'+pumpsArr[key].id)
                         obj.name=pumpsArr[key].pump_name
                         obj.price=pumpsArr[key].price
                         obj.current=pumpsArr[key].features.current
@@ -175,6 +173,12 @@ import Axios from 'axios';
         }                   
         },
     methods: {
+    onSaveSelectedPumpId(id){
+        this.$emit('onSaveSelectedPumpId', id)       
+      },
+    handleChange(id){
+        this.onSaveSelectedPumpId(id)
+    },
     onSelectController(val, dataControlBox){
         console.log(dataControlBox)
         this.selectedAccessories.item1.idController=val
@@ -187,24 +191,24 @@ import Axios from 'axios';
     onGetDataController(val) {
 
     },
-    OnGetFirstSelectedId(){
-                let pumpsArr=[]
-                let source=this.pump
-                for (let key in source){
-                        pumpsArr.push(source[key].id)
-                }
-                this.selectedPumpId= pumpsArr[0]
-            }, 
-    postDataPump: function(volumeFlow, deliveryHead) {
-                const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
-                getPromise.then(response => {
-                this.pump = response.data;
-                 console.log(this.pump );
-                this.OnGetFirstSelectedId()
-                })
-                .catch(error => {
-                });
-                },
+    // OnGetFirstSelectedId(){
+    //             let pumpsArr=[]
+    //             let source=this.pump
+    //             for (let key in source){
+    //                     pumpsArr.push(source[key].id)
+    //             }
+    //             this.selectedPumpId= pumpsArr[0]
+    //         }, 
+    // postDataPump: function(volumeFlow, deliveryHead) {
+    //             const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
+    //             getPromise.then(response => {
+    //             this.pump = response.data;
+    //              console.log(this.pump );
+    //             this.OnGetFirstSelectedId()
+    //             })
+    //             .catch(error => {
+    //             });
+    //             },
     dialogCancel() {
         this.dialogVisible=false 
     },
