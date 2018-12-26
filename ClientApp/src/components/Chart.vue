@@ -3,7 +3,7 @@
 import { Line, Bar } from 'vue-chartjs'
 
 export default {
-  props: ['WorkPoint', 'CalcPoint', 'Hnas', 'Hsis'],
+  props: ['dataChart'],
   extends: Line,
   mounted () {
   this.renderChart({  
@@ -13,13 +13,13 @@ export default {
         label: 'Напір насоса',
         backgroundColor: 'transparent',
         borderColor: '#ef9119',
-        data: this.Hnas,
+        data: this.dataChart.Hnas,
       },
       { 
         label: 'Напір системи',
         backgroundColor: 'transparent',
         borderColor: '#3283d5',
-        data: this.Hsis,
+        data: this.dataChart.Hsis,
       },
       {
         label: 'Фактична точка',
@@ -27,7 +27,7 @@ export default {
         pointStyle: 'star',
         radius: 10,
         borderColor: 'red',
-        data: this.WorkPoint,
+        data: this.dataChart.WorkPoint,
         borderWidth: 3
       },
       {
@@ -36,7 +36,7 @@ export default {
         pointStyle: 'rectRot',
         radius: 15,
         borderColor: 'green',
-        data:this.CalcPoint,
+        data:this.dataChart.CalcPoint,
         borderWidth: 3
       }
       ]

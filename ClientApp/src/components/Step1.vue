@@ -64,7 +64,7 @@
 import Axios from 'axios';
 import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
-    props: ['volumeFlow', 'maxVolumeFlow', "modelFlowItems", 'url'],
+    props: ['volumeFlow', 'maxVolumeFlow', "modelFlowItems", "url"],
     data() {
       return {
         volumeFlowInput: this.volumeFlow,
@@ -85,17 +85,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         // this.postData(1)
     },
     methods: {
-       postData: function(id) {
-            const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/getHelp', {"help_id" : id});
-            getPromise.then(response => {
-            
-            this.dictionary=response.data
-            console.log(this.dictionary);
-            })
-            .catch(error => {
-            console.log(error);
-            });
-            },
+
       dialogCancel() {
         this.dialogVisible=false 
       },
