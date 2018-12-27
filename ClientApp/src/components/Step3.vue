@@ -6,7 +6,7 @@
         width="80%">
         <Step3-helper 
             :url="url"
-            :selectedPumpCurrent="selectedPumpCurrent"
+            :paramOfSelectedPump="paramOfSelectedPump"
             :selectedAccessories="selectedAccessories"
             @onSelectController="onSelectController"
             /> 
@@ -32,38 +32,61 @@
     </el-row>
     <el-row>
         <el-col :span="12" >
-            <div class="greyBox">
-            <h3>Підбраний насос</h3>
-            {{selectedPumpCurrent}} - {{idPump}}
-            <div v-if="idPump">
-                <img width="150" src="https://mediadatabase.wilo.com/marsWilo/scr/cache/4831334v3tv3/WILO112831-actun-spu-4-pic-01-1710.jpg"/>
-                <p>{{objSelectedPump.shortName}}</p>
-                {{objSelectedPump.current}}
-                    <div v-for="item in pump" :value="item" :key="item.id" >
-                        <el-radio v-model="idPump" :label="item.id" @change="handleChange(item.id)">
-                                        <span v-if="item.features.phase=='1'">однофазный</span>
-                                        <span v-if="item.features.phase=='3'">трехфазный</span>
-                        </el-radio>       
-                    </div>
-                    <p>Напор {{deliveryHead}} м</p>
-                    <p>Расход {{volumeFlow}} м<sup>3</sup>/ч </p>
-                    <p> 
-                    Цена {{objSelectedPump.price}} грн 
-                    </p>
-                    <p>
-                    {{objSelectedPump.name}}
-                    </p>
-                    <div id="print" style="margin-left:45px;position: relative; width:300px">
-                        <Chart 
-                            :dataChart="dataChart" 
-                        />   
-                    </div>
-     
+            <div>
+            <div class="greyBox" v-if="idPump">
+                <el-col  :span="8" >
+                  <img width="150" :src="url+'assets/wilo-skvaginniy-nasos-actun-first-spu4.jpg'"/>   
+                </el-col>
+                <el-col  :span="16" >
+                <h3>Підбраний насос </h3>
+                <p>ACTUN {{objSelectedPump.shortName}}</p>                
+                        <div v-for="item in pump" :value="item" :key="item.id" class="radio-item-phasa" >
+                            <el-radio v-model="idPump" :label="item.id" @change="handleChange(item.id)">
+                                            <span v-if="item.features.phase=='1'">однофазный</span>
+                                            <span v-if="item.features.phase=='3'">трехфазный</span>
+                            </el-radio>       
+                        </div>
+                        <p>Насосний агрегат:</p> 
+                        <p>{{objSelectedPump.name}}</p>
+                        <p>Ціна {{objSelectedPump.price}} грн. з ПДВ</p>
+                </el-col>        
+                        <p>Конструкція</p>
+                        <p>Багатоступеневий насос 4" із занурюваним двигуном, виконання з кожухом, для вертикальної або горизонтальної установки</p>
+                
+                        <p>
+                            Потужність двигуна: {{objSelectedPump.n_power}} kW
+                        </p>
+                        <p>
+                            Номінальний струм: {{objSelectedPump.current}} A
+                        </p>
+                        <div>
+                            Робоча точка отримана від користувача:
+                            <p>Витрата: {{volumeFlow}} м<sup>3</sup>/ч </p> 
+                            <p>Напір: {{deliveryHead}} м</p>                           
+                        </div>
+                        <div>
+                            Робоча точка фактична:
+                            <p>Витрата: {{dataChart.CalcPoint[0].x}} м<sup>3</sup>/ч </p> 
+                            <p>Напір: {{dataChart.CalcPoint[0].y}} м</p>                           
+                        </div>
+                        <p> 
+                        
+                        </p>
+                        <p>
+                        
+                        </p>
+                        <div id="print" style="margin-left:45px;position: relative; width:300px">
+                            <Chart 
+                                :dataChart="dataChart" 
+                            />   
+                        </div>
+                    
             </div>
-            <div v-else>
+            <div v-else class="greyBox">
                 Насос не знайден!
                 Скорегуйте напор та витрату
-            </div>                   
+            </div>
+
             </div>
         </el-col>
         <el-col :span="12">
@@ -74,23 +97,25 @@
                  <el-button type="primary" @click="dialogVisible = true">Підібрати</el-button>                                     
                  </div>
              </div>
-        </el-col>
-    </el-row> 
         <Step3-accessoreis v-if="existAccessories"
             :url="url"
             :selectedAccessories="selectedAccessories.item1"
              @onSelectController="onSelectController"
-        /> 
+        />              
+        </el-col>
+    </el-row> 
+
 </div> 
 </template>
 
 <script>
 import Axios from 'axios';
   export default {
-    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url',"dataChart", 'pump', 'selectedPumpId'],
+    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url',"dataChart", 'pump', 'selectedPumpId', 'url'],
     data() {
       return {
         idPump: this.selectedPumpId,
+        pumpStep3: this.pump,
         deliveryHeadInput: this.deliveryHead,
         deliveryHeadComputed: null,
         helperStep1: false,
@@ -98,7 +123,11 @@ import Axios from 'axios';
         minDeliveryHead: 20,
         maxDeliveryHead: 200,
         disabledAccept: true,
-        selectedPumpCurrent: '',
+        paramOfSelectedPump: {
+            current: '',
+            cosf:'',
+            U:'',            
+        },
         selectedAccessories: {
             item1: {
                 id:1,
@@ -141,14 +170,12 @@ import Axios from 'axios';
         }
     },
     created: function() {
-        // this.postDataPump(this.volumeFlow, this.deliveryHead);
-        //console.log("exist"+this.selectedAccessories.item1.idController)
         
     },
     computed: {
         objSelectedPump: function() {
                 let pumpsArr=[]
-                let source=this.pump
+                let source=this.pumpStep3
                 for (let key in source){
                         pumpsArr.push(source[key])                
                 }
@@ -156,14 +183,19 @@ import Axios from 'axios';
                 for (let key in pumpsArr){
                     if (pumpsArr[key].id==this.idPump) {
                         this.onSaveSelectedPumpId(pumpsArr[key].id)
-                        console.log('id'+pumpsArr[key].id)
                         obj.name=pumpsArr[key].pump_name
                         obj.price=pumpsArr[key].price
                         obj.current=pumpsArr[key].features.current
                         obj.shortName=obj.name.split('/')[0]
+                        obj.n_power=pumpsArr[key].features.n_power
+                        obj.cosf=pumpsArr[key].features.cosf
+                        obj.phase=pumpsArr[key].features.phase
+                        
                     }
                 }
-                this.selectedPumpCurrent=obj.current               
+                this.paramOfSelectedPump.current=obj.current 
+                this.paramOfSelectedPump.cosf=obj.cosf
+                this.paramOfSelectedPump.U=(obj.phase==1 ? 230 : 400)
              return obj            
         },
         existAccessories: function() {
@@ -184,31 +216,12 @@ import Axios from 'axios';
         this.selectedAccessories.item1.idController=val
         this.selectedAccessories.item1.name=dataControlBox[0].name
         this.selectedAccessories.item1.price=dataControlBox[0].price
-        this.selectedAccessories.item1.features.current_min=dataControlBox[0].features.current_min
         this.selectedAccessories.item1.features.current_max=dataControlBox[0].features.current_max
         this.selectedAccessories.item1.selected=true
     },
     onGetDataController(val) {
 
     },
-    // OnGetFirstSelectedId(){
-    //             let pumpsArr=[]
-    //             let source=this.pump
-    //             for (let key in source){
-    //                     pumpsArr.push(source[key].id)
-    //             }
-    //             this.selectedPumpId= pumpsArr[0]
-    //         }, 
-    // postDataPump: function(volumeFlow, deliveryHead) {
-    //             const getPromise = Axios.post('http://www.wiloexpert.com.ua/wilo/db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
-    //             getPromise.then(response => {
-    //             this.pump = response.data;
-    //              console.log(this.pump );
-    //             this.OnGetFirstSelectedId()
-    //             })
-    //             .catch(error => {
-    //             });
-    //             },
     dialogCancel() {
         this.dialogVisible=false 
     },
@@ -231,6 +244,17 @@ import Axios from 'axios';
 </script>
 
 <style scoped>
+.greyBox {
+    text-align: left;
+    min-height: 100px
+}
+.greyBox p {
+    margin: 5px;
+}
+.radio-item-phasa {
+    display: inline-block;
+    margin-right: 15px;
+}
 
 </style>
 

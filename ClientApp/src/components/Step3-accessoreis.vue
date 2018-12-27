@@ -7,17 +7,14 @@
                     <h3>
                         {{selectedAccessories.title}}
                     </h3>
-                    <el-col :span="2" :offset="6"><el-button @click="onDelete()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
-                    <!-- <el-col :span="5"><img :src="url+item.img" width="100px" alt=""></el-col> -->
-                <el-col :span="3">
-                                <img :src="url+'assets/controller.jpg'" width="100px" alt="">
-                </el-col>
-                <el-col :span="9" :offset="1">
-                                    <p>Ціна <strong>{{selectedAccessories.price}} грн</strong></p>                           
-                                    <p>Ток мінімальний  <strong>{{selectedAccessories.features.current_min}}</strong> </p>
-                                    <p>Ток максимальний <strong>{{selectedAccessories.features.current_max}}</strong> </p>
-                                    <el-button type="primary">Детальніше</el-button>                       
-                </el-col>                    
+ 
+                    <el-col :span="2" :offset="1"><el-button @click="onDelete()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                    <el-col :span="20">
+                         <ControlBox 
+                        :controllers="selectedAccessories"
+                        :url="url"
+                        />                       
+                    </el-col>                   
                 </el-row> 
         </div>
     </el-row> 
@@ -50,9 +47,12 @@
 </script>
 <style scoped >
 .item {
-    width: 50%;
-    float: left;
+    border: 1px solid #ddd;
+    padding: 10px;
     text-align: left
+}
+.item i {
+    font-size: 20px;
 }
 </style>
 

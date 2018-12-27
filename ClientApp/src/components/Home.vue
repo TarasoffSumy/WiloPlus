@@ -71,8 +71,9 @@ export default {
                 showStep: 0,
                 activeClass: 'active',
                 errorClass: 'text-danger',
+                refreshDataSearch:false,
                 isActive: false,
-                deliveryHead: 20,
+                deliveryHead: 30,
                 volumeFlow: 0.5,
                 maxVolumeFlow: 17,
                 modelFlowItems: {
@@ -101,6 +102,7 @@ export default {
             }
         },
         created: function() {
+            this.postDataControllers('11A')
             let n=30
 
             console.log(Math.ceil((n)/10) * 10); 
@@ -157,7 +159,7 @@ export default {
                 this.modelHeadItems['val'+id]=val;
             },
             onInputDataHead(val) {
-                this.deliveryHead=Math.ceil((val)/10) * 10
+                this.deliveryHead=Math.round((val)/10) * 10
             },
             onSaveSelectedPumpId(val){
                 this.selectedPumpId=val 
@@ -173,33 +175,38 @@ export default {
                 console.log(response.data)
                 });
                 },
-            postDataGetDetail: function() {
+                postDataGetDetail: function() {
                 const getPromise = Axios.post(this.url+'db/getDetails', {"id":"311"});
                 getPromise.then(response => {
                     console.log(response.data)
                 });
                 },
-            OnGetFirstSelectedId(){
-                let pumpsArr=[]
-                let source=this.pump
-                for (let key in source){
-                        pumpsArr.push(source[key].id)
-                }
-                this.selectedPumpId= pumpsArr[0]
-            }, 
-            postDataPump: function(volumeFlow, deliveryHead) {
+                postDataControllers: function(current) {
+                            const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
+                            getPromise.then(response => {
+                            
+                            console.log(response.data);
+                            })
+                            .catch(error => {
+                            });
+                },
+                postDataPump: function(volumeFlow, deliveryHead) {
                 this.selectedPumpId=undefined
+                this.pump=undefined
                 const getPromise = Axios.post(this.url+'db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
                 getPromise.then(response => {
                 this.pump = response.data;
-                if (this.pump) {
-                    console.log('get')                   
-                    this.OnGetFirstSelectedId()
-                    this.onGetDataChart()                    
+                if (this.pump!=undefined) {
+                    console.log('get') 
+                    this.selectedPumpId=this.pump[0].id                  
+                    this.onGetDataChart() 
                 }
-
+                else {
+                    this.refreshDataSearch=false 
+                }
                 })
                 .catch(error => {
+                    console.log('error')
                 });
                 },
 
@@ -225,48 +232,33 @@ export default {
                 }
             },
             step (n) {
-               this.current = n   
+               this.current = n
                 if  (this.current == 3) {                    
-                    this.postDataPump(this.volumeFlow, this.deliveryHead);
-                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);                    
                 }            
             },
             onGetvolumeFlow(value) {
                 this.volumeFlow=value
             },
             onGetDataChart(){
-                let pumpsArr=[]
-                let source=this.pump
-                for (let key in source){
-                        pumpsArr.push(source[key])                
-                }
-                let obj={}
-                for (let key in pumpsArr){
-                    if (pumpsArr[key].id==this.selectedPumpId) {
-                        obj.Qmax=pumpsArr[key].features.Qmax
-                        obj.Ax2=pumpsArr[key].features.Ax2
-                        obj.Bx=pumpsArr[key].features.Bx
-                        obj.C=pumpsArr[key].features.C
-                    }
-                }
-            
+            let source=this.pump          
             function getFloat(value){
                 return parseFloat(value .replace(/,/, '.'));
                 }
-            let Q=getFloat(obj.Qmax)
-            let A=getFloat(obj.Ax2)
-            let B=getFloat(obj.Bx)
-            let C=getFloat(obj.C)
+            let Q=getFloat(source[0].features.Qmax)
+            let A=getFloat(source[0].features.Ax2)
+            let B=getFloat(source[0].features.Bx)
+            let C=getFloat(source[0].features.C)
            
             let Qmax=[0, Q/5, 2*Q/5, 3*Q/5, 5*Q/5]
             
             function Hn(d){
-                return  A*Math.pow(d, 2)+B*d+C
+                return  (A*Math.pow(d, 2)+B*d+C).toFixed(2)
             }
             let arrHn=[]
             for (let i=0; i <= Qmax.length-1; i++){
                 let point={
-                    x: Qmax[i],
+                    x: Qmax[i].toFixed(2),
                     y: Hn(Qmax[i])
                 }
                 arrHn.push(point)
@@ -281,19 +273,19 @@ export default {
             let Deskr=Math.pow(B, 2)-4*(A-Ksys)*(C-Ah-Ch)
             let Flow=(-B-Math.sqrt(Deskr))/(2*(A-Ksys))
             let Head=(Ah+Ch)+Ksys*Math.pow(Flow, 2)
-            this.dataChart.CalcPoint=[{x: Flow.toFixed(1), y: Head.toFixed(1)}]
-            this.dataChart.WorkPoint=[{ x: volumeFlow.toFixed(1), y: deliveryHead.toFixed(1)}]
+            this.dataChart.CalcPoint=[{x: Flow.toFixed(2), y: Head.toFixed(2)}]
+            this.dataChart.WorkPoint=[{ x: volumeFlow.toFixed(2), y: deliveryHead.toFixed(2)}]
 
             let Qf=[0,  0.3*Flow, 0.6*Flow, 0.9*Flow, 1.2*Flow]
             function Hf(i) {
-                return (Ah+Ch)+Ksys*Math.pow(i, 2)
+                return (Ah+Ch)+Ksys*Math.pow(i, 2).toFixed(2)
             }
             let arr=[]
             for (let i=0; i<=Qf.length-1; i++) {
                 let point= 
                 {
-                    x: Qf[i].toFixed(2),
-                    y: Hf(Qf[i].toFixed(2))
+                    x: (Qf[i]).toFixed(2),
+                    y: Hf(Qf[i])
                 }
                 arr.push(point)
             }

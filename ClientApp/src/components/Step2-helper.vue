@@ -86,7 +86,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
                          +this.helperHead.item_B.valueHead
                          +this.helperHead.item_C.valueHead
                          +this.additionalHead+18
-            this.HeadValTotal=Math.ceil((sum)/10) * 10
+            this.HeadValTotal=Math.round((sum)/10) * 10
             this.$emit('onComputeDeliveryHead', this.HeadValTotal)
             return sum
         }
