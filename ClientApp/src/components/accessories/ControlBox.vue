@@ -5,10 +5,8 @@
     <el-col :span="5">
                     <img :src="url+'assets/controller.jpg'" width="100px" alt="">
     </el-col>
-    <el-col :span="17" :offset="2" class="text">
-                  {{description}}
-    </el-col>
-    <el-row>
+    <el-col :span="17" :offset="2" class="text" v-html="description"></el-col>
+    <el-row>{{phase}}
                         <p><strong>Ціна: {{price}} грн з ПДВ </strong></p>  
                         <p><strong>Тип пуску насоса:</strong> {{start}}  </p> 
                         <p><strong>Управління:</strong> {{operation}}  </p> 
@@ -32,7 +30,8 @@
           operation: this.controllers.features.operation,
           dim: this.controllers.features.dim,
           dry_running: this.controllers.features.dry_running,
-          description: this.controllers.features.description
+          description: this.controllers.features.description,
+          phase:this.controllers.features.phase
            
       }
     },
@@ -40,7 +39,7 @@
     },
     created:  function(){
       
-      this.description=JSON.stringify(this.description)
+      this.description=(this.description)
     },
     methods: {
     }

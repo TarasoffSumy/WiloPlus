@@ -124,6 +124,7 @@ import Axios from 'axios';
         maxDeliveryHead: 200,
         disabledAccept: true,
         paramOfSelectedPump: {
+            phase:'',
             current: '',
             cosf:'',
             U:'',            
@@ -193,6 +194,7 @@ import Axios from 'axios';
                         
                     }
                 }
+                this.paramOfSelectedPump.phase=obj.phase
                 this.paramOfSelectedPump.current=obj.current 
                 this.paramOfSelectedPump.cosf=obj.cosf
                 this.paramOfSelectedPump.U=(obj.phase==1 ? 230 : 400)

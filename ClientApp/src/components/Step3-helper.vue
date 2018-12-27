@@ -26,7 +26,7 @@
         <h4>{{activeAccessories}}</h4>
         <div v-if="focusInput==1">
         <div class="block-accessoreis"  v-for="item in controllers" :key="item.id">
-            <el-row>                     
+            <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                     
                     
                      <el-radio  v-model="selectedAccessories.idController"  @change="handleChange(item.id)" :label="item.id">
                          <span class="name-item">{{item.name}}</span></el-radio>                    
