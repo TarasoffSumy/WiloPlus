@@ -2,7 +2,7 @@
 <div>
     <h2>Підібране приладдя</h2>
     <el-row>       
-        <div class="item">    
+        <div class="item-selected">    
                 <el-row v-if="selectedAccessories.selected"> 
                     <h3>
                         {{selectedAccessories.title}}
@@ -45,14 +45,17 @@
     }
   };
 </script>
-<style scoped >
-.item {
+<style >
+.item-selected {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left
 }
-.item i {
+.item-selected i {
     font-size: 20px;
 }
+.item-selected .expand-view {
+    display: none
+} 
 </style>
 

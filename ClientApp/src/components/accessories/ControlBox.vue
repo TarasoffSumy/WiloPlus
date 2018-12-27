@@ -8,12 +8,16 @@
     <el-col :span="17" :offset="2" class="text" v-html="description"></el-col>
     <el-row>{{phase}}
                         <p><strong>Ціна: {{price}} грн з ПДВ </strong></p>  
-                        <p><strong>Тип пуску насоса:</strong> {{start}}  </p> 
-                        <p><strong>Управління:</strong> {{operation}}  </p> 
                         <p><strong>Ток максимальний:</strong> {{current_max}} A </p>
                         <p><strong>Розміри:</strong> {{dim}}  </p>
-                        <p><strong>Захист від сухого ходу:</strong> {{dry_running}}  </p> 
-                        <a src="#">Завантажити інструкцію з експлуатаціЇ</a>        
+                        <div class="expand-view">
+                          <p><strong>Тип пуску насоса:</strong> {{start}}  </p> 
+                          <p><strong>Управління:</strong> {{operation}}  </p>                       
+                          
+                          <p><strong>Захист від сухого ходу:</strong> {{dry_running}}  </p> 
+                          <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                        </div>
+      
     </el-row>
                            
 </div>

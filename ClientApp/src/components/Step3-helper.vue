@@ -49,8 +49,9 @@
         </div>
         <div  v-if="focusInput==2" class="Accessories-cable">
         <p> Довжина кабелю <el-input-number v-model="cablellength" @change="handleChangeCableLength(cablellength)" :min="0" ></el-input-number> м</p>
-        {{computedCableSection}}
-        <p class="detail-title"> Перетин кабелю <span>4 х 1.5 мм<sup>2</sup></span> </p>
+        K - {{computedCableSection}}
+        /{{realSection}}
+        <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span> </p>
         </div>     
     </el-row>
     <!-- {{selectedAccessories}} -->
@@ -86,8 +87,9 @@ import Axios from 'axios';
         controllers:'',
         cables:'',
         selectedController:'456',
-        computedCableSection:'',
-        cablellength: 0
+        computedCableSection:0,
+        cablellength: 0,
+        realSection: 0
 
       }
     },
@@ -110,7 +112,21 @@ import Axios from 'axios';
         function getFloat(value){
         return parseFloat(value .replace(/,/, '.'));
         }
-        this.computedCableSection=3.1*cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
+        let S=[1.5, 2.5, 4.0, 6.0, 10.0, 16.0, 25.0, 35.0, 50, 70.0, 95.0]
+        this.realSection=3.1*cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
+            if (this.realSection <= S[0]) {
+                this.computedCableSection=S[0];
+            }
+            else {
+                for(let i=0; i<= S.length; i++) {
+                    if ((this.realSection > S[i]) && (this.realSection <= S[i+1])) 
+                    {
+                        this.computedCableSection=S[i+1];                        
+                    }
+            }      
+        
+        }
+        
     },
     onFocusInput(value) {
         this.focusInput=value  

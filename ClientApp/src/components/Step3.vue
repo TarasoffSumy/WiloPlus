@@ -139,8 +139,8 @@ import Axios from 'axios';
                 selected:false,
                 idController: this.selectedControllerId,
                 features: {
-                current_min: "",
-                current_max: "'"                    
+                    current_max: "",
+                    dim:''                    
                 }
             },
             item2: {
@@ -219,6 +219,7 @@ import Axios from 'axios';
         this.selectedAccessories.item1.name=dataControlBox[0].name
         this.selectedAccessories.item1.price=dataControlBox[0].price
         this.selectedAccessories.item1.features.current_max=dataControlBox[0].features.current_max
+        this.selectedAccessories.item1.features.dim=dataControlBox[0].features.dim
         this.selectedAccessories.item1.selected=true
     },
     onGetDataController(val) {
