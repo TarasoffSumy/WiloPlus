@@ -26,15 +26,15 @@
         <h4>{{activeAccessories}}</h4>
         <div v-if="focusInput==1">
         <div class="block-accessoreis"  v-for="item in controllers" :key="item.id">
-            <el-row>                     
-                    <el-col :span="4" >
+            <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                     
+                    
                      <el-radio  v-model="selectedAccessories.idController"  @change="handleChange(item.id)" :label="item.id">
                          <span class="name-item">{{item.name}}</span></el-radio>                    
-                    </el-col>
-                    <!-- <el-col :span="5">
-                    <img :src="url+'assets/controller.jpg'" width="100px" alt="">
-                    </el-col>
-                    <el-col :span="12" :offset="2">
+                    
+
+                    <!-- <img :src="url+'assets/controller.jpg'" width="100px" alt=""> -->
+                   
+                    <!-- <el-col :span="12" :offset="2">
                         <p>Ціна <strong>{{item.price}} грн</strong></p>                           
                         <p>Ток мінімальний  <strong>{{item.features.current_min}}</strong> </p>
                         <p>Ток максимальний <strong>{{item.features.current_max}}</strong> </p>
@@ -43,23 +43,25 @@
                     <ControlBox 
                         :controllers="item"
                         :url="url"
-                        />
+                        /> 
                 </el-row>               
         </div>
         </div>
         <div  v-if="focusInput==2" class="Accessories-cable">
-        <p> Довжина кабелю <el-input-number v-model="cablelength" @change="handleChange(cablelength)" :min="0" ></el-input-number> м</p>
-        <p class="detail-title"> Перетин кабелю <span>4 х 1.5 мм<sup>2</sup></span> </p>
+        <p> Довжина кабелю <el-input-number v-model="cablellength" @change="handleChangeCableLength(cablellength)" :min="0" ></el-input-number> м</p>
+        K - {{computedCableSection}}
+        /{{realSection}}
+        <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span> </p>
         </div>     
     </el-row>
-    {{selectedAccessories}}
+    <!-- {{selectedAccessories}} -->
 </div>
 </template>
 
 <script>
 import Axios from 'axios';
   export default {
-    props: ['url', 'selectedPumpCurrent', "selectedAccessories"],
+    props: ['url', "selectedAccessories", "paramOfSelectedPump"],
     data() {
       return {
         accessories: {
@@ -83,19 +85,48 @@ import Axios from 'axios';
         focusInput: 0,
         activeAccessories:'',
         controllers:'',
+        cables:'',
         selectedController:'456',
-        cablelengtch:''
+        computedCableSection:0,
+        cablellength: 0,
+        realSection: 0
+
       }
     },
     computed: {
     },
     created:  function(){
-        console.log(this.selectedPumpCurrent)
-        this.postDataControllers('11A')
+        // function getFloat(value){
+        // return parseFloat(value .replace(/,/, '.'));
+        // }
+        // this.computedCableSection=3.1*this.cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/3*this.paramOfSelectedPump.U
+        // console.log(this.computedCableSection)
+       // this.postDataControllers(this.paramOfSelectedPump.current+'A')
+         this.postDataControllers('11A')
     },
     methods: {
     handleChange(id){
         this.onSelectController(id)
+    },
+    handleChangeCableLength(cablellength){
+        function getFloat(value){
+        return parseFloat(value .replace(/,/, '.'));
+        }
+        let S=[1.5, 2.5, 4.0, 6.0, 10.0, 16.0, 25.0, 35.0, 50, 70.0, 95.0]
+        this.realSection=3.1*cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
+            if (this.realSection <= S[0]) {
+                this.computedCableSection=S[0];
+            }
+            else {
+                for(let i=0; i<= S.length; i++) {
+                    if ((this.realSection > S[i]) && (this.realSection <= S[i+1])) 
+                    {
+                        this.computedCableSection=S[i+1];                        
+                    }
+            }      
+        
+        }
+        
     },
     onFocusInput(value) {
         this.focusInput=value  
@@ -111,10 +142,19 @@ import Axios from 'axios';
         this.$emit('onSelectController', id, dataControlBox )
     },
     postDataControllers: function(current) {
-                const getPromise = Axios.post(this.url+'controlSelect', {"current" : current});
+                const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
                 getPromise.then(response => {
                 this.controllers = response.data;
-                console.log(this.controllers );
+                console.log(this.controllers);
+                })
+                .catch(error => {
+                });
+    },
+    postDataCables: function(section) {
+                const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
+                getPromise.then(response => {
+                this.cables= response.data;
+                console.log(this.cables);
                 })
                 .catch(error => {
                 });
@@ -291,8 +331,11 @@ p.sub-title {
 }
 .block-accessoreis {
     display: inline-block;
-    margin: auto;
     padding: 20px;
+    text-align: left;
+    max-width: 450px;
+    font-size: 14px;
+    margin: 20px;
 }
 .block-accessoreis p {
     text-align: left    
