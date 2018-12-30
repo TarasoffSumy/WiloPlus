@@ -1,5 +1,5 @@
 <template>
-<div>
+<div >
     <el-dialog
         title=""
         :visible.sync="dialogVisible"
@@ -8,7 +8,13 @@
             :url="url"
             :paramOfSelectedPump="paramOfSelectedPump"
             :selectedAccessories="selectedAccessories"
+            :dataChart="dataChart"
+            :volumeFlow="volumeFlow"
+            :deliveryHead="deliveryHead"
             @onSelectController="onSelectController"
+            @onSelectCable="onSelectCable"
+            @onSelectMufta="onSelectMufta"
+            @onSelectVessel="onSelectVessel"
             /> 
         <span slot="footer" class="dialog-footer">       
             <el-row class="navigation-footer">
@@ -97,11 +103,124 @@
                  <el-button type="primary" @click="dialogVisible = true">Підібрати</el-button>                                     
                  </div>
              </div>
-        <Step3-accessoreis v-if="existAccessories"
+             <!-- <p>{{selectedAccessories.item1}}</p>
+             
+              {{selectedAccessories.item2}} -->
+        <!-- <Step3-accessoreis v-if="existAccessories"
             :url="url"
-            :selectedAccessories="selectedAccessories.item1"
-             @onSelectController="onSelectController"
-        />              
+            :selectedAccessories="selectedAccessories"
+        />     -->
+        <div  v-if="existAccessories">
+                <h2>Підібране приладдя</h2>
+                        <el-row>       
+                            <div class="item-selected">    
+                                    <el-row  v-if="selectedAccessories.item1.selected"> 
+                                        <h3>
+                                            {{selectedAccessories.item1.title}}
+                                        </h3>
+                    
+                                        <el-col :span="2" :offset="1"><el-button @click="onDeleteController()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                                        <el-col :span="20">
+                                                    <div class="accessories">
+                                                        <el-col :span="5">
+                                                                        <img :src="url+'assets/controller.jpg'" width="100px" alt="">
+                                                        </el-col>
+                                                        <el-col :span="17" :offset="2" class="text"></el-col>
+                                                        <el-row>
+                                                                            <strong>{{selectedAccessories.item1.name}} </strong>
+                                                        
+                                                                            <p><strong>Ціна: {{selectedAccessories.item1.price}} грн з ПДВ </strong></p>  
+                                                                            <p><strong>Ток максимальний:</strong> {{selectedAccessories.item1.current_max}} A </p>
+                                                                            <p><strong>Розміри:</strong> {{selectedAccessories.item1.dim}}  </p>
+                                                                            <div class="expand-view">
+                                                                            <p><strong>Тип пуску насоса:</strong> {{selectedAccessories.item1.start}}  </p> 
+                                                                            <p><strong>Управління:</strong> {{selectedAccessories.item1.operation}}  </p>                       
+                                                                            
+                                                                            <p><strong>Захист від сухого ходу:</strong> {{selectedAccessories.item1.dry_running}}  </p> 
+                                                                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                                                                            </div>
+                                                        
+                                                        </el-row>
+                                                                            
+                                                    </div>
+                                        </el-col>                   
+                                    </el-row> 
+                                    <el-row v-if="selectedAccessories.item2.selected"> 
+                                        <h3>
+                                            {{selectedAccessories.item2.title}}
+                                        </h3>
+                                        <el-col :span="2" :offset="1"><el-button @click="onDeleteCable()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                                            <el-col :span="20">        
+                                                    <div class="accessories">
+                                                        <el-col :span="5">
+                                                                        <img :src="url+'assets/cable.jpg'" width="100px" alt="">
+                                                        </el-col>
+                                                        <el-col :span="17" :offset="2" class="text" v-html="selectedAccessories.item2.description"></el-col>
+                                                        <el-row>
+                                                                            <p><strong>Ціна: {{selectedAccessories.item2.price}} грн з ПДВ </strong></p>  
+
+                                                                            <p><strong>{{selectedAccessories.item2.name}} </strong> </p>
+                                                                            <div class="expand-view">
+                                                    
+                                                                            </div>
+                                                        
+                                                        </el-row>
+                                                        </div> 
+                                            </el-col>                                                          
+                                    </el-row>
+                                    <el-row v-if="selectedAccessories.item3.selected"> 
+                                        <h3>
+                                            {{selectedAccessories.item3.title}}
+                                        </h3>
+                                            
+                                        <el-col :span="2" :offset="1"><el-button @click="onDeleteMufta()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                                        <el-col :span="20">
+                                                    <div class="accessories">
+                                                        <el-col :span="5">
+                                                                        <img :src="url+'assets/mufta.jpg'" width="100px" alt="">
+                                                        </el-col>
+                                                        <el-col :span="17" :offset="2" class="text"></el-col>
+                                                        <el-row>
+                                                                            <p><strong>Ціна: {{selectedAccessories.item3.price}} грн з ПДВ </strong></p>  
+
+                                                                            <p><strong>{{selectedAccessories.item3.name}} </strong> </p>
+                                                                            <div class="expand-view">                                                   
+                                                                            </div>
+                                                        </el-row>
+                                                                            
+                                                    </div> 
+                                        </el-col>                
+                                    </el-row> 
+
+                                    <el-row v-if="selectedAccessories.item4.selected"> 
+                                        <h3>
+                                            {{selectedAccessories.item4.title}}
+                                        </h3>
+                                            
+                                        <el-col :span="2" :offset="1"><el-button @click="onDeleteVessel()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                                        <el-col :span="20">
+                                                    <div class="accessories">
+                                                        <el-col :span="5">
+                                                                        <img :src="url+'assets/bak.jpg'" width="100px" alt="">
+                                                        </el-col>
+                                                        <el-col :span="17" :offset="2" class="text"></el-col>
+                                                        <el-row>
+                                                                            <p>Ціна:<strong> {{selectedAccessories.item4.price}} </strong>грн з ПДВ </p>  
+
+                                                                            <p><strong>{{selectedAccessories.item4.name}} </strong> </p>
+                                                                            <p>Об'єм: <strong>{{selectedAccessories.item4.volume}} </strong> літрів </p>
+                                                                            <div class="expand-view">                                                   
+                                                                            </div>
+                                                        </el-row>
+                                                                            
+                                                    </div> 
+                                        </el-col>                
+                                    </el-row> 
+
+                            </div>
+                        </el-row> 
+        </div>
+       
         </el-col>
     </el-row> 
 
@@ -111,7 +230,7 @@
 <script>
 import Axios from 'axios';
   export default {
-    props: ['volumeFlow', 'deliveryHead','modelHeadItems', 'url',"dataChart", 'pump', 'selectedPumpId', 'url'],
+    props: ['volumeFlow', 'deliveryHead','modelHeadItems', "dataChart", 'pump', 'selectedPumpId', 'url'],
     data() {
       return {
         idPump: this.selectedPumpId,
@@ -135,43 +254,47 @@ import Axios from 'axios';
                 title: 'Прилад керування і захисту насоса',
                 name:'',
                 img:'assets/controller.jpg',
-                price: '45',
-                selected:false,
-                idController: this.selectedControllerId,
-                features: {
-                    current_max: "",
-                    dim:''                    
-                }
+                price: '',
+                current_max:'',
+                dim:'',
+                description:'',
+                selected: false,
+                idController: undefined,
             },
             item2: {
                 id:2,
                 title: 'Кабель',
+                name:'',
                 img:'assets/cable.jpg',
-                price: '2500 грн',
-                selected:false,
-                idController: "this.selectedControllerId"
+                price: '',
+                selected: false,
+                idCable: undefined
             },
             item3: {
                 id:3,
                 title: 'З’єднання насоса',
+                name:'',
                 img:'assets/mufta.jpg',
-                price: '2500 грн',
-                selected:false,
-                idController: "this.selectedControllerId"
+                price: '',
+                selected: false,
+                idMufta: undefined
             },
             item4: {
                 id:4,
                 title: 'Мембранний напірний бак',
+                name:'',
+                volume:'',
                 img:'assets/bak.jpg',
-                price: '2500 грн',
-                selected:false,
-                idController: "this.selectedControllerId"
+                price: '',
+                selected: false,
+                idVessel: undefined
             }
         },
         }
     },
     created: function() {
-        
+                 let realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
+                console.log(realNeedVessel)
     },
     computed: {
         objSelectedPump: function() {
@@ -191,7 +314,6 @@ import Axios from 'axios';
                         obj.n_power=pumpsArr[key].features.n_power
                         obj.cosf=pumpsArr[key].features.cosf
                         obj.phase=pumpsArr[key].features.phase
-                        
                     }
                 }
                 this.paramOfSelectedPump.phase=obj.phase
@@ -202,7 +324,10 @@ import Axios from 'axios';
         },
         existAccessories: function() {
             console.log("exist"+this.selectedAccessories.item1.idController)
-            if ( this.selectedAccessories.item1.idController!=undefined)
+            if ((this.selectedAccessories.item1.idController!=undefined) 
+                || (this.selectedAccessories.item2.idMufta!=undefined)  
+                || (this.selectedAccessories.item3.idCable!=undefined) 
+                || (this.selectedAccessories.item4.idVessel!=undefined))
             return true
         }                   
         },
@@ -214,13 +339,33 @@ import Axios from 'axios';
         this.onSaveSelectedPumpId(id)
     },
     onSelectController(val, dataControlBox){
-        console.log(dataControlBox)
         this.selectedAccessories.item1.idController=val
         this.selectedAccessories.item1.name=dataControlBox[0].name
         this.selectedAccessories.item1.price=dataControlBox[0].price
-        this.selectedAccessories.item1.features.current_max=dataControlBox[0].features.current_max
-        this.selectedAccessories.item1.features.dim=dataControlBox[0].features.dim
+        this.selectedAccessories.item1.current_max=dataControlBox[0].features.current_max
+        this.selectedAccessories.item1.description=dataControlBox[0].features.description
+        this.selectedAccessories.item1.dim=dataControlBox[0].features.dim
         this.selectedAccessories.item1.selected=true
+    },
+    onSelectCable(cable, id){
+        this.selectedAccessories.item2.idCable=id
+        this.selectedAccessories.item2.name=cable.name
+        this.selectedAccessories.item2.price=cable.price
+        this.selectedAccessories.item2.selected=true
+    },
+    onSelectMufta(id, mufta){
+        this.selectedAccessories.item3.idMufta=id
+        this.selectedAccessories.item3.name=mufta[0].name
+        this.selectedAccessories.item3.price=mufta[0].price
+        this.selectedAccessories.item3.selected=true
+    },
+    onSelectVessel(id, vessel){
+        this.selectedAccessories.item4.idVessel=id
+        this.selectedAccessories.item4.volume=vessel.features.volume
+        this.selectedAccessories.item4.name=vessel.name
+        this.selectedAccessories.item4.price=vessel.price
+        this.selectedAccessories.item4.selected=true
+        console.log(vessel.price)
     },
     onGetDataController(val) {
 
@@ -229,7 +374,19 @@ import Axios from 'axios';
         this.dialogVisible=false 
     },
     onDialogAccept() {
-        this.dialogVisible=false       
+        this.dialogVisible=false          
+    }, 
+    onDeleteController() {
+        this.selectedAccessories.item1.selected=false
+    },
+    onDeleteCable() {
+        this.selectedAccessories.item2.selected=false
+    },
+    onDeleteMufta() {
+        this.selectedAccessories.item3.selected=false
+    },
+    onDeleteVessel() {
+        this.selectedAccessories.item4.selected=false
     },        
     open() {
         this.$alert('This is a message', 'Title', {

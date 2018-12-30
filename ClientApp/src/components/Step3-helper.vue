@@ -40,19 +40,81 @@
                         <p>Ток максимальний <strong>{{item.features.current_max}}</strong> </p>
                         <el-button type="primary">Детальніше</el-button>                       
                     </el-col>  -->
-                    <ControlBox 
-                        :controllers="item"
-                        :url="url"
-                        /> 
+                    <div class="accessories">
+                        <el-col :span="5">
+                                        <img :src="url+'assets/controller.jpg'" width="100px" alt="">
+                        </el-col>
+                        <el-col :span="17" :offset="2" class="text" v-html="item.features.description"></el-col>
+                        <el-row>
+                                            <strong>{{item.name}} </strong>
+                        
+                                            <p><strong>Ціна: {{item.price}} грн з ПДВ </strong></p>  
+                                            <p><strong>Ток максимальний:</strong> {{item.current_max}} A </p>
+                                            <p><strong>Розміри:</strong> {{item.dim}}  </p>
+                                            <div class="expand-view">
+                                            <p><strong>Тип пуску насоса:</strong> {{item.start}}  </p> 
+                                            <p><strong>Управління:</strong> {{item.operation}}  </p>                       
+                                            
+                                            <p><strong>Захист від сухого ходу:</strong> {{item.dry_running}}  </p> 
+                                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                                            </div>
+                        
+                        </el-row>
+                                            
+                    </div>
                 </el-row>               
         </div>
         </div>
         <div  v-if="focusInput==2" class="Accessories-cable">
         <p> Довжина кабелю <el-input-number v-model="cablellength" @change="handleChangeCableLength(cablellength)" :min="0" ></el-input-number> м</p>
-        K - {{computedCableSection}}
-        /{{realSection}}
-        <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span> </p>
-        </div>     
+        <!-- K - {{computedCableSection}}
+        /{{realSection}} -->
+        <div v-if="computedCableSection">
+            <el-row>
+            <div class="block-accessoreis" >
+                <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span>  </p>
+                <div v-html="cable.description"></div>  
+                <p>Перетин  {{cable.section}} мм<sup>2</sup>
+                <p>{{cable.price}} грн</p> 
+            </div>                
+            </el-row>               
+            <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">
+                <el-radio  v-model="selectedAccessories.idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
+                            <span class="name-item">{{item.name}}</span></el-radio> 
+                            <p>Ціна  {{item.price}} грн </p>
+                            <p>Перетин  {{item.features.section}} мм<sup>2</sup> </p>
+                            <div v-html="item.features.description"></div>                            
+            </div>
+        </div>
+        </div>
+        <div v-if="focusInput==3" class="block-accessoreis">
+            <p class="name-item">{{vessels[computedVesselId].name}}</p>
+            <p>Об'єм <strong>{{vessels[computedVesselId].features.volume}}</strong> л</p>
+            <p>Тиск <strong>{{vessels[computedVesselId].features.pressure}}</strong> Па </p>
+            <p>Диаметр <strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  мм</p>
+            <p>Висота<strong>{{vessels[computedVesselId].features.dim_height}}</strong>  мм</p>
+            <p>Вага <strong>{{vessels[computedVesselId].features.weight}}</strong>  кг</p>
+            <p>Диаметр з’єднання  <strong>{{vessels[computedVesselId].features.dim_connection}}</strong>" </p>
+            <p>Ціна <strong>{{vessels[computedVesselId].price}}</strong> грн</p>
+            <p v-html="vessels[computedVesselId].features.description"></p>             
+            
+            <el-dropdown size="medium" split-button type="primary" @command="handleCommand"  >
+            Обрати інший бак
+            <el-dropdown-menu slot="dropdown" >                
+                <el-dropdown-item :command="index" v-for="(item, index) in vessels" :key="item.id">{{item.name}}</el-dropdown-item>
+            </el-dropdown-menu>
+            </el-dropdown>            
+            
+<!--               
+            {{realNeedVessel}}
+            {{vessels[computedVesselId]}} -->
+
+            
+            
+
+        </div>
+         <!-- {{cables}}
+        {{mufts}}    -->
     </el-row>
     <!-- {{selectedAccessories}} -->
 </div>
@@ -61,7 +123,7 @@
 <script>
 import Axios from 'axios';
   export default {
-    props: ['url', "selectedAccessories", "paramOfSelectedPump"],
+    props: ['url', "selectedAccessories", "paramOfSelectedPump", "volumeFlow", "deliveryHead", "dataChart"],
     data() {
       return {
         accessories: {
@@ -71,48 +133,89 @@ import Axios from 'axios';
             },
             item2: {
                 id:2,
-                title: 'Кабель',
+                title: 'Кабель та З’єднання насоса',
             },
             item3: {
                 id:3,
-                title: 'З’єднання насоса',
+                title: 'Мембранний напірний бак',
             },
             item4: {
                 id:4,
-                title: 'Мембранний напірний бак',
+                title: 'Кожух',
             }
         },
         focusInput: 0,
         activeAccessories:'',
         controllers:'',
-        cables:'',
-        selectedController:'456',
-        computedCableSection:0,
+        cable:
+        {
+            description:'',
+            price:'',
+            section:'',
+            name:'',
+            id:'',
+            length
+        },        
+        mufts:'',
+        vessels:'',
+        computedVessel:'',
+        realNeedVessel:'',
+        chengedVesselId:0,
+        computedVesselId:0,
+        selectedController:'',
+        computedCableSection: undefined,
         cablellength: 0,
         realSection: 0
 
       }
     },
     computed: {
+        SelectedVessel() {
+
+        }
     },
     created:  function(){
+        
+
         // function getFloat(value){
         // return parseFloat(value .replace(/,/, '.'));
         // }
         // this.computedCableSection=3.1*this.cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/3*this.paramOfSelectedPump.U
         // console.log(this.computedCableSection)
        // this.postDataControllers(this.paramOfSelectedPump.current+'A')
-         this.postDataControllers('11A')
+         this.postDataControllers(this.paramOfSelectedPump.current+'A')
+         this.postDataVessels()
+         let realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
+                console.log(realNeedVessel)
+         
+
+
     },
     methods: {
+    handleCommand(command) {
+        this.computedVesselId=command
+        
+        let obj=this.vessels[this.computedVesselId]
+        
+        console.log( obj.features.volume)
+        console.log( obj.price)
+        let id=obj.id
+
+        this.$emit('onSelectVessel', id, obj)
+      
+      },
     handleChange(id){
         this.onSelectController(id)
+    },
+    handleChangeMufta(id){
+        this.onSelectMufta(id)
     },
     handleChangeCableLength(cablellength){
         function getFloat(value){
         return parseFloat(value .replace(/,/, '.'));
         }
-        let S=[1.5, 2.5, 4.0, 6.0, 10.0, 16.0, 25.0, 35.0, 50, 70.0, 95.0]
+
+        let S=[1.5, 2.5, 4, 6, 10, 16.0, 25, 35, 50, 70, 95]
         this.realSection=3.1*cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
             if (this.realSection <= S[0]) {
                 this.computedCableSection=S[0];
@@ -123,14 +226,17 @@ import Axios from 'axios';
                     {
                         this.computedCableSection=S[i+1];                        
                     }
-            }      
-        
-        }
-        
+            }
+        }   this.cable.length=cablellength
+            let strData=String(this.computedCableSection)
+            this.postDataCables(strData.replace('.', ','))       
     },
     onFocusInput(value) {
         this.focusInput=value  
-        this.activeAccessories=this.selectedAccessories['item'+value].title
+        this.activeAccessories=this.accessories['item'+value].title
+    },
+    onSelectCable(cable, id){
+        this.$emit('onSelectCable', cable, id)
     },
     onSelectController(id){
         let sourse=this.controllers
@@ -141,6 +247,14 @@ import Axios from 'axios';
         console.log(dataControlBox)
         this.$emit('onSelectController', id, dataControlBox )
     },
+    onSelectMufta(id){
+        let sourse=this.mufts
+        let dataMufta=sourse.filter( function(el) {
+              return el.id==id
+            }
+        )
+        this.$emit('onSelectMufta', id, dataMufta )
+    },
     postDataControllers: function(current) {
                 const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
                 getPromise.then(response => {
@@ -150,11 +264,56 @@ import Axios from 'axios';
                 .catch(error => {
                 });
     },
+    postDataVessels: function(current) {
+                const getPromise = Axios.post(this.url+'db/getAllVessels');
+                getPromise.then(response => {
+                this.vessels = response.data;
+                console.log(response.data);
+                let sourse=this.vessels
+                let vesselsV=[]
+                for(let i=0; i<sourse.length; i++){
+                    let v=sourse[i].features.volume
+                    vesselsV.push(Number(v))
+                }
+
+                
+                console.log(vesselsV)
+                if (this.realNeedVessel <= vesselsV[0]) {
+                this.computedVessel=vesselsV[0];
+                this.computedVesselId=0
+
+                console.log(this.computedVessel)
+                console.log(vesselsV.length)
+                }
+                    else {
+                        for(let i=1; i< vesselsV.length; i++) {
+                            if ((this.realNeedVessel > vesselsV[i]) && (this.realNeedVessel <= vesselsV[i+1])) 
+                            {
+                                this.computedVessel=vesselsV[i+1];  
+                                this.computedVesselId=i+1                     
+                            }
+                    }
+                }   
+                })
+                .catch(error => {
+                });
+    },
     postDataCables: function(section) {
                 const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
                 getPromise.then(response => {
-                this.cables= response.data;
-                console.log(this.cables);
+                let dataArray=[]
+                this.cable.id= response.data[0].id;
+                this.cable.name= response.data[0].name;
+                this.cable.price= response.data[0].price;
+                this.cable.description= response.data[0].features.description;
+                this.cable.section= response.data[0].features.section;
+                let muftsLocal=response.data;
+                this.onSelectCable(this.cable, this.cable.id)   
+                console.log(response.data)
+                for (let i=1; i < muftsLocal.length;  i++) {
+                    dataArray.push(muftsLocal[i]);
+                }
+                this.mufts=dataArray                
                 })
                 .catch(error => {
                 });
@@ -340,10 +499,16 @@ p.sub-title {
 .block-accessoreis p {
     text-align: left    
 }
-span.name-item {
+span.name-item, .name-item {
     font-size: 18px;
     font-weight: 600;
     color: #222;
+}
+.block-cabels {
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+
 }
 </style>
 
