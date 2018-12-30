@@ -26,6 +26,7 @@ import Step2Helper from './components/Step2-helper.vue';
 import Step3Helper from './components/Step3-helper.vue';
 import Step3Accessoreis from './components/Step3-accessoreis.vue';
 import ControlBox from './components/accessories/controlBox.vue';
+import Cable from './components/accessories/cable.vue';
 
 Vue.component('Home', Home);
 Vue.component('HeaderPart', HeaderPart);
@@ -39,6 +40,7 @@ Vue.component('Step2-helper', Step2Helper);
 Vue.component('Step3-helper', Step3Helper);
 Vue.component('Step3-accessoreis', Step3Accessoreis);
 Vue.component('ControlBox', ControlBox);
+Vue.component('Cable', Cable);
 Vue.component('Chart', Chart);
 
 

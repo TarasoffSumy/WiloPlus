@@ -5,26 +5,31 @@ import { Line, Bar } from 'vue-chartjs'
 export default {
   props: ['dataChart'],
   extends: Line,
+
   mounted () {
-  this.renderChart({  
+  this.renderChart({
       type: 'line',
       datasets: [
-      { 
+      {
         label: 'Напір насоса',
+        radius: 1,
+        tension: 0.4,
         backgroundColor: 'transparent',
         borderColor: '#ef9119',
         data: this.dataChart.Hnas,
       },
-      { 
+      {
         label: 'Напір системи',
+        radius: 1,
+        tension: 0.4,
         backgroundColor: 'transparent',
         borderColor: '#3283d5',
         data: this.dataChart.Hsis,
       },
       {
         label: 'Фактична точка',
-        backgroundColor: 'transparent', 
-        pointStyle: 'star',
+        backgroundColor: 'transparent',
+        pointStyle: 'cross',
         radius: 10,
         borderColor: 'red',
         data: this.dataChart.WorkPoint,
@@ -32,14 +37,14 @@ export default {
       },
       {
         label: 'Розрахована точка',
-        backgroundColor: 'transparent', 
-        pointStyle: 'rectRot',
-        radius: 15,
+        backgroundColor: 'transparent',
+        pointStyle: 'cross',
+        radius: 10,
         borderColor: 'green',
         data:this.dataChart.CalcPoint,
         borderWidth: 3
       }
-      ]
+    ]
     },
     {
     responsive: false,
@@ -51,25 +56,40 @@ export default {
                 bottom: 0
             }
     },
-    lineTension: 1,
+    legend:{
+        labels:{
+          usePointStyle: true,
+          fontSize: 11
+      }
+    },
     scales: {
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          padding: 5,
+          padding: 5
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Напiр, м'
         }
       }],
         xAxes: [{
                 type: 'linear',
                 beginAtZero: true,
                 max: 50,
-                position: 'bottom'
+                position: 'bottom',
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Витрата, м3/год'
+                }
             }]
+
     }
     })
   },
   created : function(){
-  } 
+
+  }
 }
 </script>
 

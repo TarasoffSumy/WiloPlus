@@ -1,10 +1,9 @@
 <template>
-  <div>
-      {{current}}
-      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF</button>
-      {{deliveryHead}} - {{volumeFlow}}
+  <div><el-card  v-loading="loading" style="width: 100%">
+      <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF</button>
+     {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
-     {{selectedPumpId}}
+     {{selectedPumpId}} -->
       <div style="width: 1200px; margin: auto;">
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
@@ -12,8 +11,8 @@
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
         <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-        <!-- <button @click="OnGet">Go</button> -->   
-        <transition name="flip" mode="out-in">
+    
+        <transition name="flip" mode="out-in" >
         <Step1 v-if='current==1'
                 :url="url" 
                 :volumeFlow="volumeFlow"
@@ -29,7 +28,7 @@
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
                 class="transition-box step2"/>         
-        <Step3 v-else-if='current==3'
+        <Step3 v-else-if="current==3 && step3=='ready'"
                 :url="url" 
                 :pump="pump"
                 :selectedPumpId="selectedPumpId"
@@ -42,7 +41,7 @@
                 :url="url"
                 class="transition-box"/> 
         </transition>     
-
+    
         <el-row class="navigation-footer">
         <el-col :span="12" style="width:50%">
 
@@ -52,7 +51,8 @@
             <el-button :disabled="current == 4"  @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
         </el-col>
         </el-row>       
-    </div>        
+    </div>
+    </el-card>        
   </div>
 </template>
 
@@ -65,6 +65,7 @@ export default {
   },
   data () {
         return {
+                loading: false,
                 output: null,
                 url:'http://www.wiloexpert.com.ua/wilo/',
                 current: 1,
@@ -92,20 +93,21 @@ export default {
                     val4:0
                 },
                 pump:[],
+                step3:'',   
                 selectedPumpId: 0,
                 dataChart: {
                 CalcPoint:'',
                 Hnas:'',
                 Hsis:'',
-                WorkPoint:''                    
+                WorkPoint:''                                                
                 }
             }
         },
         created: function() {
-            this.postDataControllers('11A')
-            let n=30
-
-            console.log(Math.ceil((n)/10) * 10); 
+        function getСomma(value){
+        return value.replace('.', ',')
+        }
+        console.log(getСomma('1.5'))
                    // 60
            //this.postDataPump(this.volumeFlow, this.deliveryHead); 
            //this.postDataGetDetail()
@@ -159,7 +161,7 @@ export default {
                 this.modelHeadItems['val'+id]=val;
             },
             onInputDataHead(val) {
-                this.deliveryHead=Math.round((val)/10) * 10
+                this.deliveryHead=val
             },
             onSaveSelectedPumpId(val){
                 this.selectedPumpId=val 
@@ -182,24 +184,24 @@ export default {
                 });
                 },
                 postDataControllers: function(current) {
-                            const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
-                            getPromise.then(response => {
-                            
+                    const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
+                    getPromise.then(response => {        
                             console.log(response.data);
                             })
                             .catch(error => {
                             });
                 },
                 postDataPump: function(volumeFlow, deliveryHead) {
-                this.selectedPumpId=undefined
-                this.pump=undefined
+                this.loading=true
                 const getPromise = Axios.post(this.url+'db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
                 getPromise.then(response => {
                 this.pump = response.data;
                 if (this.pump!=undefined) {
                     console.log('get') 
                     this.selectedPumpId=this.pump[0].id                  
-                    this.onGetDataChart() 
+                    this.onGetDataChart()                       
+                        this.loading=false
+                        this.step3='ready'
                 }
                 else {
                     this.refreshDataSearch=false 
@@ -233,8 +235,10 @@ export default {
             },
             step (n) {
                this.current = n
-                if  (this.current == 3) {                    
-                    this.postDataPump(this.volumeFlow, this.deliveryHead);                    
+                if  (this.current == 3) {  
+                                      
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);    
+                                  
                 }            
             },
             onGetvolumeFlow(value) {
@@ -250,15 +254,15 @@ export default {
             let B=getFloat(source[0].features.Bx)
             let C=getFloat(source[0].features.C)
            
-            let Qmax=[0, Q/5, 2*Q/5, 3*Q/5, 5*Q/5]
+            let Qmax=[0, Q/5, 2*Q/5, 3*Q/5, 4*Q/5, 5*Q/5]
             
             function Hn(d){
-                return  (A*Math.pow(d, 2)+B*d+C).toFixed(2)
+                return  (A*Math.pow(d, 2)+B*d+C).toFixed(4)
             }
             let arrHn=[]
             for (let i=0; i <= Qmax.length-1; i++){
                 let point={
-                    x: Qmax[i].toFixed(2),
+                    x: Qmax[i].toFixed(4),
                     y: Hn(Qmax[i])
                 }
                 arrHn.push(point)
@@ -273,18 +277,18 @@ export default {
             let Deskr=Math.pow(B, 2)-4*(A-Ksys)*(C-Ah-Ch)
             let Flow=(-B-Math.sqrt(Deskr))/(2*(A-Ksys))
             let Head=(Ah+Ch)+Ksys*Math.pow(Flow, 2)
-            this.dataChart.CalcPoint=[{x: Flow.toFixed(2), y: Head.toFixed(2)}]
-            this.dataChart.WorkPoint=[{ x: volumeFlow.toFixed(2), y: deliveryHead.toFixed(2)}]
+            this.dataChart.CalcPoint=[{x: Flow.toFixed(4), y: Head.toFixed(4)}]
+            this.dataChart.WorkPoint=[{ x: volumeFlow.toFixed(4), y: deliveryHead.toFixed(4)}]
 
             let Qf=[0,  0.3*Flow, 0.6*Flow, 0.9*Flow, 1.2*Flow]
             function Hf(i) {
-                return (Ah+Ch)+Ksys*Math.pow(i, 2).toFixed(2)
+                return (Ah+Ch)+Ksys*Math.pow(i, 2).toFixed(4)
             }
             let arr=[]
             for (let i=0; i<=Qf.length-1; i++) {
                 let point= 
                 {
-                    x: (Qf[i]).toFixed(2),
+                    x: (Qf[i]).toFixed(4),
                     y: Hf(Qf[i])
                 }
                 arr.push(point)

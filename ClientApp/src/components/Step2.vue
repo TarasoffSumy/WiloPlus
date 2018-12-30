@@ -35,7 +35,7 @@
              <div class="greyBox">
                  <h3>Необхідний напір насоса</h3>                
                  <p>Напір 
-                     <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="0" :min="20" :max="200"></el-input-number>
+                     <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="2" :min="20" :max="290"></el-input-number>
                  м
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
