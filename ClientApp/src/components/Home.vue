@@ -1,9 +1,9 @@
 <template>
   <div><el-card  v-loading="loading" style="width: 100%">
-      <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF</button>
+      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF</button>
      {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
-     {{selectedPumpId}} -->
+     {{selectedPumpId}}
       <div style="width: 1200px; margin: auto;">
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
@@ -96,10 +96,10 @@ export default {
                 step3:'',   
                 selectedPumpId: 0,
                 dataChart: {
-                CalcPoint:'',
-                Hnas:'',
-                Hsis:'',
-                WorkPoint:''                                                
+                    CalcPoint:'',
+                    Hnas:'',
+                    Hsis:'',
+                    WorkPoint:''                                                
                 }
             }
         },
@@ -107,30 +107,10 @@ export default {
         function getСomma(value){
         return value.replace('.', ',')
         }
-        console.log(getСomma('1.5'))
-                   // 60
-           //this.postDataPump(this.volumeFlow, this.deliveryHead); 
-           //this.postDataGetDetail()
-        //   this.onGetDataChart()                      
+        console.log(getСomma('1.5'))               
         },
         computed: {
-        //     objSelectedPump: function() {
-        //         let pumpsArr=[]
-        //         let source=this.pump
-        //         for (let key in source){
-        //                 pumpsArr.push(source[key])                
-        //         }
-        //         let obj={}
-        //         for (let key in pumpsArr){
-        //             if (pumpsArr[key].id==this.selectedPumpId) {
-        //                 obj.name=pumpsArr[key].pump_name
-        //                 obj.price=pumpsArr[key].price
-        //                 obj.shortName=obj.name.split('/')[0]
-        //                 // this.selectedPump=obj
-        //             }
-        //         }
-        //      return obj            
-        //     }            
+         
         },
         methods: {
              makePdf() {
@@ -293,8 +273,7 @@ export default {
                 }
                 arr.push(point)
             }
-            this.dataChart.Hsis=arr
-             
+            this.dataChart.Hsis=arr 
             }
         }
 }

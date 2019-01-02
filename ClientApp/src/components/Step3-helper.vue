@@ -103,14 +103,33 @@
             <el-dropdown-menu slot="dropdown" >                
                 <el-dropdown-item :command="index" v-for="(item, index) in vessels" :key="item.id">{{item.name}}</el-dropdown-item>
             </el-dropdown-menu>
-            </el-dropdown>            
-            
-<!--               
-            {{realNeedVessel}}
-            {{vessels[computedVesselId]}} -->
+            </el-dropdown>           
+        </div>
+        <div v-if="focusInput==4" class="block-accessoreis">
+            <img style="" :src="url+'assets/jeckets.jpg'" width="150" alt="">
+            <p>
+                <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="vertical"> Вертикальный </el-radio>
+                <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="horizontal"> Горизонтальный </el-radio>                     
+            </p>
+            <div v-show="typeInstallationJeckets =='vertical'">
+                Вкажіть діаметр скважини  <el-input-number v-show="typeInstallationJeckets =='vertical'" @change="changeDiameterSkvagina()"  v-model="diametrSkvagina" :min="0"></el-input-number> мм                
+                <p v-if="computedJacketsNotNeeded">Кожух не потрібен</p>
+                <div v-else-if="diametrSkvagina!=0">
+                    <p class="name-item">{{computedJackets.name}}</p>
+                    <p>Длинна <strong>{{computedJackets.features.length}}</strong> мм</p>
+                    <p>Ціна <strong>{{computedJackets.price}}</strong> грн</p>
+                    <p v-html="computedJackets.features.description"></p>
+                </div>
 
-            
-            
+            </div>
+            <div v-if="typeInstallationJeckets =='horizontal'">               
+                <!-- {{computedJackets}} -->
+                <p class="name-item">{{computedJackets.name}}</p>
+                <p>Длинна <strong>{{computedJackets.features.length}}</strong> мм</p>
+                <p>Ціна <strong>{{computedJackets.price}}</strong> грн</p>
+                <p v-html="computedJackets.features.description"></p>
+            </div>
+
 
         </div>
          <!-- {{cables}}
@@ -165,14 +184,33 @@ import Axios from 'axios';
         selectedController:'',
         computedCableSection: undefined,
         cablellength: 0,
-        realSection: 0
+        typeInstallationJeckets: 0,
+        realSection: 0,
+        jackets:
+        {
+            horizontal:[],
+            vertical: []
+        },
+        computedJackets:
+        {
+            id:'',
+            name:'',
+            price:'',
+            features: {
+                description:'',
+                installation:'',                
+                length:'',
+                type:''
+            }  
+        },
+        realNeedJacket: 0,
+        computedJacketsId:0,
+        diametrSkvagina: Number(this.paramOfSelectedPump.dim_H2)+10,
+        computedJacketsNotNeeded: false
 
       }
     },
     computed: {
-        SelectedVessel() {
-
-        }
     },
     created:  function(){
         
@@ -182,25 +220,58 @@ import Axios from 'axios';
         // }
         // this.computedCableSection=3.1*this.cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/3*this.paramOfSelectedPump.U
         // console.log(this.computedCableSection)
-       // this.postDataControllers(this.paramOfSelectedPump.current+'A')
+
+         this.realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
+         this.realNeedJacket=Number(this.paramOfSelectedPump.dim_H2)+50     
+         
+         this.postDataJackets()
          this.postDataControllers(this.paramOfSelectedPump.current+'A')
          this.postDataVessels()
-         let realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
-                console.log(realNeedVessel)
-         
-
-
     },
     methods: {
-    handleCommand(command) {
-        this.computedVesselId=command
-        
-        let obj=this.vessels[this.computedVesselId]
-        
-        console.log( obj.features.volume)
-        console.log( obj.price)
-        let id=obj.id
+    handleChangeTypeJeckets() {
+        this.onComputeJacket()
+    },
+    changeDiameterSkvagina() {
+        this.onComputeJacket()
+    },
+    onComputeJacket(){
+        if (this.typeInstallationJeckets=='horizontal')
+        {
+            if (this.realNeedJacket <= this.jackets.horizontal[0].features.length)
+            {
+                this.computedJackets =this.jackets.horizontal[0]
+            }
+            else {
+                this.computedJackets = this.jackets.horizontal[1]
+                }           
+        }
+        else {
+            let velosityAirFlow=this.volumeFlow/((Math.pow(this.diametrSkvagina*0.001, 2)-Math.pow(this.paramOfSelectedPump.dim_H2*0.001, 2))*Math.PI/4)/3600
+            console.log(velosityAirFlow)
+            if (velosityAirFlow <= 0.08)
+            {
+                this.computedJacketsNotNeeded=false
+                if (this.realNeedJacket <= this.jackets.vertical[0].features.length)
+                {
+                    this.computedJackets =this.jackets.vertical[0]
+                }
+                else {
+                    this.computedJackets = this.jackets.vertical[1]
+                    }  
+            }
+            else {
+                this.computedJacketsNotNeeded=true
+            }            
+        }
+        console.log(this.computedJackets.id)
+        this.$emit('onSelectJecket', this.computedJackets.id, this.computedJackets)
 
+    },        
+    handleCommand(command) {
+        this.computedVesselId=command        
+        let obj=this.vessels[this.computedVesselId]
+        let id=obj.id
         this.$emit('onSelectVessel', id, obj)
       
       },
@@ -232,8 +303,16 @@ import Axios from 'axios';
             this.postDataCables(strData.replace('.', ','))       
     },
     onFocusInput(value) {
+        console.log(value)
         this.focusInput=value  
         this.activeAccessories=this.accessories['item'+value].title
+        if (value==3) {
+        let obj=this.vessels[this.computedVesselId]
+        let id=obj.id
+        this.$emit('onSelectVessel', id, obj)
+        
+        console.log(obj)
+        }
     },
     onSelectCable(cable, id){
         this.$emit('onSelectCable', cable, id)
@@ -268,22 +347,15 @@ import Axios from 'axios';
                 const getPromise = Axios.post(this.url+'db/getAllVessels');
                 getPromise.then(response => {
                 this.vessels = response.data;
-                console.log(response.data);
                 let sourse=this.vessels
                 let vesselsV=[]
                 for(let i=0; i<sourse.length; i++){
                     let v=sourse[i].features.volume
                     vesselsV.push(Number(v))
                 }
-
-                
-                console.log(vesselsV)
                 if (this.realNeedVessel <= vesselsV[0]) {
                 this.computedVessel=vesselsV[0];
                 this.computedVesselId=0
-
-                console.log(this.computedVessel)
-                console.log(vesselsV.length)
                 }
                     else {
                         for(let i=1; i< vesselsV.length; i++) {
@@ -309,11 +381,46 @@ import Axios from 'axios';
                 this.cable.section= response.data[0].features.section;
                 let muftsLocal=response.data;
                 this.onSelectCable(this.cable, this.cable.id)   
-                console.log(response.data)
+                
                 for (let i=1; i < muftsLocal.length;  i++) {
                     dataArray.push(muftsLocal[i]);
                 }
                 this.mufts=dataArray                
+                })
+                .catch(error => {
+                });
+    },
+    postDataJackets: function() {
+                const getPromise = Axios.post(this.url+'db/getAllJackets');
+                getPromise.then(response => {
+                let sourse=response.data;
+                this.jackets.vertical=sourse.slice(0,2)
+                this.jackets.horizontal=sourse.slice(2)
+                console.log(this.jackets.vertical)
+                console.log(this.jackets.horizontal)
+                // for(let i=0; i<sourse.length; i++){
+                //     if (sourse.features.installation=="vertical")
+                //     jacketsLengtchVertical.push(Number(sourse[i].features.lenght))
+                //     else
+                //     jacketsLengtchHorizontal.push(Number(sourse[i].features.lenght))
+                // }
+                // console.log(jacketsLength)
+                // if (this.realNeedJacket <= jacketsLength[0]) {
+                // this.computedJacket=jacketsLength[0];
+                // this.computedJacketsID=0
+
+                // console.log(this.realNeedJacket)
+                // // console.log(vesselsV.length)
+                // }
+                //     else {
+                //         for(let i=1; i< jacketsLength.length; i++) {
+                //             if ((this.realNeedJacket > jacketsLength[i]) && (this.realNeedJacket <= jacketsLength[i+1])) 
+                //             {
+                //                 this.computedJacket=jacketsLength[i+1];  
+                //                 this.computedJacketsID=i+1                     
+                //             }
+                //     }
+                // }  
                 })
                 .catch(error => {
                 });

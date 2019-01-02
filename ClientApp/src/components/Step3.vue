@@ -15,6 +15,7 @@
             @onSelectCable="onSelectCable"
             @onSelectMufta="onSelectMufta"
             @onSelectVessel="onSelectVessel"
+            @onSelectJecket="onSelectJecket"
             /> 
         <span slot="footer" class="dialog-footer">       
             <el-row class="navigation-footer">
@@ -215,7 +216,31 @@
                                                                             
                                                     </div> 
                                         </el-col>                
-                                    </el-row> 
+                                    </el-row>
+                                    <el-row v-if="selectedAccessories.item5.selected"> 
+                                        <h3>
+                                            {{selectedAccessories.item5.title}}
+                                        </h3>
+                                            
+                                        <el-col :span="2" :offset="1"><el-button @click="onDeleteJecket()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                                        <el-col :span="20">
+                                                    <div class="accessories">
+                                                        <el-col :span="5">
+                                                                        <img :src="url+'assets/jeckets.jpg'" width="100px" alt="">
+                                                        </el-col>
+                                                        <el-col :span="17" :offset="2" class="text"></el-col>
+                                                        <el-row>
+                                                                            <p>Ціна:<strong> {{selectedAccessories.item5.price}} </strong>грн з ПДВ </p>  
+
+                                                                            <p><strong>{{selectedAccessories.item5.name}} </strong> </p>
+                                                                            <p>Длина: <strong>{{selectedAccessories.item5.length}} </strong>  </p>
+                                                                            <div class="expand-view">                                                   
+                                                                            </div>
+                                                        </el-row>
+                                                                            
+                                                    </div> 
+                                        </el-col>                
+                                    </el-row>  
 
                             </div>
                         </el-row> 
@@ -244,9 +269,10 @@ import Axios from 'axios';
         disabledAccept: true,
         paramOfSelectedPump: {
             phase:'',
-            current: '',
-            cosf:'',
-            U:'',            
+            current: 0,
+            cosf: 0,
+            U: 0,
+            H2: 0            
         },
         selectedAccessories: {
             item1: {
@@ -288,13 +314,22 @@ import Axios from 'axios';
                 price: '',
                 selected: false,
                 idVessel: undefined
+            },
+            item5: {
+                id:5,
+                title: 'Кожух',
+                name:'',
+                length:'',
+                img:'assets/jeckets.jpg',
+                price: '',
+                selected: false,
+                idJecket: undefined
             }
         },
         }
     },
     created: function() {
-                 let realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
-                console.log(realNeedVessel)
+        console.log(this.pump)
     },
     computed: {
         objSelectedPump: function() {
@@ -314,91 +349,106 @@ import Axios from 'axios';
                         obj.n_power=pumpsArr[key].features.n_power
                         obj.cosf=pumpsArr[key].features.cosf
                         obj.phase=pumpsArr[key].features.phase
+                        obj.dim_H2=pumpsArr[key].features.dim_H2
                     }
                 }
                 this.paramOfSelectedPump.phase=obj.phase
                 this.paramOfSelectedPump.current=obj.current 
                 this.paramOfSelectedPump.cosf=obj.cosf
                 this.paramOfSelectedPump.U=(obj.phase==1 ? 230 : 400)
+                this.paramOfSelectedPump.dim_H2=obj.dim_H2
              return obj            
         },
         existAccessories: function() {
-            console.log("exist"+this.selectedAccessories.item1.idController)
+            console.log("exist"+this.selectedAccessories.item5.idJecket)
             if ((this.selectedAccessories.item1.idController!=undefined) 
                 || (this.selectedAccessories.item2.idMufta!=undefined)  
                 || (this.selectedAccessories.item3.idCable!=undefined) 
-                || (this.selectedAccessories.item4.idVessel!=undefined))
-            return true
-        }                   
-        },
+                || (this.selectedAccessories.item4.idVessel!=undefined)
+                || (this.selectedAccessories.item5.idJecket!=undefined))
+            return true                 
+        }
+    },
     methods: {
-    onSaveSelectedPumpId(id){
-        this.$emit('onSaveSelectedPumpId', id)       
-      },
-    handleChange(id){
-        this.onSaveSelectedPumpId(id)
-    },
-    onSelectController(val, dataControlBox){
-        this.selectedAccessories.item1.idController=val
-        this.selectedAccessories.item1.name=dataControlBox[0].name
-        this.selectedAccessories.item1.price=dataControlBox[0].price
-        this.selectedAccessories.item1.current_max=dataControlBox[0].features.current_max
-        this.selectedAccessories.item1.description=dataControlBox[0].features.description
-        this.selectedAccessories.item1.dim=dataControlBox[0].features.dim
-        this.selectedAccessories.item1.selected=true
-    },
-    onSelectCable(cable, id){
-        this.selectedAccessories.item2.idCable=id
-        this.selectedAccessories.item2.name=cable.name
-        this.selectedAccessories.item2.price=cable.price
-        this.selectedAccessories.item2.selected=true
-    },
-    onSelectMufta(id, mufta){
-        this.selectedAccessories.item3.idMufta=id
-        this.selectedAccessories.item3.name=mufta[0].name
-        this.selectedAccessories.item3.price=mufta[0].price
-        this.selectedAccessories.item3.selected=true
-    },
-    onSelectVessel(id, vessel){
-        this.selectedAccessories.item4.idVessel=id
-        this.selectedAccessories.item4.volume=vessel.features.volume
-        this.selectedAccessories.item4.name=vessel.name
-        this.selectedAccessories.item4.price=vessel.price
-        this.selectedAccessories.item4.selected=true
-        console.log(vessel.price)
-    },
-    onGetDataController(val) {
+        onSaveSelectedPumpId(id){
+            this.$emit('onSaveSelectedPumpId', id)       
+        },
+        handleChange(id){
+            this.onSaveSelectedPumpId(id)
+        },
+        onSelectController(val, dataControlBox){
+            this.selectedAccessories.item1.idController=val
+            this.selectedAccessories.item1.name=dataControlBox[0].name
+            this.selectedAccessories.item1.price=dataControlBox[0].price
+            this.selectedAccessories.item1.current_max=dataControlBox[0].features.current_max
+            this.selectedAccessories.item1.description=dataControlBox[0].features.description
+            this.selectedAccessories.item1.dim=dataControlBox[0].features.dim
+            this.selectedAccessories.item1.selected=true
+        },
+        onSelectCable(cable, id){
+            this.selectedAccessories.item2.idCable=id
+            this.selectedAccessories.item2.name=cable.name
+            this.selectedAccessories.item2.price=cable.price
+            this.selectedAccessories.item2.selected=true
+        },
+        onSelectMufta(id, mufta){
+            this.selectedAccessories.item3.idMufta=id
+            this.selectedAccessories.item3.name=mufta[0].name
+            this.selectedAccessories.item3.price=mufta[0].price
+            this.selectedAccessories.item3.selected=true
+        },
+        onSelectVessel(id, vessel){
+            this.selectedAccessories.item4.idVessel=id
+            this.selectedAccessories.item4.volume=vessel.features.volume
+            this.selectedAccessories.item4.name=vessel.name
+            this.selectedAccessories.item4.price=vessel.price
+            this.selectedAccessories.item4.selected=true
+            
+        },
+        onSelectJecket(id, jecket){
+            this.selectedAccessories.item5.idJecket=id
+            this.selectedAccessories.item5.length=jecket.features.length
+            this.selectedAccessories.item5.name=jecket.name
+            this.selectedAccessories.item5.price=jecket.price
+            this.selectedAccessories.item5.selected=true
+           
+            
+        },
+        onGetDataController(val) {
 
-    },
-    dialogCancel() {
-        this.dialogVisible=false 
-    },
-    onDialogAccept() {
-        this.dialogVisible=false          
-    }, 
-    onDeleteController() {
-        this.selectedAccessories.item1.selected=false
-    },
-    onDeleteCable() {
-        this.selectedAccessories.item2.selected=false
-    },
-    onDeleteMufta() {
-        this.selectedAccessories.item3.selected=false
-    },
-    onDeleteVessel() {
-        this.selectedAccessories.item4.selected=false
-    },        
-    open() {
-        this.$alert('This is a message', 'Title', {
-          confirmButtonText: 'OK',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: `action: ${ action }`
+        },
+        dialogCancel() {
+            this.dialogVisible=false 
+        },
+        onDialogAccept() {
+            this.dialogVisible=false          
+        }, 
+        onDeleteController() {
+            this.selectedAccessories.item1.selected=false
+        },
+        onDeleteCable() {
+            this.selectedAccessories.item2.selected=false
+        },
+        onDeleteMufta() {
+            this.selectedAccessories.item3.selected=false
+        },
+        onDeleteVessel() {
+            this.selectedAccessories.item4.selected=false
+        }, 
+        onDeleteJecket() {
+            this.selectedAccessories.item5.selected=false
+        },        
+        open() {
+            this.$alert('This is a message', 'Title', {
+            confirmButtonText: 'OK',
+            callback: action => {
+                this.$message({
+                type: 'info',
+                message: `action: ${ action }`
+                });
+            }
             });
-          }
-        });
-      }
+        }
       }
     }
 </script>
