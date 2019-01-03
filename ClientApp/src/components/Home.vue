@@ -20,14 +20,14 @@
                 :maxVolumeFlow="maxVolumeFlow"
                 @onInputDataVolume="onInputDataVolume"
                 @onInputFlowItems="onInputFlowItems"
-                class="transition-box step1"/>              
+                class="transition-box"/>              
         <Step2 v-else-if='current==2' 
                 :url="url" 
                 :deliveryHead="deliveryHead"
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
-                class="transition-box step2"/>         
+                class="transition-box"/>         
         <Step3 v-else-if="current==3 && step3=='ready'"
                 :url="url" 
                 :pump="pump"
@@ -66,12 +66,8 @@ export default {
   data () {
         return {
                 loading: false,
-                output: null,
                 url:'http://www.wiloexpert.com.ua/wilo/',
                 current: 1,
-                showStep: 0,
-                activeClass: 'active',
-                errorClass: 'text-danger',
                 refreshDataSearch:false,
                 isActive: false,
                 deliveryHead: 30,
@@ -103,14 +99,9 @@ export default {
                 }
             }
         },
-        created: function() {
-        function getСomma(value){
-        return value.replace('.', ',')
-        }
-        console.log(getСomma('1.5'))               
+        created: function() {     
         },
         computed: {
-         
         },
         methods: {
              makePdf() {
@@ -123,14 +114,7 @@ export default {
                 html2canvas: { scale: 2 },
                 jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true}
                 }).save();
-            },
-            OnGet() {
-                 let Qrez=2
-                function getLog(y) {
-                return Math.log(y) ;
-                }
-                console.log(0.937*getLog(Qrez)+0.7689)
-            },    
+            },   
             onInputDataVolume(val) {
                 this.volumeFlow=val
             },
@@ -154,30 +138,29 @@ export default {
             postDataCableSelect: function() {
                 const getPromise = Axios.post(this.url+'db/cableSelect', {"section":"1,5"});
                 getPromise.then(response => {
-                console.log(response.data)
+                // console.log(response.data)
                 });
                 },
-                postDataGetDetail: function() {
+            postDataGetDetail: function() {
                 const getPromise = Axios.post(this.url+'db/getDetails', {"id":"311"});
                 getPromise.then(response => {
-                    console.log(response.data)
+                // console.log(response.data)
                 });
                 },
-                postDataControllers: function(current) {
-                    const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
-                    getPromise.then(response => {        
-                            console.log(response.data);
-                            })
-                            .catch(error => {
-                            });
+            postDataControllers: function(current) {
+                const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
+                getPromise.then(response => {        
+                // console.log(response.data);
+                })
+                .catch(error => {
+                    });
                 },
-                postDataPump: function(volumeFlow, deliveryHead) {
+            postDataPump: function(volumeFlow, deliveryHead) {
                 this.loading=true
                 const getPromise = Axios.post(this.url+'db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
                 getPromise.then(response => {
                 this.pump = response.data;
                 if (this.pump!=undefined) {
-                    console.log('get') 
                     this.selectedPumpId=this.pump[0].id                  
                     this.onGetDataChart()                       
                         this.loading=false
@@ -191,19 +174,15 @@ export default {
                     console.log('error')
                 });
                 },
-
             next () {
-                if  (this.current == 3) {
-                    
+                if  (this.current == 3) {                    
                     this.postDataPump(this.volumeFlow, this.deliveryHead);
-
                 } 
                 if (this.current == 4) {
                     this.current = 1;
                 } else {
                     this.current+= 1;
                     this.isActive=true
-                    this.showStep=this.current
                 }
             },
             back () {
@@ -215,14 +194,9 @@ export default {
             },
             step (n) {
                this.current = n
-                if  (this.current == 3) {  
-                                      
-                    this.postDataPump(this.volumeFlow, this.deliveryHead);    
-                                  
+                if  (this.current == 3) {                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);                 
                 }            
-            },
-            onGetvolumeFlow(value) {
-                this.volumeFlow=value
             },
             onGetDataChart(){
             let source=this.pump          
@@ -402,14 +376,6 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
 .transition-box .circle_numder {
     float: left;
 }
-/*
-.transition-box .circle_numder {
-    padding-top: 20px;
-    margin: auto;
-    width: 50px;
-    height: 50px;
-    float: left;
-}}*/
 .transition-box .circle_numder span {
     color: #fff
 }

@@ -26,49 +26,32 @@
         <h4>{{activeAccessories}}</h4>
         <div v-if="focusInput==1">
         <div class="block-accessoreis"  v-for="item in controllers" :key="item.id">
-            <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                     
-                    
+            <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                                       
                      <el-radio  v-model="selectedAccessories.idController"  @change="handleChange(item.id)" :label="item.id">
                          <span class="name-item">{{item.name}}</span></el-radio>                    
-                    
-
-                    <!-- <img :src="url+'assets/controller.jpg'" width="100px" alt=""> -->
-                   
-                    <!-- <el-col :span="12" :offset="2">
-                        <p>Ціна <strong>{{item.price}} грн</strong></p>                           
-                        <p>Ток мінімальний  <strong>{{item.features.current_min}}</strong> </p>
-                        <p>Ток максимальний <strong>{{item.features.current_max}}</strong> </p>
-                        <el-button type="primary">Детальніше</el-button>                       
-                    </el-col>  -->
                     <div class="accessories">
                         <el-col :span="5">
                                         <img :src="url+'assets/controller.jpg'" width="100px" alt="">
                         </el-col>
                         <el-col :span="17" :offset="2" class="text" v-html="item.features.description"></el-col>
                         <el-row>
-                                            <strong>{{item.name}} </strong>
-                        
-                                            <p><strong>Ціна: {{item.price}} грн з ПДВ </strong></p>  
-                                            <p><strong>Ток максимальний:</strong> {{item.current_max}} A </p>
-                                            <p><strong>Розміри:</strong> {{item.dim}}  </p>
-                                            <div class="expand-view">
-                                            <p><strong>Тип пуску насоса:</strong> {{item.start}}  </p> 
-                                            <p><strong>Управління:</strong> {{item.operation}}  </p>                       
-                                            
-                                            <p><strong>Захист від сухого ходу:</strong> {{item.dry_running}}  </p> 
-                                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
-                                            </div>
-                        
-                        </el-row>
-                                            
+                            <strong>{{item.name}} </strong>                        
+                            <p><strong>Ціна: {{item.price}} грн з ПДВ </strong></p>  
+                            <p><strong>Ток максимальний:</strong> {{item.current_max}} A </p>
+                            <p><strong>Розміри:</strong> {{item.dim}}  </p>
+                            <div class="expand-view">
+                            <p><strong>Тип пуску насоса:</strong> {{item.start}}  </p> 
+                            <p><strong>Управління:</strong> {{item.operation}}  </p>                       
+                            <p><strong>Захист від сухого ходу:</strong> {{item.dry_running}}  </p> 
+                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                            </div>                        
+                        </el-row>               
                     </div>
                 </el-row>               
         </div>
         </div>
         <div  v-if="focusInput==2" class="Accessories-cable">
         <p> Довжина кабелю <el-input-number v-model="cablellength" @change="handleChangeCableLength(cablellength)" :min="0" ></el-input-number> м</p>
-        <!-- K - {{computedCableSection}}
-        /{{realSection}} -->
         <div v-if="computedCableSection">
             <el-row>
             <div class="block-accessoreis" >
@@ -504,12 +487,12 @@ p.detail-title {
     left: 101px;
 }
 .circle_numder.number_3 {
-    top: 305px;
-    left: 23px;
+    top: 90px;
+    left: 263px;
 }
 .circle_numder.number_4 {
-    top: 160px;
-    left: 216px;
+    top: 392px;
+    left: -20px;
 }
 .pos-img {
     position: relative;

@@ -1,6 +1,5 @@
 <template>
-<div>
-   
+<div>   
     <el-dialog
     title=""
     :visible.sync="dialogVisible"
@@ -35,8 +34,9 @@
     <el-row>
         <el-col :span="12">
              <div class="greyBox">
-                 <h3>Необхідна витрата насоса</h3>         
-                 <p>Витрата  <el-input-number v-model="volumeFlowInput" @change="onInputVolumeFlow" :precision="2" :min="0.5" :max="17"></el-input-number>
+                 <!-- :precision="2" :min="0.5" :max="17" -->
+                 <h3>Необхідна витрата насоса</h3>       
+                 <p>Витрата  <el-input-number v-model="volumeFlowInput" @change="onInputVolumeFlow"></el-input-number>
                  м<sup>3</sup>/ч
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
@@ -85,12 +85,12 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         // this.postData(1)
     },
     methods: {
-
       dialogCancel() {
         this.dialogVisible=false 
       },
       onInputVolumeFlow(value) {
-        this.$emit('onInputDataVolume', value) 
+        this.$emit('onInputDataVolume', value)
+         console.log(value)
       },
       onInputFlowItems(id, val){
         this.$emit('onInputFlowItems', id, val )

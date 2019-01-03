@@ -100,10 +100,7 @@
             this.disabledAccept=true 
         }
           console.log(this.disabledAccept)
-      },
-    //   ActiveHelperStep1() {
-    //       this.helperStep1=!this.helperStep1
-    //   },       
+      },    
       open() {
         this.$alert('This is a message', 'Title', {
           confirmButtonText: 'OK',
