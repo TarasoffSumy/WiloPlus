@@ -44,7 +44,6 @@
     
         <el-row class="navigation-footer">
         <el-col :span="12" style="width:50%">
-
              <el-button :disabled="current == 1"  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад </el-button>
         </el-col>
         <el-col :span="12" style="width:50%">

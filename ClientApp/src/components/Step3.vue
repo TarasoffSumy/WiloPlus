@@ -17,16 +17,15 @@
             @onSelectVessel="onSelectVessel"
             @onSelectJecket="onSelectJecket"
             /> 
-        <span slot="footer" class="dialog-footer">       
+        <div slot="footer" class="dialog-footer">       
             <el-row class="navigation-footer">
-            <!-- <el-col :span="12">
-                <el-button @click="dialogCancel"  icon="el-icon-d-arrow-left">Назад</el-button>
-            </el-col> -->
+            <el-col :span="12" style="width:50%">
+            </el-col>
             <el-col :span="12">
                 <el-button type="primary" @click="onDialogAccept">Закрити<i class="el-icon-d-arrow-right el-icon-right"/></el-button>
             </el-col>
             </el-row>   
-        </span>
+        </div>
     </el-dialog>
 
     <el-row>
@@ -47,7 +46,7 @@
                     <h3>Підбраний насос </h3>
                     <p>ACTUN {{objSelectedPump.shortName}}</p>                
                             <div v-for="item in pump" :value="item" :key="item.id" class="radio-item-phasa" >
-                                <el-radio v-model="idPump" :label="item.id" @change="handleChange(item.id)">
+                                <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
                                                 <span v-if="item.features.phase=='1'">однофазный</span>
                                                 <span v-if="item.features.phase=='3'">трехфазный</span>
                                 </el-radio>       
@@ -91,7 +90,7 @@
             <h2>Підібране приладдя</h2>
                 <el-row  v-if="selectedAccessories.item1.selected"> 
                 <h3>{{selectedAccessories.item1.title}}</h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteController()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(1)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                         <div class="accessories">
                             <el-col :span="5">
@@ -117,7 +116,7 @@
                     <h3>
                     {{selectedAccessories.item2.title}}
                     </h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteCable()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> 
+                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(2)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> 
                     </el-col>
                     <el-col :span="20">        
                         <div class="accessories">
@@ -135,7 +134,7 @@
                 </el-row>
                 <el-row v-if="selectedAccessories.item3.selected"> 
                 <h3>{{selectedAccessories.item3.title}}</h3>  
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteMufta()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(3)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                     <div class="accessories">
                         <el-col :span="5">
@@ -152,7 +151,7 @@
                 </el-row> 
                 <el-row v-if="selectedAccessories.item4.selected"> 
                 <h3>{{selectedAccessories.item4.title}}</h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteVessel()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(4)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                     <div class="accessories">
                         <el-col :span="5">
@@ -170,7 +169,7 @@
                 </el-row>
                 <el-row v-if="selectedAccessories.item5.selected"> 
                 <h3>{{selectedAccessories.item5.title}}</h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteJecket()" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
+                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(5)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                     <div class="accessories">
                         <el-col :span="5">
@@ -207,14 +206,9 @@ export default {
   data() {
     return {
       idPump: this.selectedPumpId,
-      pumpStep3: this.pump,
       deliveryHeadInput: this.deliveryHead,
       deliveryHeadComputed: null,
-      helperStep1: false,
       dialogVisible: false,
-      minDeliveryHead: 20,
-      maxDeliveryHead: 200,
-      disabledAccept: true,
       paramOfSelectedPump: {
         phase: "",
         current: 0,
@@ -224,7 +218,6 @@ export default {
       },
       selectedAccessories: {
         item1: {
-          id: 1,
           title: "Прилад керування і захисту насоса",
           name: "",
           img: "assets/controller.jpg",
@@ -236,7 +229,6 @@ export default {
           idController: undefined
         },
         item2: {
-          id: 2,
           title: "Кабель",
           name: "",
           img: "assets/cable.jpg",
@@ -245,7 +237,6 @@ export default {
           idCable: undefined
         },
         item3: {
-          id: 3,
           title: "З’єднання насоса",
           name: "",
           img: "assets/mufta.jpg",
@@ -254,7 +245,6 @@ export default {
           idMufta: undefined
         },
         item4: {
-          id: 4,
           title: "Мембранний напірний бак",
           name: "",
           volume: "",
@@ -264,7 +254,6 @@ export default {
           idVessel: undefined
         },
         item5: {
-          id: 5,
           title: "Кожух",
           name: "",
           length: "",
@@ -277,12 +266,11 @@ export default {
     };
   },
   created: function() {
-    console.log(this.pump);
   },
   computed: {
     objSelectedPump: function() {
       let pumpsArr = [];
-      let source = this.pumpStep3;
+      let source = this.pump;
       for (let key in source) {
         pumpsArr.push(source[key]);
       }
@@ -308,13 +296,12 @@ export default {
       return obj;
     },
     existAccessories: function() {
-      console.log("exist" + this.selectedAccessories.item5.idJecket);
       if (
-        this.selectedAccessories.item1.idController != undefined ||
-        this.selectedAccessories.item2.idMufta != undefined ||
-        this.selectedAccessories.item3.idCable != undefined ||
-        this.selectedAccessories.item4.idVessel != undefined ||
-        this.selectedAccessories.item5.idJecket != undefined
+        this.selectedAccessories.item1.selected != false ||
+        this.selectedAccessories.item2.selected != false ||
+        this.selectedAccessories.item3.selected != false ||
+        this.selectedAccessories.item4.selected != false ||
+        this.selectedAccessories.item5.selected != false
       )
         return true;
     }
@@ -323,17 +310,15 @@ export default {
     onSaveSelectedPumpId(id) {
       this.$emit("onSaveSelectedPumpId", id);
     },
-    handleChange(id) {
+    handleChangePhase(id) {
       this.onSaveSelectedPumpId(id);
     },
     onSelectController(val, dataControlBox) {
       this.selectedAccessories.item1.idController = val;
       this.selectedAccessories.item1.name = dataControlBox[0].name;
       this.selectedAccessories.item1.price = dataControlBox[0].price;
-      this.selectedAccessories.item1.current_max =
-        dataControlBox[0].features.current_max;
-      this.selectedAccessories.item1.description =
-        dataControlBox[0].features.description;
+      this.selectedAccessories.item1.current_max = dataControlBox[0].features.current_max;
+      this.selectedAccessories.item1.description = dataControlBox[0].features.description;
       this.selectedAccessories.item1.dim = dataControlBox[0].features.dim;
       this.selectedAccessories.item1.selected = true;
     },
@@ -363,27 +348,11 @@ export default {
       this.selectedAccessories.item5.price = jecket.price;
       this.selectedAccessories.item5.selected = true;
     },
-    onGetDataController(val) {},
-    dialogCancel() {
-      this.dialogVisible = false;
-    },
     onDialogAccept() {
       this.dialogVisible = false;
     },
-    onDeleteController() {
-      this.selectedAccessories.item1.selected = false;
-    },
-    onDeleteCable() {
-      this.selectedAccessories.item2.selected = false;
-    },
-    onDeleteMufta() {
-      this.selectedAccessories.item3.selected = false;
-    },
-    onDeleteVessel() {
-      this.selectedAccessories.item4.selected = false;
-    },
-    onDeleteJecket() {
-      this.selectedAccessories.item5.selected = false;
+    onDeleteAccessories(id) {
+      this.selectedAccessories['item'+id].selected = false;
     },
     open() {
       this.$alert("This is a message", "Title", {
