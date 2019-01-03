@@ -1,6 +1,7 @@
 <template>
-  <div><el-card  v-loading="loading" style="width: 100%">
-      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF</button>
+  <div> 
+      <el-card  v-loading="loading" style="width: 100%">
+      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button>
      {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
      {{selectedPumpId}}
@@ -392,4 +393,37 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
     font-size: 13px;
     margin-top: 35px;
 } 
+ul li {
+   list-style: none;    
+}
+ul li:before {
+    font-family: 'wilo-icons';
+    font-size: 22px;
+    margin-left: -26px;
+    color: #009c82;
+    content: "\192";
+    width: 26px;
+    display: inline-table;
+    position: relative;
+    top: 2px;
+    font-weight: bold;
+}
+
+.my-font::before {
+    font-family: 'wilo-icons';
+    font-style: normal;
+    line-height: 135%;
+    word-wrap: break-word;
+    font-size: 50px;
+    margin: 0px;
+    padding: 0px;
+    color: #009c82;
+   content: "ƒ"; 
+   vertical-align: middle;
+}
+.stronge-price {
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 40px;
+}
 </style>

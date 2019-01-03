@@ -88,21 +88,21 @@
              </div>
         <div  v-if="existAccessories" class="item-selected">
             <h2>Підібране приладдя</h2>
-                <el-row  v-if="selectedAccessories.item1.selected"> 
+            <el-card  class="box-card" v-if="selectedAccessories.item1.selected">
                 <h3>{{selectedAccessories.item1.title}}</h3>
                     <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(1)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                         <div class="accessories">
-                            <el-col :span="5">
+                            <el-col :span="6">
                                 <img :src="url+'assets/controller.jpg'" width="100px" alt="">
                             </el-col>
-                            <el-col :span="17" :offset="2" class="text"></el-col>
+                            <el-col :span="17" :offset="1" class="text"></el-col>
                             <el-row>
                             <strong>{{selectedAccessories.item1.name}} </strong>
-                                <p><strong>Ціна: {{selectedAccessories.item1.price}} грн з ПДВ </strong></p>  
+                                <p class="stronge-price">Ціна: {{selectedAccessories.item1.price}} грн з ПДВ</p>  
                                 <p><strong>Ток максимальний:</strong> {{selectedAccessories.item1.current_max}} A </p>
-                                <p><strong>Розміри:</strong> {{selectedAccessories.item1.dim}}  </p>
                                 <div class="expand-view">
+                                <p><strong>Розміри:</strong> {{selectedAccessories.item1.dim}}  </p>
                                 <p><strong>Тип пуску насоса:</strong> {{selectedAccessories.item1.start}}  </p> 
                                 <p><strong>Управління:</strong> {{selectedAccessories.item1.operation}}  </p>                       
                                 <p><strong>Захист від сухого ходу:</strong> {{selectedAccessories.item1.dry_running}}  </p> 
@@ -110,9 +110,9 @@
                                 </div>                                                          
                             </el-row>
                         </div>
-                    </el-col>                   
-                </el-row> 
-                <el-row v-if="selectedAccessories.item2.selected"> 
+                    </el-col>                  
+            </el-card>
+            <el-card   class="box-card" v-if="selectedAccessories.item2.selected"> 
                     <h3>
                     {{selectedAccessories.item2.title}}
                     </h3>
@@ -120,71 +120,73 @@
                     </el-col>
                     <el-col :span="20">        
                         <div class="accessories">
-                        <el-col :span="5">
+                        <el-col :span="6">
                         <img :src="url+'assets/cable.jpg'" width="100px" alt="">
                         </el-col>
-                        <el-col :span="17" :offset="2" class="text" v-html="selectedAccessories.item2.description"></el-col>
+                        <el-col :span="17" :offset="1" class="text" v-html="selectedAccessories.item2.description"></el-col>
                         <el-row>
-                        <p><strong>Ціна: {{selectedAccessories.item2.price}} грн з ПДВ </strong></p>  
-                        <p><strong>{{selectedAccessories.item2.name}} </strong> </p>
+                        <p><strong>{{selectedAccessories.item2.name}} </strong></p>
+                        <p class="stronge-price">Ціна: {{selectedAccessories.item2.price}} грн з ПДВ</p>  
+                        <p><strong>Довжина {{selectedAccessories.item2.length}} </strong> м</p>
                         <div class="expand-view"></div>
                         </el-row>
                         </div> 
                     </el-col>                                                          
-                </el-row>
-                <el-row v-if="selectedAccessories.item3.selected"> 
+                </el-card>
+                <el-card   class="box-card"  v-if="selectedAccessories.item3.selected"> 
                 <h3>{{selectedAccessories.item3.title}}</h3>  
                     <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(3)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                     <div class="accessories">
-                        <el-col :span="5">
+                        <el-col :span="6">
                         <img :src="url+'assets/mufta.jpg'" width="100px" alt="">
                         </el-col>
-                        <el-col :span="17" :offset="2" class="text"></el-col>
+                        <el-col :span="17" :offset="1" class="text"></el-col>
                         <el-row>
-                            <p><strong>Ціна: {{selectedAccessories.item3.price}} грн з ПДВ </strong></p>  
                             <p><strong>{{selectedAccessories.item3.name}} </strong> </p>
+                            <p class="stronge-price">Ціна: {{selectedAccessories.item3.price}} грн з ПДВ </p>  
                             <div class="expand-view"></div>
                         </el-row>
                     </div> 
                     </el-col>                
-                </el-row> 
-                <el-row v-if="selectedAccessories.item4.selected"> 
+                </el-card> 
+                <el-card   class="box-card"  v-if="selectedAccessories.item4.selected"> 
                 <h3>{{selectedAccessories.item4.title}}</h3>
                     <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(4)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                     <div class="accessories">
-                        <el-col :span="5">
+                        <el-col :span="6">
                         <img :src="url+'assets/bak.jpg'" width="100px" alt="">
                         </el-col>
-                        <el-col :span="17" :offset="2" class="text"></el-col>
+                        <el-col :span="17" :offset="1" class="text"></el-col>
                         <el-row>
-                            <p>Ціна:<strong> {{selectedAccessories.item4.price}} </strong>грн з ПДВ </p>  
                             <p><strong>{{selectedAccessories.item4.name}} </strong> </p>
+                            <p class="stronge-price">Ціна: {{selectedAccessories.item4.price}} грн з ПДВ </p>  
+                            
                             <p>Об'єм: <strong>{{selectedAccessories.item4.volume}} </strong> літрів </p>
                             <div class="expand-view"> </div>
                         </el-row>
                     </div> 
                     </el-col>                
-                </el-row>
-                <el-row v-if="selectedAccessories.item5.selected"> 
+                </el-card>
+                <el-card   class="box-card"  v-if="selectedAccessories.item5.selected"> 
                 <h3>{{selectedAccessories.item5.title}}</h3>
                     <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(5)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
                     <el-col :span="20">
                     <div class="accessories">
-                        <el-col :span="5">
+                        <el-col :span="6">
                         <img :src="url+'assets/jeckets.jpg'" width="100px" alt="">
                         </el-col>
-                        <el-col :span="17" :offset="2" class="text"></el-col>
+                        <el-col :span="17" :offset="1" class="text"></el-col>
                         <el-row>
-                            <p>Ціна:<strong> {{selectedAccessories.item5.price}} </strong>грн з ПДВ </p>  
                             <p><strong>{{selectedAccessories.item5.name}} </strong> </p>
+                            <p class="stronge-price">Ціна: {{selectedAccessories.item5.price}} грн з ПДВ </p>                            
                             <p>Длина: <strong>{{selectedAccessories.item5.length}} </strong> мм </p>
                             <div class="expand-view"></div>
                         </el-row>
                     </div> 
                     </el-col>                
-                </el-row>  
+                </el-card>  
         </div>       
         </el-col>
     </el-row> 
@@ -232,7 +234,8 @@ export default {
           title: "Кабель",
           name: "",
           img: "assets/cable.jpg",
-          price: "",
+          price: 0,
+          length: 0,
           selected: false,
           idCable: undefined
         },
@@ -326,6 +329,7 @@ export default {
       this.selectedAccessories.item2.idCable = id;
       this.selectedAccessories.item2.name = cable.name;
       this.selectedAccessories.item2.price = cable.price;
+      this.selectedAccessories.item2.length = cable.length;
       this.selectedAccessories.item2.selected = true;
     },
     onSelectMufta(id, mufta) {
@@ -380,6 +384,23 @@ export default {
 .radio-item-phasa {
   display: inline-block;
   margin-right: 15px;
+}
+.accessories img {
+    padding-bottom: 30px
+}
+.item-selected {
+    padding: 10px;
+    text-align: left;
+    margin: 0 20px;
+}
+.item-selected i {
+    font-size: 20px;
+}
+.item-selected .expand-view {
+    display: none
+} 
+.el-card.box-card.is-always-shadow {
+    margin-bottom: 5px;
 }
 </style>
 

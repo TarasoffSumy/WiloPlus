@@ -13,9 +13,9 @@
                 <colgroup span="4"></colgroup>
                 <tr>
                     <th>Найменування</th>
-                    <th>Кількість</th>
-                    <th>ціна</th>
-                    <th>Всього</th>
+                    <th>Кількість, шт</th>
+                    <th>Ціна, грн з ПДВ</th>
+                    <th>Всього, грн з ПДВ</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,13 +27,21 @@
                     <td>{{tableData.pump.price}}</td>
                     <td>{{tableData.pump.price*tableData.pump.amount}}</td>
                 </tr>
-                <tr v-if="tableData.cuble.selected" >
+                <tr v-if="tableData.cable.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(2)"><i class="el-icon-error"></i></el-button>
-                    {{tableData.cuble.name}}</td>
-                    <td><el-input-number v-model="tableData.cuble.amount" @change="handleChange()" :min="1" :max="10"></el-input-number></td>
-                    <td>{{tableData.cuble.price}}</td>
-                    <td>{{tableData.cuble.price*tableData.cuble.amount}}</td>
+                    {{tableData.cable.name}}</td>
+                    <td><el-input-number v-model="tableData.cable.amount" @change="handleChange()" :min="1" :max="10"></el-input-number></td>
+                    <td>{{tableData.cable.price}}</td>
+                    <td>{{tableData.cable.price*tableData.cable.amount}}</td>
+                </tr>
+                <tr v-if="tableData.vessel.selected" >
+                    <td><el-button type="text"
+                    @click="handleDelete(2)"><i class="el-icon-error"></i></el-button>
+                    {{tableData.vessel.name}}</td>
+                    <td><el-input-number v-model="tableData.vessel.amount" @change="handleChange()" :min="1" :max="10"></el-input-number></td>
+                    <td>{{tableData.vessel.price}}</td>
+                    <td>{{tableData.vessel.price*tableData.vessel.amount}}</td>
                 </tr>
             </tbody>
         </table>
@@ -59,7 +67,14 @@
                 amount: 1,
                 selected:true
                 }, 
-            cuble:
+            cable:
+            {
+                name: 'Cabel 123',
+                price: 2500, 
+                amount: 1,
+                selected:true
+            },
+            vessel:
             {
                 name: 'Cabel 123',
                 price: 2500, 
