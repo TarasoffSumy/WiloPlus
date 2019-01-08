@@ -28,7 +28,7 @@
                 <el-input-number v-model="volumeFlow.Val4.val" @change="handleChange(volumeFlow.Val4.val, 4)" :min="0" ></el-input-number>
                 шт 
             </p>
-            <p><span class="item"> <img :src="url+'assets/toilet.svg'" alt=""> Биде</span> 
+            <p><span class="item"> <img :src="url+'assets/bide.svg'" alt=""> Биде</span> 
                 <el-input-number v-model="volumeFlow.Val5.val" @change="handleChange(volumeFlow.Val5.val, 5)" :min="0" ></el-input-number>
                 шт 
             </p>

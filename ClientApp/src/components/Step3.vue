@@ -36,42 +36,55 @@
         </div>
         <h2 class="title">Підбір насоса та приладдя </h2>
     </el-row>
+    
     <el-row>
     <div class="greyBoxes-container">
         <div class="greyBox" v-if="idPump">
-                <el-col  :span="8" >
-                  <img width="150" :src="url+'assets/wilo-skvaginniy-nasos-actun-first-spu4.jpg'"/>   
-                </el-col>
-                <el-col  :span="16" >
+                <el-row>
                     <h3>Підбраний насос </h3>
-                    <p>ACTUN {{objSelectedPump.shortName}}</p>                
-                            <div v-for="item in pump" :value="item" :key="item.id" class="radio-item-phasa" >
-                                <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
-                                                <span v-if="item.features.phase=='1'">однофазный</span>
-                                                <span v-if="item.features.phase=='3'">трехфазный</span>
-                                </el-radio>       
-                            </div>
-                            <p>Насосний агрегат:</p> 
-                            <p>{{objSelectedPump.name}}</p>
-                            <p>Ціна {{objSelectedPump.price}} грн. з ПДВ</p>
-                </el-col>        
-                    <p>Конструкція</p>
+                    <el-col  :span="4" >
+                    <img width="150" :src="url+'assets/wilo-skvaginniy-nasos-actun-first-spu4.jpg'"/>   
+                    </el-col>
+                    <el-col :offset="1"  :span="19" >
+                       <h4>ACTUN {{objSelectedPump.shortName}}</h4>
+                        <p>Тип живлення:</p>                
+                                <div v-for="item in pump" :value="item" :key="item.id" class="radio-item-phasa" >
+                                    <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
+                                                    <span v-if="item.features.phase=='1'">однофазный</span>
+                                                    <span v-if="item.features.phase=='3'">трехфазный</span>
+                                    </el-radio>       
+                                </div>
+                                <p class="sub-title">Насосний агрегат: {{objSelectedPump.name}}</p> 
+                                <p class="sub-title price">Ціна {{objSelectedPump.price}} грн. з ПДВ</p>
+                    </el-col>                
+                </el-row>
+
+                <el-row style="margin-bottom: 20px;">
+                    <p class="sub-title">Конструкція</p>
                     <p>Багатоступеневий насос 4" із занурюваним двигуном, виконання з кожухом, для вертикальної або горизонтальної установки</p>
-                    <p>Потужність двигуна: {{objSelectedPump.n_power}} kW </p>
-                    <p>Номінальний струм: {{objSelectedPump.current}} A </p>
-                    <div>
-                        Робоча точка отримана від користувача:
-                        <p>Витрата: {{volumeFlow}} м<sup>3</sup>/ч </p> 
-                        <p>Напір: {{deliveryHead}} м</p>                           
-                    </div>
-                    <div>
-                        Робоча точка фактична:
-                        <p>Витрата: {{dataChart.CalcPoint[0].x}} м<sup>3</sup>/ч </p> 
-                        <p>Напір: {{dataChart.CalcPoint[0].y}} м</p>                           
-                    </div>
-                    <div id="print" style="margin-left:45px;position: relative; width:300px">
+                    <span class="sub-title"></span>
+                    
+                    <el-col :span="12">
+                        <p><span class="sub-title">Потужність двигуна:</span> {{objSelectedPump.n_power}} kW </p>
+                        <p><span class="sub-title point">Робоча точка отримана від користувача:</span></p>                        
+                        <p><span class="sub-title">Витрата:</span> {{volumeFlow}} м<sup>3</sup>/ч </p> 
+                        <p><span class="sub-title">Напір:</span> {{deliveryHead}} м</p>   
+                    </el-col>
+                    <el-col :span="12">
+                        <p><span class="sub-title">Номінальний струм:</span> {{objSelectedPump.current}} A </p>
+                        <p><span class="sub-title point">Робоча точка фактична:</span></p>                        
+                        <p><span class="sub-title">Витрата:</span> {{dataChart.CalcPoint[0].x}} м<sup>3</sup>/ч </p> 
+                        <p><span class="sub-title">Напір:</span> {{dataChart.CalcPoint[0].y}} м</p>                          
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <div id="print" style="margin-left:45px;position: relative; width:300px: top:20px">
                     <Chart  :dataChart="dataChart"   />   
-                    </div>                    
+                    </div>                      
+                </el-row>      
+                 
+                      
+                 
             </div>
             <div v-else class="greyBox">
                 Насос не знайден!
@@ -85,7 +98,7 @@
                  </div>
              
             <div  v-if="existAccessories" class="item-selected">
-            <h2>Підібране приладдя</h2>
+            <h3>Підібране приладдя</h3>
             <el-card  class="box-card" v-if="selectedAccessories.item1.selected">
                 <h3>{{selectedAccessories.item1.title}}</h3>
                     <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(1)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
@@ -181,7 +194,7 @@
                         <el-row>
                             <p><strong>{{selectedAccessories.item5.name}} </strong> </p>
                             <p class="stronge-price">Ціна: {{selectedAccessories.item5.price}} грн з ПДВ </p>                            
-                            <p>Длина: <strong>{{selectedAccessories.item5.length}} </strong> мм </p>
+                            <p>Довжена: <strong>{{selectedAccessories.item5.length}} </strong> мм </p>
                             <div class="expand-view"></div>
                         </el-row>
                     </div> 
@@ -228,7 +241,7 @@ export default {
   },
   mounted: function(){
        this.onSaveSelectedAccessories()
-       console.log(this.selectedAccessoriesRefresh)
+       console.log(this.selectedAccessories)
   },
   computed: {
     objSelectedPump: function() {
@@ -253,12 +266,7 @@ export default {
         }
       }
         this.paramOfSelectedPump=obj
-    //   this.paramOfSelectedPump.phase = obj.phase;
-    //   this.paramOfSelectedPump.current = obj.current;
-    //   this.paramOfSelectedPump.cosf = obj.cosf;
-    //   this.paramOfSelectedPump.dim_H2 = obj.dim_H2;
-    //   this.paramOfSelectedPump.name = obj.dim_H2;      
-      this.paramOfSelectedPump.U = obj.phase == 1 ? 230 : 400;
+        this.paramOfSelectedPump.U = obj.phase == 1 ? 230 : 400;
 
       return obj;
     },
@@ -277,8 +285,36 @@ export default {
     onSaveSelectedPumpId(id) {
       this.$emit("onSaveSelectedPumpId", id);
     },
-    handleChangePhase(id) {
-      this.onSaveSelectedPumpId(id);
+    onClearItemAccessories() {
+        this.selectedAccessoriesRefresh.item1.selected=false 
+        this.selectedAccessoriesRefresh.item2.selected=false
+        this.selectedAccessoriesRefresh.item3.selected=false
+        
+    },
+    handleChangePhase(id) { 
+      this.onSaveSelectedPumpId(id)
+      if (  this.selectedAccessoriesRefresh.item1.selected != false ||
+            this.selectedAccessoriesRefresh.item2.selected != false ||
+            this.selectedAccessoriesRefresh.item3.selected != false)
+         {
+            this.$confirm('Після зміни типу живлення необхідно буде ще раз обрати приладдя залежні від току', 'Увага', {
+                confirmButtonText: 'Згода',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+                }).then(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Обрані приладдя вилучені'
+                });
+                this.onClearItemAccessories()
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Обрані приладдя залишились'
+                });
+                        
+                });          
+      }     
     },
     onSelectController(id, dataControlBox) {
       this.selectedAccessoriesRefresh.item1.idController = id;
@@ -357,8 +393,9 @@ export default {
   margin: 5px;
 }
 .radio-item-phasa {
-  display: inline-block;
-  margin-right: 15px;
+    display: inline-block;
+    margin: 12px 0;
+    padding-right: 10px;
 }
 .accessories img {
     padding-bottom: 30px
@@ -374,6 +411,21 @@ export default {
 } 
 .el-card.box-card.is-always-shadow {
     margin-bottom: 5px;
+}
+.sub-title {
+    font-weight: 600
+}
+p.sub-title.price {
+    margin: 15px 5px;
+    font-size: 19px;
+    color: #009c81;
+}
+span.sub-title.point {
+    min-height: 42px;
+    padding: 5px 0;
+    display: block;
+    margin-top: 14px;
+    border-top: solid 1px #ddd;
 }
 </style>
 
