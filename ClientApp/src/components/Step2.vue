@@ -31,7 +31,7 @@
     <h2 class="title">Напір насоса</h2> 
     </el-row> 
     <el-row>
-        <el-col :span="12">
+    <div class="greyBoxes-container">
              <div class="greyBox">
                  <h3>Необхідний напір насоса</h3>                
                  <p>Напір 
@@ -43,16 +43,15 @@
                  <el-button type="text" @click="open">констативний</el-button>, та множимо на число
                  </p>
              </div>
-        </el-col>
-        <el-col :span="12">
-                 <div class="greyBox">
+
+                 <div class="greyBox last-box">
                   <font-awesome-icon icon="lightbulb" />
                  <p style="text-align:left">Якщо необхідно розрахувати напір, скористайтесь послугами нашого помічника</p>
                  <div class="container-button">
-                 <el-button type="primary" @click="dialogVisible = true">Розрахувати</el-button>                                     
+                 <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
                  </div>
              </div>
-        </el-col>
+    </div>
     </el-row>        
 </div>           
 </template>
@@ -124,9 +123,6 @@ button.el-button.el-button--text {
     color: #50b9f0;
     padding: 0;
 }
-.container-button {
-    text-align: right;
-    padding: 35px 20px 10px;
-}
+
 </style>
 

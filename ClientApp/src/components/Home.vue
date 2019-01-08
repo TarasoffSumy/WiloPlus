@@ -1,10 +1,10 @@
 <template>
   <div> 
       <el-card  v-loading="loading" style="width: 100%">
-      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button>
-     {{deliveryHead}} - {{volumeFlow}}
+      <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button> -->
+     <!-- {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
-     {{selectedPumpId}}
+     {{selectedPumpId}} -->
       <div style="width: 1200px; margin: auto;">
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
@@ -36,10 +36,15 @@
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
                 :dataChart="dataChart" 
+                :selectedAccessories="selectedAccessories"
                 @onSaveSelectedPumpId="onSaveSelectedPumpId"
+                @onSaveSelectedAccessories="onSaveSelectedAccessories"
                 class="transition-box"/>
         <Step4 v-else-if='current==4' 
                 :url="url"
+                :pump="pump"
+                :selectedAccessories="selectedAccessories"
+                :selectedPumpId="selectedPumpId"
                 class="transition-box"/> 
         </transition>     
     
@@ -96,6 +101,52 @@ export default {
                     Hnas:'',
                     Hsis:'',
                     WorkPoint:''                                                
+                },
+                selectedAccessories: {
+                    item1: {
+                        title: "Прилад керування і захисту насоса",
+                        name: "",
+                        img: "assets/controller.jpg",
+                        price: "",
+                        current_max: "",
+                        dim: "",
+                        selected: false,
+                        idController: undefined
+                    },
+                    item2: {
+                        title: "Кабель",
+                        name: "",
+                        img: "assets/cable.jpg",
+                        price: 0,
+                        length: 0,
+                        selected: false,
+                        idCable: undefined
+                    },
+                    item3: {
+                        title: "З’єднання насоса",
+                        name: "",
+                        img: "assets/mufta.jpg",
+                        price: "",
+                        selected: false,
+                        idMufta: undefined
+                    },
+                    item4: {
+                        title: "Мембранний напірний бак",
+                        name: "",
+                        img: "assets/bak.jpg",
+                        price: "",
+                        selected: false,
+                        idVessel: undefined
+                    },
+                    item5: {
+                        title: "Кожух",
+                        name: "",
+                        length: "",
+                        img: "assets/jeckets.jpg",
+                        price: "",
+                        selected: false,
+                        idJecket: undefined
+                    }
                 }
             }
         },
@@ -129,6 +180,9 @@ export default {
             },
             onSaveSelectedPumpId(val){
                 this.selectedPumpId=val 
+            },
+            onSaveSelectedAccessories(obj){
+                this.selectedAccessories=obj 
             },
             postData: function() {
                 const getPromise = Axios.post(this.url+'db/getHelp', {"help_id" : 1});
@@ -186,6 +240,9 @@ export default {
                 }
             },
             back () {
+                if  (this.current == 4) {                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);                 
+                } 
                 if (this.current == 0) {
                     this.current = 0;
                 } else {
@@ -266,7 +323,6 @@ p {
 }
 h1, h2, h3 {
     color: #363640;
-    text-align: center;
 }
 h4 {
     font-size: 19px;
@@ -295,16 +351,14 @@ span {
     color: #555;
 }
 
-  .transition-box {
+.transition-box {
     margin-bottom: 10px;
-    width: 100%;
-    border-radius: 4px;
+    width: calc(100% - 40px);
     background-color: #ffffff;
     text-align: center;
-    padding: 20px 20px;
+    padding: 20px 0;
     box-sizing: border-box;
-    margin-right: 20px;
-  }
+}
 
 .flip-enter{}
 .flip-enter-active {
@@ -324,11 +378,21 @@ span {
   from {transform: rotateX(0deg);}
   to {transform: rotateX(90deg);}  
 }
-
+.container-button {
+    text-align: right;
+    padding: 35px 20px 10px;
+}
 button.el-button.el-button--primary {
     border-radius: 0;
     min-width: 135px;
     font-size: 14px;
+}
+button.el-button.calc-btn.el-button--primary {
+    font-size: 16px;
+}
+button.el-button.calc-btn.el-button--primary img
+{
+    padding-right: 10px;vertical-align: middle;
 }
 button.el-button.el-button--success {
     background-color: #009c82;
@@ -379,13 +443,20 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
 .transition-box .circle_numder span {
     color: #fff
 }
+.greyBoxes-container {
+    display: flex;
+    flex-direction: row;
+}
 .greyBox {
     padding: 20px;
     background: #f6f6f6;
-    display: block;
     color: #212121;
-    margin: 20px;
+    margin-right: 2%;
     min-height: 225px;
+    width: 46%;
+}
+.last-box{
+    margin-right: 0;
 }
 .alert {
     padding: 10px;

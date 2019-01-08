@@ -209,8 +209,8 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 }
 .circle_numder .symbolInCircle {
     position: relative;
-    top: -33px;
-    left: -1px;
+    top: -32px;
+    left: -2px;
     font-size: 20px;
     color: #fff;
     z-index: 6;
@@ -218,7 +218,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 
 .side-left-helper .circle_numder .symbolInCircle
 {
-    top: -38px;
+    top: -32px;
     left: -1px;
 }
 .item {

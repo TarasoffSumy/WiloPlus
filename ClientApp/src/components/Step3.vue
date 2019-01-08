@@ -37,8 +37,8 @@
         <h2 class="title">Підбір насоса та приладдя </h2>
     </el-row>
     <el-row>
-        <el-col :span="12" >
-            <div class="greyBox" v-if="idPump">
+    <div class="greyBoxes-container">
+        <div class="greyBox" v-if="idPump">
                 <el-col  :span="8" >
                   <img width="150" :src="url+'assets/wilo-skvaginniy-nasos-actun-first-spu4.jpg'"/>   
                 </el-col>
@@ -77,16 +77,14 @@
                 Насос не знайден!
                 Скорегуйте напор та витрату
             </div>
-        </el-col>
-        <el-col :span="12">
-                 <div class="greyBox">
+        <div class="greyBox last-box">
                  <font-awesome-icon icon="lightbulb" />
-                 <p style="text-align:left">Підібрати приладдя до насосу</p>
+                 <p style="padding-top: 20px;">Підібрати приладдя до насосу</p>
                  <div class="container-button">
-                 <el-button type="primary" @click="dialogVisible = true">Підібрати</el-button>                                     
+                 <el-button class="calc-btn" style="margin-top: -20px;"  type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Підібрати</el-button>                                     
                  </div>
-             </div>
-        <div  v-if="existAccessories" class="item-selected">
+             
+            <div  v-if="existAccessories" class="item-selected">
             <h2>Підібране приладдя</h2>
             <el-card  class="box-card" v-if="selectedAccessories.item1.selected">
                 <h3>{{selectedAccessories.item1.title}}</h3>
@@ -139,11 +137,13 @@
                     <el-col :span="20">
                     <div class="accessories">
                         <el-col :span="6">
-                        <img :src="url+'assets/mufta.jpg'" width="100px" alt="">
+                        <img v-if="selectedAccessories.item3.type=='coupling filler'" :src="url+'assets/mufta_zal.jpg'" width="90px" alt="">
+                        <img v-else-if="selectedAccessories.item3.type=='coupling thermo'" :src="url+'assets/mufta_termo.jpg'" width="90px" alt="">
                         </el-col>
                         <el-col :span="17" :offset="1" class="text"></el-col>
                         <el-row>
                             <p><strong>{{selectedAccessories.item3.name}} </strong> </p>
+                            <p>Перетин  {{selectedAccessories.item3.section}} мм<sup>2</sup></p>
                             <p class="stronge-price">Ціна: {{selectedAccessories.item3.price}} грн з ПДВ </p>  
                             <div class="expand-view"></div>
                         </el-row>
@@ -187,8 +187,9 @@
                     </div> 
                     </el-col>                
                 </el-card>  
-        </div>       
-        </el-col>
+        </div> 
+        </div>      
+    </div>
     </el-row> 
 </div> 
 </template>
@@ -203,11 +204,13 @@ export default {
     "dataChart",
     "pump",
     "selectedPumpId",
-    "url"
+    "url",
+    "selectedAccessories"
   ],
   data() {
     return {
       idPump: this.selectedPumpId,
+      selectedAccessoriesRefresh:this.selectedAccessories,
       deliveryHeadInput: this.deliveryHead,
       deliveryHeadComputed: null,
       dialogVisible: false,
@@ -217,58 +220,15 @@ export default {
         cosf: 0,
         U: 0,
         H2: 0
-      },
-      selectedAccessories: {
-        item1: {
-          title: "Прилад керування і захисту насоса",
-          name: "",
-          img: "assets/controller.jpg",
-          price: "",
-          current_max: "",
-          dim: "",
-          description: "",
-          selected: false,
-          idController: undefined
-        },
-        item2: {
-          title: "Кабель",
-          name: "",
-          img: "assets/cable.jpg",
-          price: 0,
-          length: 0,
-          selected: false,
-          idCable: undefined
-        },
-        item3: {
-          title: "З’єднання насоса",
-          name: "",
-          img: "assets/mufta.jpg",
-          price: "",
-          selected: false,
-          idMufta: undefined
-        },
-        item4: {
-          title: "Мембранний напірний бак",
-          name: "",
-          volume: "",
-          img: "assets/bak.jpg",
-          price: "",
-          selected: false,
-          idVessel: undefined
-        },
-        item5: {
-          title: "Кожух",
-          name: "",
-          length: "",
-          img: "assets/jeckets.jpg",
-          price: "",
-          selected: false,
-          idJecket: undefined
-        }
       }
     };
   },
   created: function() {
+
+  },
+  mounted: function(){
+       this.onSaveSelectedAccessories()
+       console.log(this.selectedAccessoriesRefresh)
   },
   computed: {
     objSelectedPump: function() {
@@ -283,6 +243,7 @@ export default {
           this.onSaveSelectedPumpId(pumpsArr[key].id);
           obj.name = pumpsArr[key].pump_name;
           obj.price = pumpsArr[key].price;
+          obj.id = pumpsArr[key].id;
           obj.current = pumpsArr[key].features.current;
           obj.shortName = obj.name.split("/")[0];
           obj.n_power = pumpsArr[key].features.n_power;
@@ -291,20 +252,23 @@ export default {
           obj.dim_H2 = pumpsArr[key].features.dim_H2;
         }
       }
-      this.paramOfSelectedPump.phase = obj.phase;
-      this.paramOfSelectedPump.current = obj.current;
-      this.paramOfSelectedPump.cosf = obj.cosf;
+        this.paramOfSelectedPump=obj
+    //   this.paramOfSelectedPump.phase = obj.phase;
+    //   this.paramOfSelectedPump.current = obj.current;
+    //   this.paramOfSelectedPump.cosf = obj.cosf;
+    //   this.paramOfSelectedPump.dim_H2 = obj.dim_H2;
+    //   this.paramOfSelectedPump.name = obj.dim_H2;      
       this.paramOfSelectedPump.U = obj.phase == 1 ? 230 : 400;
-      this.paramOfSelectedPump.dim_H2 = obj.dim_H2;
+
       return obj;
     },
     existAccessories: function() {
       if (
-        this.selectedAccessories.item1.selected != false ||
-        this.selectedAccessories.item2.selected != false ||
-        this.selectedAccessories.item3.selected != false ||
-        this.selectedAccessories.item4.selected != false ||
-        this.selectedAccessories.item5.selected != false
+        this.selectedAccessoriesRefresh.item1.selected != false ||
+        this.selectedAccessoriesRefresh.item2.selected != false ||
+        this.selectedAccessoriesRefresh.item3.selected != false ||
+        this.selectedAccessoriesRefresh.item4.selected != false ||
+        this.selectedAccessoriesRefresh.item5.selected != false
       )
         return true;
     }
@@ -316,47 +280,58 @@ export default {
     handleChangePhase(id) {
       this.onSaveSelectedPumpId(id);
     },
-    onSelectController(val, dataControlBox) {
-      this.selectedAccessories.item1.idController = val;
-      this.selectedAccessories.item1.name = dataControlBox[0].name;
-      this.selectedAccessories.item1.price = dataControlBox[0].price;
-      this.selectedAccessories.item1.current_max = dataControlBox[0].features.current_max;
-      this.selectedAccessories.item1.description = dataControlBox[0].features.description;
-      this.selectedAccessories.item1.dim = dataControlBox[0].features.dim;
-      this.selectedAccessories.item1.selected = true;
+    onSelectController(id, dataControlBox) {
+      this.selectedAccessoriesRefresh.item1.idController = id;
+      this.selectedAccessoriesRefresh.item1.name = dataControlBox[0].name;
+      this.selectedAccessoriesRefresh.item1.price = dataControlBox[0].price;
+      this.selectedAccessoriesRefresh.item1.current_max = dataControlBox[0].features.current_max;
+      this.selectedAccessoriesRefresh.item1.description = dataControlBox[0].features.description;
+      this.selectedAccessoriesRefresh.item1.dim = dataControlBox[0].features.dim;
+      this.selectedAccessoriesRefresh.item1.selected = true;
+      this.onSaveSelectedAccessories()
     },
     onSelectCable(cable, id) {
-      this.selectedAccessories.item2.idCable = id;
-      this.selectedAccessories.item2.name = cable.name;
-      this.selectedAccessories.item2.price = cable.price;
-      this.selectedAccessories.item2.length = cable.length;
-      this.selectedAccessories.item2.selected = true;
+      this.selectedAccessoriesRefresh.item2.idCable = id;
+      this.selectedAccessoriesRefresh.item2.name = cable.name;
+      this.selectedAccessoriesRefresh.item2.price = cable.price;
+      this.selectedAccessoriesRefresh.item2.length = cable.length;
+      this.selectedAccessoriesRefresh.item2.selected = true;
+      this.onSaveSelectedAccessories()
     },
     onSelectMufta(id, mufta) {
-      this.selectedAccessories.item3.idMufta = id;
-      this.selectedAccessories.item3.name = mufta[0].name;
-      this.selectedAccessories.item3.price = mufta[0].price;
-      this.selectedAccessories.item3.selected = true;
+      this.selectedAccessoriesRefresh.item3.idMufta = id;
+      this.selectedAccessoriesRefresh.item3.name = mufta[0].name;
+      this.selectedAccessoriesRefresh.item3.price = mufta[0].price;
+      this.selectedAccessoriesRefresh.item3.type = mufta[0].features.type;
+      this.selectedAccessoriesRefresh.item3.section = mufta[0].features.section;
+      this.selectedAccessoriesRefresh.item3.selected = true;
+      this.onSaveSelectedAccessories()
     },
     onSelectVessel(id, vessel) {
-      this.selectedAccessories.item4.idVessel = id;
-      this.selectedAccessories.item4.volume = vessel.features.volume;
-      this.selectedAccessories.item4.name = vessel.name;
-      this.selectedAccessories.item4.price = vessel.price;
-      this.selectedAccessories.item4.selected = true;
+      this.selectedAccessoriesRefresh.item4.idVessel = id;
+      this.selectedAccessoriesRefresh.item4.volume = vessel.features.volume;
+      this.selectedAccessoriesRefresh.item4.name = vessel.name;
+      this.selectedAccessoriesRefresh.item4.price = vessel.price;
+      this.selectedAccessoriesRefresh.item4.selected = true;
+      this.onSaveSelectedAccessories()
     },
     onSelectJecket(id, jecket) {
-      this.selectedAccessories.item5.idJecket = id;
-      this.selectedAccessories.item5.length = jecket.features.length;
-      this.selectedAccessories.item5.name = jecket.name;
-      this.selectedAccessories.item5.price = jecket.price;
-      this.selectedAccessories.item5.selected = true;
+      this.selectedAccessoriesRefresh.item5.idJecket = id;
+      this.selectedAccessoriesRefresh.item5.length = jecket.features.length;
+      this.selectedAccessoriesRefresh.item5.name = jecket.name;
+      this.selectedAccessoriesRefresh.item5.price = jecket.price;
+      this.selectedAccessoriesRefresh.item5.selected = true;
+      this.onSaveSelectedAccessories()
+    },
+    onSaveSelectedAccessories(){
+      let obj=this.selectedAccessoriesRefresh
+      this.$emit("onSaveSelectedAccessories", obj);
     },
     onDialogAccept() {
       this.dialogVisible = false;
     },
     onDeleteAccessories(id) {
-      this.selectedAccessories['item'+id].selected = false;
+      this.selectedAccessoriesRefresh['item'+id].selected = false;
     },
     open() {
       this.$alert("This is a message", "Title", {
@@ -389,9 +364,7 @@ export default {
     padding-bottom: 30px
 }
 .item-selected {
-    padding: 10px;
     text-align: left;
-    margin: 0 20px;
 }
 .item-selected i {
     font-size: 20px;

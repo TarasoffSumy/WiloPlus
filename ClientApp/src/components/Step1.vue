@@ -32,30 +32,31 @@
     <h2 class="title">Витрата насоса</h2> 
     </el-row> 
     <el-row>
-        <el-col :span="12">
-             <div class="greyBox">
+    <div class="greyBoxes-container">
+            <div class="greyBox">
                  <!-- :precision="2" :min="0.5" :max="17" -->
                  <h3>Необхідна витрата насоса</h3>       
                  <p>Витрата  <el-input-number v-model="volumeFlowInput" @change="onInputVolumeFlow"></el-input-number>
                  м<sup>3</sup>/ч
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
-                  Визначена витрата повинна бути меншою ніж <el-button type="text" @click="open">дебіт свердловини</el-button>,
+                  Визначена витрата повинна бути меншою ніж <el-tooltip placement="top">
+                  <div class="tolltip" slot="content">multiple lines<br/>second line</div> 
+                  <el-button type="text">дебіт свердловини</el-button>
+                 </el-tooltip>,
                   як мінімум на 0,5м3/год. 
                   В іншому випадку введіть витрату насосу рівною дебіту свердловину зменшеному на 0,5 м3/год
                  
                  </p>
-             </div>
-        </el-col>
-        <el-col :span="12">
-                 <div class="greyBox">
+            </div>
+            <div class="greyBox last-box">
                  <font-awesome-icon icon="lightbulb" />
                  <p style="text-align:left">Якщо необхідно розрахувати витрату, скористайтесь послугами нашого помічника</p>
-                 <div class="container-button">
-                 <el-button type="primary" @click="dialogVisible = true">Розрахувати</el-button>                                     
+                 <div class="container-button"> 
+                 <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
                  </div>
-             </div>
-        </el-col>
+            </div>
+    </div>
     </el-row>        
 </div>        
 </template>
@@ -136,9 +137,8 @@ button.el-button.el-button--text {
     color: #50b9f0;
     padding: 0;
 }
-.container-button {
-    text-align: right;
-    padding: 35px 20px 10px;
+.tolltip {
+    font-size: 14px
 }
 </style>
 

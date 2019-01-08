@@ -27,11 +27,14 @@
         <div v-if="focusInput==1" class="block-accessoreis"  v-for="item in controllers" :key="item.id">
             <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                                       
                     <el-col :span="1" style="padding-top:30px">
-                        <el-radio  v-model="selectedAccessories.idController"  @change="handleChange(item.id)" :label="item.id">
-                        <span > </span></el-radio>                                 
+                        <el-radio  v-model="idController"  @change="handleChange(item.id)" :label="item.id">
+                        <span > </span></el-radio>                                
                     </el-col>
                     <el-col :span="4">                           
                             <img :src="url+'assets/controller.jpg'" width="100px" alt="">
+                                <svg height="80" width="80" class="circle" >
+                                <circle cx="40" cy="40" r="40" stroke="" stroke-width="2" fill="" />
+                                </svg><div class="lable-class">{{item.features.class}}</div>  
                     </el-col>
                     <el-col :span="17" :offset="2" >
                         
@@ -69,14 +72,40 @@
             </el-row>
             <el-row v-if="computedCableSection">
                 <h4>З’єднувальна муфта для кабеля</h4>
-                <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">           
-                    <el-radio  v-model="selectedAccessories.idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
+                <!-- <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">           
+                    <el-radio  v-model="idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
                                 <span class="name-item">{{item.name}}</span></el-radio> 
                                 <div v-html="item.features.description"></div>  
                                 <p class="stronge-price">Ціна  {{item.price}} грн з ПДВ</p>
-                                <!-- <p>Перетин  {{item.features.section}} мм<sup>2</sup> </p> -->                                      
-                </div>
-            </el-row>
+                                 <p>Перетин  {{item.features.section}} мм<sup>2</sup> </p>                                      
+                </div> 
+--> 
+
+        <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">
+            <el-row>                                       
+                    <el-col :span="1" style="padding-top:30px">
+                        <el-radio   v-model="idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
+                        <span> </span></el-radio>                          
+                    </el-col>
+                    <el-col :span="6">
+                        <img v-if="item.features.type=='coupling filler'" :src="url+'assets/mufta_zal.jpg'" width="120px" alt="">
+                        <img v-else-if="item.features.type=='coupling thermo'" :src="url+'assets/mufta_termo.jpg'" width="120px" alt="">
+                                <svg height="80" width="80" class="circle" >
+                                <circle cx="40" cy="40" r="40" stroke="" stroke-width="2" fill="" />
+                                </svg><div class="lable-class">{{item.features.class}}</div>  
+                    </el-col>
+                    <el-col :span="15" :offset="2" >                        
+                            <div class="accessories">
+                            <p class="name-item">{{item.name}}</p> 
+                            <p class="text" v-html="item.features.description"></p>
+                            <p>Перетин  {{item.features.section}} мм<sup>2</sup></p>
+                            <p class="stronge-price">Ціна: {{item.price}} грн з ПДВ </p>  
+                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                            </div>                            
+                    </el-col> 
+            </el-row>               
+        </div>
+        </el-row>
         </div>
         <div v-if="focusInput==3" class="">
             <el-row>
@@ -128,8 +157,6 @@
                         <p v-html="computedJackets.features.description"></p>
                     </div>                   
                 </el-col>
-
-
         </div>
     </el-row>
 </div>
@@ -159,9 +186,10 @@ import Axios from 'axios';
                 title: 'Кожух',
             }
         },
-        focusInput: 0,
+        focusInput: 1,
         activeAccessories:'',
         controllers:'',
+        idController: this.selectedAccessories.item1.idController,
         cable:
         {
             description:'',
@@ -174,6 +202,7 @@ import Axios from 'axios';
         realSectionCable: 0,    
         computedCableSection: undefined,    
         mufts:'',
+        idMufta:'',
         vessels:'',
         computedVessel:'',
         realNeedVessel:'',
@@ -259,12 +288,13 @@ import Axios from 'axios';
         let obj=this.vessels[this.computedVesselId]
         let id=obj.id
         this.$emit('onSelectVessel', id, obj)
-      
       },
     handleChange(id){
+        this.idController=id
         this.onSelectController(id)
     },
     handleChangeMufta(id){
+        this.idMufta=id
         this.onSelectMufta(id)
     },
     handleChangeCableLength(value){
@@ -274,7 +304,7 @@ import Axios from 'axios';
 
         let S=[1.5, 2.5, 4, 6, 10, 16.0, 25, 35, 50, 70, 95]
         this.realSectionCable=3.1*value*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
-            if (this.realSectionCable <= S[0]) {
+        if (this.realSectionCable <= S[0]) {
                 this.computedCableSection=S[0];
             }
             else {
@@ -284,24 +314,26 @@ import Axios from 'axios';
                         this.computedCableSection=S[i+1];                        
                     }
             }
-        }   this.cable.length=value
-            let strData=String(this.computedCableSection)
-            this.postDataCables(strData.replace('.', ','))       
+        }   
+        this.cable.length=value
+        let strData=String(this.computedCableSection)
+        this.postDataCables(strData.replace('.', ','))       
     },
     onFocusInput(value) {
-        console.log(value)
         this.focusInput=value  
         this.activeAccessories=this.accessories['item'+value].title
         if (value==3) {
         let obj=this.vessels[this.computedVesselId]
         let id=obj.id
         this.$emit('onSelectVessel', id, obj)
-        
-        console.log(obj)
         }
+        if (value==1) {
+             this.onSelectController(this.idController)
+        }
+       
     },
-    onSelectCable(cable, id){
-        this.$emit('onSelectCable', cable, id)
+    onSelectCable(id, cable){
+        this.$emit('onSelectCable', id, cable)
     },
     onSelectController(id){
         let sourse=this.controllers
@@ -323,7 +355,13 @@ import Axios from 'axios';
         const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
         getPromise.then(response => {
         this.controllers = response.data;
-        console.log(this.controllers);
+        let sourse=this.controllers
+        let standartSelected= sourse.filter( function(el) {
+              return el.features.class=="Стандарт"
+            }
+        )
+        this.idController=standartSelected[0].id
+        this.onSelectController(this.idController)
         })
         .catch(error => {
         });
@@ -356,23 +394,33 @@ import Axios from 'axios';
                 });
     },
     postDataCables: function(section) {
-                const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
-                getPromise.then(response => {
-                let dataArray=[]
-                this.cable.id= response.data[0].id;
-                this.cable.name= response.data[0].name;
-                this.cable.price= response.data[0].price;
-                this.cable.description= response.data[0].features.description;
-                this.cable.section= response.data[0].features.section;
-                let muftsLocal=response.data;
-                this.onSelectCable(this.cable, this.cable.id)
-                for (let i=1; i < muftsLocal.length;  i++) {
+            const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
+            getPromise.then(response => {
+            let dataArray=[]
+            this.cable.id= response.data[0].id;
+            this.cable.name= response.data[0].name;
+            this.cable.price= response.data[0].price;
+            this.cable.description= response.data[0].features.description;
+            this.cable.section= response.data[0].features.section;
+            let muftsLocal=response.data;
+            this.onSelectCable(this.cable, this.cable.id)
+            for (let i=1; i < muftsLocal.length;  i++) {
                     dataArray.push(muftsLocal[i]);
-                }
-                this.mufts=dataArray                
-                })
-                .catch(error => {
-                });
+            }
+            this.mufts=dataArray 
+            let sourse=this.mufts
+            console.log(this.mufts)
+            let standartSelected= sourse.filter( function(el) {
+            return el.features.class=="Стандарт"
+            })
+            this.idMufta=standartSelected[0].id
+            this.onSelectMufta(standartSelected[0].id)
+            console.log(standartSelected[0].id)
+        // this.idController=standartSelected[0].id
+        // this.onSelectController(this.idController)             
+            })
+            .catch(error => {
+            });
     },
     postDataJackets: function() {
                 const getPromise = Axios.post(this.url+'db/getAllJackets');
@@ -496,7 +544,7 @@ p.detail-title {
 }
 .circle_numder .symbolInCircle {
     position: relative;
-    top: -38px;
+    top: -34px;
     left: 12px;
     font-size: 20px;
     color: #fff;
@@ -582,5 +630,19 @@ span.name-item, .name-item {
 .accessorie {
     text-align: left;
 }
+.lable-class {
+    position: relative;
+    top: -53px;
+    left: 0px;
+    font-size: 12px;
+    width: 80px;
+    /* margin: auto; */
+    text-align: center;
+    color: #fff;
+    /* font-weight: 600; */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 </style>
 
