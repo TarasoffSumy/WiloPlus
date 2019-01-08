@@ -1,7 +1,8 @@
 <template>
-  <div><el-card  v-loading="loading" style="width: 100%">
-      <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF</button>
-     {{deliveryHead}} - {{volumeFlow}}
+  <div> 
+      <el-card  v-loading="loading" style="width: 100%">
+      <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button> -->
+     <!-- {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
      {{selectedPumpId}} -->
       <div style="width: 1200px; margin: auto;">
@@ -20,14 +21,14 @@
                 :maxVolumeFlow="maxVolumeFlow"
                 @onInputDataVolume="onInputDataVolume"
                 @onInputFlowItems="onInputFlowItems"
-                class="transition-box step1"/>              
+                class="transition-box"/>              
         <Step2 v-else-if='current==2' 
                 :url="url" 
                 :deliveryHead="deliveryHead"
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
-                class="transition-box step2"/>         
+                class="transition-box"/>         
         <Step3 v-else-if="current==3 && step3=='ready'"
                 :url="url" 
                 :pump="pump"
@@ -35,16 +36,20 @@
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
                 :dataChart="dataChart" 
+                :selectedAccessories="selectedAccessories"
                 @onSaveSelectedPumpId="onSaveSelectedPumpId"
+                @onSaveSelectedAccessories="onSaveSelectedAccessories"
                 class="transition-box"/>
         <Step4 v-else-if='current==4' 
                 :url="url"
+                :pump="pump"
+                :selectedAccessories="selectedAccessories"
+                :selectedPumpId="selectedPumpId"
                 class="transition-box"/> 
         </transition>     
     
         <el-row class="navigation-footer">
         <el-col :span="12" style="width:50%">
-
              <el-button :disabled="current == 1"  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад </el-button>
         </el-col>
         <el-col :span="12" style="width:50%">
@@ -66,12 +71,8 @@ export default {
   data () {
         return {
                 loading: false,
-                output: null,
                 url:'http://www.wiloexpert.com.ua/wilo/',
                 current: 1,
-                showStep: 0,
-                activeClass: 'active',
-                errorClass: 'text-danger',
                 refreshDataSearch:false,
                 isActive: false,
                 deliveryHead: 30,
@@ -96,41 +97,62 @@ export default {
                 step3:'',   
                 selectedPumpId: 0,
                 dataChart: {
-                CalcPoint:'',
-                Hnas:'',
-                Hsis:'',
-                WorkPoint:''                                                
+                    CalcPoint:'',
+                    Hnas:'',
+                    Hsis:'',
+                    WorkPoint:''                                                
+                },
+                selectedAccessories: {
+                    item1: {
+                        title: "Прилад керування і захисту насоса",
+                        name: "",
+                        img: "assets/controller.jpg",
+                        price: "",
+                        current_max: "",
+                        dim: "",
+                        selected: false,
+                        idController: undefined
+                    },
+                    item2: {
+                        title: "Кабель",
+                        name: "",
+                        img: "assets/cable.jpg",
+                        price: 0,
+                        length: 0,
+                        selected: false,
+                        idCable: undefined
+                    },
+                    item3: {
+                        title: "З’єднання насоса",
+                        name: "",
+                        img: "assets/mufta.jpg",
+                        price: "",
+                        selected: false,
+                        idMufta: undefined
+                    },
+                    item4: {
+                        title: "Мембранний напірний бак",
+                        name: "",
+                        img: "assets/bak.jpg",
+                        price: "",
+                        selected: false,
+                        idVessel: undefined
+                    },
+                    item5: {
+                        title: "Кожух",
+                        name: "",
+                        length: "",
+                        img: "assets/jeckets.jpg",
+                        price: "",
+                        selected: false,
+                        idJecket: undefined
+                    }
                 }
             }
         },
-        created: function() {
-        function getСomma(value){
-        return value.replace('.', ',')
-        }
-        console.log(getСomma('1.5'))
-                   // 60
-           //this.postDataPump(this.volumeFlow, this.deliveryHead); 
-           //this.postDataGetDetail()
-        //   this.onGetDataChart()                      
+        created: function() {     
         },
         computed: {
-        //     objSelectedPump: function() {
-        //         let pumpsArr=[]
-        //         let source=this.pump
-        //         for (let key in source){
-        //                 pumpsArr.push(source[key])                
-        //         }
-        //         let obj={}
-        //         for (let key in pumpsArr){
-        //             if (pumpsArr[key].id==this.selectedPumpId) {
-        //                 obj.name=pumpsArr[key].pump_name
-        //                 obj.price=pumpsArr[key].price
-        //                 obj.shortName=obj.name.split('/')[0]
-        //                 // this.selectedPump=obj
-        //             }
-        //         }
-        //      return obj            
-        //     }            
         },
         methods: {
              makePdf() {
@@ -143,14 +165,7 @@ export default {
                 html2canvas: { scale: 2 },
                 jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true}
                 }).save();
-            },
-            OnGet() {
-                 let Qrez=2
-                function getLog(y) {
-                return Math.log(y) ;
-                }
-                console.log(0.937*getLog(Qrez)+0.7689)
-            },    
+            },   
             onInputDataVolume(val) {
                 this.volumeFlow=val
             },
@@ -166,6 +181,9 @@ export default {
             onSaveSelectedPumpId(val){
                 this.selectedPumpId=val 
             },
+            onSaveSelectedAccessories(obj){
+                this.selectedAccessories=obj 
+            },
             postData: function() {
                 const getPromise = Axios.post(this.url+'db/getHelp', {"help_id" : 1});
                 getPromise.then(response => {
@@ -174,30 +192,29 @@ export default {
             postDataCableSelect: function() {
                 const getPromise = Axios.post(this.url+'db/cableSelect', {"section":"1,5"});
                 getPromise.then(response => {
-                console.log(response.data)
+                // console.log(response.data)
                 });
                 },
-                postDataGetDetail: function() {
+            postDataGetDetail: function() {
                 const getPromise = Axios.post(this.url+'db/getDetails', {"id":"311"});
                 getPromise.then(response => {
-                    console.log(response.data)
+                // console.log(response.data)
                 });
                 },
-                postDataControllers: function(current) {
-                    const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
-                    getPromise.then(response => {        
-                            console.log(response.data);
-                            })
-                            .catch(error => {
-                            });
+            postDataControllers: function(current) {
+                const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
+                getPromise.then(response => {        
+                // console.log(response.data);
+                })
+                .catch(error => {
+                    });
                 },
-                postDataPump: function(volumeFlow, deliveryHead) {
+            postDataPump: function(volumeFlow, deliveryHead) {
                 this.loading=true
                 const getPromise = Axios.post(this.url+'db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
                 getPromise.then(response => {
                 this.pump = response.data;
                 if (this.pump!=undefined) {
-                    console.log('get') 
                     this.selectedPumpId=this.pump[0].id                  
                     this.onGetDataChart()                       
                         this.loading=false
@@ -211,22 +228,21 @@ export default {
                     console.log('error')
                 });
                 },
-
             next () {
-                if  (this.current == 3) {
-                    
+                if  (this.current == 3) {                    
                     this.postDataPump(this.volumeFlow, this.deliveryHead);
-
                 } 
                 if (this.current == 4) {
                     this.current = 1;
                 } else {
                     this.current+= 1;
                     this.isActive=true
-                    this.showStep=this.current
                 }
             },
             back () {
+                if  (this.current == 4) {                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);                 
+                } 
                 if (this.current == 0) {
                     this.current = 0;
                 } else {
@@ -235,14 +251,9 @@ export default {
             },
             step (n) {
                this.current = n
-                if  (this.current == 3) {  
-                                      
-                    this.postDataPump(this.volumeFlow, this.deliveryHead);    
-                                  
+                if  (this.current == 3) {                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);                 
                 }            
-            },
-            onGetvolumeFlow(value) {
-                this.volumeFlow=value
             },
             onGetDataChart(){
             let source=this.pump          
@@ -293,8 +304,7 @@ export default {
                 }
                 arr.push(point)
             }
-            this.dataChart.Hsis=arr
-             
+            this.dataChart.Hsis=arr 
             }
         }
 }
@@ -313,7 +323,6 @@ p {
 }
 h1, h2, h3 {
     color: #363640;
-    text-align: center;
 }
 h4 {
     font-size: 19px;
@@ -342,16 +351,14 @@ span {
     color: #555;
 }
 
-  .transition-box {
+.transition-box {
     margin-bottom: 10px;
-    width: 100%;
-    border-radius: 4px;
+    width: calc(100% - 40px);
     background-color: #ffffff;
     text-align: center;
-    padding: 20px 20px;
+    padding: 20px 0;
     box-sizing: border-box;
-    margin-right: 20px;
-  }
+}
 
 .flip-enter{}
 .flip-enter-active {
@@ -371,11 +378,21 @@ span {
   from {transform: rotateX(0deg);}
   to {transform: rotateX(90deg);}  
 }
-
+.container-button {
+    text-align: right;
+    padding: 35px 20px 10px;
+}
 button.el-button.el-button--primary {
     border-radius: 0;
     min-width: 135px;
     font-size: 14px;
+}
+button.el-button.calc-btn.el-button--primary {
+    font-size: 16px;
+}
+button.el-button.calc-btn.el-button--primary img
+{
+    padding-right: 10px;vertical-align: middle;
 }
 button.el-button.el-button--success {
     background-color: #009c82;
@@ -423,24 +440,23 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
 .transition-box .circle_numder {
     float: left;
 }
-/*
-.transition-box .circle_numder {
-    padding-top: 20px;
-    margin: auto;
-    width: 50px;
-    height: 50px;
-    float: left;
-}}*/
 .transition-box .circle_numder span {
     color: #fff
+}
+.greyBoxes-container {
+    display: flex;
+    flex-direction: row;
 }
 .greyBox {
     padding: 20px;
     background: #f6f6f6;
-    display: block;
     color: #212121;
-    margin: 20px;
+    margin-right: 2%;
     min-height: 225px;
+    width: 46%;
+}
+.last-box{
+    margin-right: 0;
 }
 .alert {
     padding: 10px;
@@ -448,4 +464,37 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
     font-size: 13px;
     margin-top: 35px;
 } 
+ul li {
+   list-style: none;    
+}
+ul li:before {
+    font-family: 'wilo-icons';
+    font-size: 22px;
+    margin-left: -26px;
+    color: #009c82;
+    content: "\192";
+    width: 26px;
+    display: inline-table;
+    position: relative;
+    top: 2px;
+    font-weight: bold;
+}
+
+.my-font::before {
+    font-family: 'wilo-icons';
+    font-style: normal;
+    line-height: 135%;
+    word-wrap: break-word;
+    font-size: 50px;
+    margin: 0px;
+    padding: 0px;
+    color: #009c82;
+   content: "ƒ"; 
+   vertical-align: middle;
+}
+.stronge-price {
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 40px;
+}
 </style>

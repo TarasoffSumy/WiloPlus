@@ -3,12 +3,12 @@
     <h2>Помічник визначення напору насоса</h2>
     <el-row>
         <el-col :span="12" class="side-left-helper">
-            <div v-for="item in helperHead" class="row-item" :class="[{ activeLeftCircle: focusInput==item.id}]">
+            <div v-for="item in helperHead" :key="item.id" class="row-item" :class="[{ activeLeftCircle: focusInput==item.id}]">
                 <div class="circle_numder">                   
                     <svg height="36" width="36" class="circle">
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                     </svg><div class="symbolInCircle">{{item.letter}} </div> 
-                           <div ></div>    
+                    <div ></div>    
                 </div>
                 <span class="item">{{item.title}}</span>    
                 <el-input-number @focus="onFocusInput(item.id)" v-model="item.valueHead" @change="handleChange(item.valueHead, item.id)"  :precision="2" :min="0" ></el-input-number>
@@ -47,9 +47,6 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     props: ['modelHeadItems', 'url'],
     data() {
       return {
-          volumeFlow: {
-              
-          },
         helperHead: {
             item_A: {
                 id:1,
@@ -212,8 +209,8 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 }
 .circle_numder .symbolInCircle {
     position: relative;
-    top: -33px;
-    left: -1px;
+    top: -32px;
+    left: -2px;
     font-size: 20px;
     color: #fff;
     z-index: 6;
@@ -221,7 +218,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 
 .side-left-helper .circle_numder .symbolInCircle
 {
-    top: -38px;
+    top: -32px;
     left: -1px;
 }
 .item {

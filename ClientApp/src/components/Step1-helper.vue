@@ -6,15 +6,15 @@
     </p>
     <el-row>
         <el-col :span="12" class="side-side1-helper">
-            <p><span class="item"> <img :src="url+'assets/itemVolumeFlow1.png'" alt=""> Мийка кухні/умивальник </span>    
+            <p><span class="item"> <img :src="url+'assets/kitchen.svg'" alt=""> Мийка кухні/умивальник </span>    
                 <el-input-number v-model="volumeFlow.Val1.val" @change="handleChange(volumeFlow.Val1.val, 1)" :min="0" ></el-input-number>
                 шт 
             </p>
-            <p><span class="item"> <img :src="url+'assets/itemVolumeFlow1.png'" alt=""> Ванна/душова кабіна </span>   
+            <p><span class="item"> <img :src="url+'assets/bath.svg'" alt=""> Ванна/душова кабіна </span>   
                 <el-input-number v-model="volumeFlow.Val2.val" @change="handleChange(volumeFlow.Val2.val, 2)" :min="0" ></el-input-number>
                 шт 
             </p>
-            <p><span class="item"> <img :src="url+'assets/itemVolumeFlow1.png'" alt=""> Посудомийна машина </span>  
+            <p><span class="item"> <img :src="url+'assets/dishwasher.svg'" alt=""> Посудомийна машина </span>  
                 <el-input-number v-model="volumeFlow.Val3.val" @change="handleChange(volumeFlow.Val3.val, 3)" :min="0" ></el-input-number>
                 шт 
             </p>
@@ -24,15 +24,15 @@
             </p>
         </el-col>
         <el-col :span="10" class="side-side1-helper">
-            <p><span class="item"> <img :src="url+'assets/itemVolumeFlow1.png'" alt=""> Пральна машина</span>   
+            <p><span class="item"> <img :src="url+'assets/washer.svg'" alt=""> Пральна машина</span>   
                 <el-input-number v-model="volumeFlow.Val4.val" @change="handleChange(volumeFlow.Val4.val, 4)" :min="0" ></el-input-number>
                 шт 
             </p>
-            <p><span class="item"> <img :src="url+'assets/itemVolumeFlow1.png'" alt=""> Биде</span> 
+            <p><span class="item"> <img :src="url+'assets/toilet.svg'" alt=""> Биде</span> 
                 <el-input-number v-model="volumeFlow.Val5.val" @change="handleChange(volumeFlow.Val5.val, 5)" :min="0" ></el-input-number>
                 шт 
             </p>
-            <p><span class="item"> <img :src="url+'assets/itemVolumeFlow1.png'" alt=""> Унитаз  </span>  
+            <p><span class="item"> <img :src="url+'assets/toilet.svg'" alt=""> Унитаз  </span>  
                 <el-input-number v-model="volumeFlow.Val6.val" @change="handleChange(volumeFlow.Val6.val, 6)" :min="0" ></el-input-number>
                 шт 
             </p>
@@ -40,7 +40,7 @@
     </el-row> 
     <el-row class="row-before-nav">
         <p class="computed-volumeFlow">
-            {{Qrez}}
+
           <span class="label">Розрахована витрата</span>
           <span class="number"> {{compTotal}}</span> м<sup>3</sup>/ч 
        </p>
@@ -191,6 +191,10 @@ p.sub-title {
 .side-side1-helper img {
     vertical-align: middle;
     display: inline-block;
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+    margin-bottom: 5px;
 }
 .additional-volume-flow {
     padding: 0 28px 0 64px

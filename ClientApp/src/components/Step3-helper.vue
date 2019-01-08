@@ -12,7 +12,7 @@
         <img style="margin-top:-20px;text-align: left; position: absolute; left: 54px;" :src="url+'assets/accessories.jpg'" width="450" alt="">
         </el-col>
         <el-col :span="10" class="side-right-helper">
-            <div v-for="item in accessories" class="row-item" :class="[{activeLeftCircle: focusInput==item.id}]">
+            <div v-for="item in accessories" class="row-item" :key='item.id' :class="[{activeLeftCircle: focusInput==item.id}]">
                         <div class="circle_numder">                   
                             <svg height="36" width="36" class="circle">
                             <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
@@ -24,99 +24,141 @@
     </el-row> 
     <el-row>
         <h4>{{activeAccessories}}</h4>
-        <div v-if="focusInput==1">
-        <div class="block-accessoreis"  v-for="item in controllers" :key="item.id">
-            <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                     
-                    
-                     <el-radio  v-model="selectedAccessories.idController"  @change="handleChange(item.id)" :label="item.id">
-                         <span class="name-item">{{item.name}}</span></el-radio>                    
-                    
-
-                    <!-- <img :src="url+'assets/controller.jpg'" width="100px" alt=""> -->
-                   
-                    <!-- <el-col :span="12" :offset="2">
-                        <p>Ціна <strong>{{item.price}} грн</strong></p>                           
-                        <p>Ток мінімальний  <strong>{{item.features.current_min}}</strong> </p>
-                        <p>Ток максимальний <strong>{{item.features.current_max}}</strong> </p>
-                        <el-button type="primary">Детальніше</el-button>                       
-                    </el-col>  -->
-                    <div class="accessories">
-                        <el-col :span="5">
-                                        <img :src="url+'assets/controller.jpg'" width="100px" alt="">
-                        </el-col>
-                        <el-col :span="17" :offset="2" class="text" v-html="item.features.description"></el-col>
-                        <el-row>
-                                            <strong>{{item.name}} </strong>
+        <div v-if="focusInput==1" class="block-accessoreis"  v-for="item in controllers" :key="item.id">
+            <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                                       
+                    <el-col :span="1" style="padding-top:30px">
+                        <el-radio  v-model="idController"  @change="handleChange(item.id)" :label="item.id">
+                        <span > </span></el-radio>                                
+                    </el-col>
+                    <el-col :span="4">                           
+                            <img :src="url+'assets/controller.jpg'" width="100px" alt="">
+                                <svg height="80" width="80" class="circle" >
+                                <circle cx="40" cy="40" r="40" stroke="" stroke-width="2" fill="" />
+                                </svg><div class="lable-class">{{item.features.class}}</div>  
+                    </el-col>
+                    <el-col :span="17" :offset="2" >
                         
-                                            <p><strong>Ціна: {{item.price}} грн з ПДВ </strong></p>  
-                                            <p><strong>Ток максимальний:</strong> {{item.current_max}} A </p>
-                                            <p><strong>Розміри:</strong> {{item.dim}}  </p>
-                                            <div class="expand-view">
-                                            <p><strong>Тип пуску насоса:</strong> {{item.start}}  </p> 
-                                            <p><strong>Управління:</strong> {{item.operation}}  </p>                       
-                                            
-                                            <p><strong>Захист від сухого ходу:</strong> {{item.dry_running}}  </p> 
-                                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
-                                            </div>
-                        
-                        </el-row>
-                                            
-                    </div>
+                            <div class="accessories">
+                            <p class="name-item">{{item.name}}</p> 
+                            <p class="text" v-html="item.features.description"></p>
+                            <p class="stronge-price">Ціна: {{item.price}} грн з ПДВ </p>  
+                            <p><strong>Ток максимальний:</strong> {{item.features.current_max}} A </p>
+                            <p><strong>Розміри:</strong> {{item.features.dim}}  </p>
+                            <div class="expand-view">
+                            <p><strong>Тип пуску насоса:</strong> {{item.features.start}}  </p> 
+                            <p><strong>Управління:</strong> {{item.features.operation}}  </p>                       
+                            <p><strong>Захист від сухого ходу:</strong> {{item.features.dry_running}}  </p> 
+                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                            </div></div>                               
+                    </el-col> 
                 </el-row>               
         </div>
-        </div>
-        <div  v-if="focusInput==2" class="Accessories-cable">
-        <p> Довжина кабелю <el-input-number v-model="cablellength" @change="handleChangeCableLength(cablellength)" :min="0" ></el-input-number> м</p>
-        <!-- K - {{computedCableSection}}
-        /{{realSection}} -->
-        <div v-if="computedCableSection">
+        <div  v-if="focusInput==2" >
             <el-row>
-            <div class="block-accessoreis" >
-                <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span>  </p>
-                <div v-html="cable.description"></div>  
-                <p>Перетин  {{cable.section}} мм<sup>2</sup>
-                <p>{{cable.price}} грн</p> 
-            </div>                
+                <el-col :offset="7"  :span="3">
+                    <img style="" :src="url+'assets/cable.jpg'" width="150" alt="">
+                </el-col>
+                <el-col  :span="8" class="accessorie">
+                    <p>Довжина кабелю <el-input-number v-model="cable.length" @change="handleChangeCableLength(cable.length)" :min="0" ></el-input-number> м</p>
+                    <el-row v-if="computedCableSection">
+                        <div class="" >
+                            <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span>  </p>
+                            <div v-html="cable.description"></div>  
+                            <!-- <p>Перетин {{cable.section}} мм<sup>2</sup> -->
+                            <p class="stronge-price">{{cable.price}} грн з ПДВ за 1м.п.</p> 
+                        </div>                
+                    </el-row>                 
+                </el-col>
+            </el-row>
+            <el-row v-if="computedCableSection">
+                <h4>З’єднувальна муфта для кабеля</h4>
+                <!-- <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">           
+                    <el-radio  v-model="idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
+                                <span class="name-item">{{item.name}}</span></el-radio> 
+                                <div v-html="item.features.description"></div>  
+                                <p class="stronge-price">Ціна  {{item.price}} грн з ПДВ</p>
+                                 <p>Перетин  {{item.features.section}} мм<sup>2</sup> </p>                                      
+                </div> 
+--> 
+
+        <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">
+            <el-row>                                       
+                    <el-col :span="1" style="padding-top:30px">
+                        <el-radio   v-model="idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
+                        <span> </span></el-radio>                          
+                    </el-col>
+                    <el-col :span="6">
+                        <img v-if="item.features.type=='coupling filler'" :src="url+'assets/mufta_zal.jpg'" width="120px" alt="">
+                        <img v-else-if="item.features.type=='coupling thermo'" :src="url+'assets/mufta_termo.jpg'" width="120px" alt="">
+                                <svg height="80" width="80" class="circle" >
+                                <circle cx="40" cy="40" r="40" stroke="" stroke-width="2" fill="" />
+                                </svg><div class="lable-class">{{item.features.class}}</div>  
+                    </el-col>
+                    <el-col :span="15" :offset="2" >                        
+                            <div class="accessories">
+                            <p class="name-item">{{item.name}}</p> 
+                            <p class="text" v-html="item.features.description"></p>
+                            <p>Перетин  {{item.features.section}} мм<sup>2</sup></p>
+                            <p class="stronge-price">Ціна: {{item.price}} грн з ПДВ </p>  
+                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                            </div>                            
+                    </el-col> 
             </el-row>               
-            <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">
-                <el-radio  v-model="selectedAccessories.idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
-                            <span class="name-item">{{item.name}}</span></el-radio> 
-                            <p>Ціна  {{item.price}} грн </p>
-                            <p>Перетин  {{item.features.section}} мм<sup>2</sup> </p>
-                            <div v-html="item.features.description"></div>                            
-            </div>
         </div>
+        </el-row>
         </div>
-        <div v-if="focusInput==3" class="block-accessoreis">
-            <p class="name-item">{{vessels[computedVesselId].name}}</p>
-            <p>Об'єм <strong>{{vessels[computedVesselId].features.volume}}</strong> л</p>
-            <p>Тиск <strong>{{vessels[computedVesselId].features.pressure}}</strong> Па </p>
-            <p>Диаметр <strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  мм</p>
-            <p>Висота<strong>{{vessels[computedVesselId].features.dim_height}}</strong>  мм</p>
-            <p>Вага <strong>{{vessels[computedVesselId].features.weight}}</strong>  кг</p>
-            <p>Диаметр з’єднання  <strong>{{vessels[computedVesselId].features.dim_connection}}</strong>" </p>
-            <p>Ціна <strong>{{vessels[computedVesselId].price}}</strong> грн</p>
-            <p v-html="vessels[computedVesselId].features.description"></p>             
-            
-            <el-dropdown size="medium" split-button type="primary" @command="handleCommand"  >
-            Обрати інший бак
-            <el-dropdown-menu slot="dropdown" >                
-                <el-dropdown-item :command="index" v-for="(item, index) in vessels" :key="item.id">{{item.name}}</el-dropdown-item>
-            </el-dropdown-menu>
-            </el-dropdown>            
-            
-<!--               
-            {{realNeedVessel}}
-            {{vessels[computedVesselId]}} -->
-
-            
-            
-
+        <div v-if="focusInput==3" class="">
+            <el-row>
+                <el-col :offset="7"  :span="3">
+                    <img style="" :src="url+'assets/bak.jpg'" width="150" alt="">
+                </el-col>
+                <el-col  :span="8" class="accessorie">                    
+                    <p class="name-item">{{vessels[computedVesselId].name}}</p>
+                    <p v-html="vessels[computedVesselId].features.description"></p> 
+                    <p class="stronge-price">Ціна: {{vessels[computedVesselId].price}} грн з ПДВ</p>
+                    <p>Об'єм: <strong>{{vessels[computedVesselId].features.volume}}</strong> л</p>
+                    <p>Тиск: <strong>{{vessels[computedVesselId].features.pressure}}</strong> Па </p>
+                    <p>Диаметр: <strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  мм</p>
+                    <p>Висота:<strong>{{vessels[computedVesselId].features.dim_height}}</strong>  мм</p>
+                    <p>Вага: <strong>{{vessels[computedVesselId].features.weight}}</strong>  кг</p>
+                    <p>Диаметр з’єднання:  <strong>{{vessels[computedVesselId].features.dim_connection}}</strong>" </p>    
+                    <el-dropdown size="medium" split-button type="primary" @command="handleCommand"  >
+                    Обрати інший бак
+                    <el-dropdown-menu slot="dropdown" >                
+                        <el-dropdown-item :command="index" v-for="(item, index) in vessels" :key="item.id">{{item.name}}</el-dropdown-item>
+                    </el-dropdown-menu>
+                    </el-dropdown>                     
+                </el-col>
+            </el-row>
         </div>
-         <!-- {{cables}}
-        {{mufts}}    -->
+        <div v-if="focusInput==4" class="">
+                <el-col :offset="5"  :span="3">
+                    <img style="" :src="url+'assets/jeckets.jpg'" width="250" alt="">                    
+                </el-col>
+                <el-col :offset="2" :span="8" class="accessorie">
+                    <p>
+                        <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="vertical">Для монтажу в свердловині </el-radio>
+                        <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="horizontal">Для монтажу в резервуарі </el-radio>                     
+                    </p>
+                    <div v-show="typeInstallationJeckets =='vertical'">
+                        Вкажіть діаметр скважини  <el-input-number v-show="typeInstallationJeckets =='vertical'" @change="changeDiameterSkvagina()"  v-model="diametrSkvagina" :min="110"></el-input-number> мм                
+                        <p v-if="computedJacketsNotNeeded">Кожух не потрібен</p>
+                        <div v-else-if="diametrSkvagina!=0">
+                            <p class="name-item">{{computedJackets.name}}</p>
+                            <p>Длинна <strong>{{computedJackets.features.length}}</strong> мм</p>
+                            <p>Ціна <strong>{{computedJackets.price}}</strong> грн з ПДВ</p>
+                            <p v-html="computedJackets.features.description"></p>
+                        </div>
+                    </div>
+                    <div v-if="typeInstallationJeckets =='horizontal'">               
+                        <p class="name-item">{{computedJackets.name}}</p>
+                        <p>Длинна <strong>{{computedJackets.features.length}}</strong> мм</p>
+                        <p class="stronge-price">Ціна {{computedJackets.price}} грн з ПДВ</p>
+                        <p v-html="computedJackets.features.description"></p>
+                    </div>                   
+                </el-col>
+        </div>
     </el-row>
-    <!-- {{selectedAccessories}} -->
 </div>
 </template>
 
@@ -144,9 +186,10 @@ import Axios from 'axios';
                 title: 'Кожух',
             }
         },
-        focusInput: 0,
+        focusInput: 1,
         activeAccessories:'',
         controllers:'',
+        idController: this.selectedAccessories.item1.idController,
         cable:
         {
             description:'',
@@ -154,89 +197,143 @@ import Axios from 'axios';
             section:'',
             name:'',
             id:'',
-            length
-        },        
+            length: 0
+        },
+        realSectionCable: 0,    
+        computedCableSection: undefined,    
         mufts:'',
+        idMufta:'',
         vessels:'',
         computedVessel:'',
         realNeedVessel:'',
-        chengedVesselId:0,
-        computedVesselId:0,
-        selectedController:'',
-        computedCableSection: undefined,
-        cablellength: 0,
-        realSection: 0
+        computedVesselId: 0,
+               
+        typeInstallationJeckets: 0,        
+        jackets:
+        {
+            horizontal:[],
+            vertical: []
+        },
+        computedJackets:
+        {
+            id:'',
+            name:'',
+            price:'',
+            features: {
+                description:'',
+                installation:'',                
+                length:'',
+                type:''
+            }  
+        },
+        realNeedJacket: 0,
+        computedJacketsId:0,
+        diametrSkvagina: Number(this.paramOfSelectedPump.dim_H2)+10,
+        computedJacketsNotNeeded: false
 
       }
     },
     computed: {
-        SelectedVessel() {
-
-        }
     },
     created:  function(){
-        
-
-        // function getFloat(value){
-        // return parseFloat(value .replace(/,/, '.'));
-        // }
-        // this.computedCableSection=3.1*this.cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/3*this.paramOfSelectedPump.U
-        // console.log(this.computedCableSection)
-       // this.postDataControllers(this.paramOfSelectedPump.current+'A')
+         this.realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
+         this.realNeedJacket=Number(this.paramOfSelectedPump.dim_H2)+50     
+         
+         this.postDataJackets()
          this.postDataControllers(this.paramOfSelectedPump.current+'A')
          this.postDataVessels()
-         let realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
-                console.log(realNeedVessel)
-         
-
-
     },
     methods: {
-    handleCommand(command) {
-        this.computedVesselId=command
-        
-        let obj=this.vessels[this.computedVesselId]
-        
-        console.log( obj.features.volume)
-        console.log( obj.price)
-        let id=obj.id
+    handleChangeTypeJeckets() {
+        this.onComputeJacket()
+    },
+    changeDiameterSkvagina() {
+        this.onComputeJacket()
+    },
+    onComputeJacket(){
+        if (this.typeInstallationJeckets=='horizontal')
+        {
+            if (this.realNeedJacket <= this.jackets.horizontal[0].features.length)
+            {
+                this.computedJackets =this.jackets.horizontal[0]
+            }
+            else {
+                this.computedJackets = this.jackets.horizontal[1]
+                }           
+        }
+        else {
+            let velosityFlow=this.volumeFlow/((Math.pow(this.diametrSkvagina*0.001, 2)-Math.pow(this.paramOfSelectedPump.dim_H2*0.001, 2))*Math.PI/4)/3600
+            console.log(velosityFlow)
+            if (velosityFlow <= 0.08)
+            {
+                this.computedJacketsNotNeeded=false
+                if (this.realNeedJacket <= this.jackets.vertical[0].features.length)
+                {
+                    this.computedJackets =this.jackets.vertical[0]
+                }
+                else {
+                    this.computedJackets = this.jackets.vertical[1]
+                    }  
+            }
+            else {
+                this.computedJacketsNotNeeded=true
+            }            
+        }
+        console.log(this.computedJackets.id)
+        this.$emit('onSelectJecket', this.computedJackets.id, this.computedJackets)
 
+    },        
+    handleCommand(command) {
+        this.computedVesselId=command        
+        let obj=this.vessels[this.computedVesselId]
+        let id=obj.id
         this.$emit('onSelectVessel', id, obj)
-      
       },
     handleChange(id){
+        this.idController=id
         this.onSelectController(id)
     },
     handleChangeMufta(id){
+        this.idMufta=id
         this.onSelectMufta(id)
     },
-    handleChangeCableLength(cablellength){
+    handleChangeCableLength(value){
         function getFloat(value){
         return parseFloat(value .replace(/,/, '.'));
         }
 
         let S=[1.5, 2.5, 4, 6, 10, 16.0, 25, 35, 50, 70, 95]
-        this.realSection=3.1*cablellength*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
-            if (this.realSection <= S[0]) {
+        this.realSectionCable=3.1*value*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
+        if (this.realSectionCable <= S[0]) {
                 this.computedCableSection=S[0];
             }
             else {
                 for(let i=0; i<= S.length; i++) {
-                    if ((this.realSection > S[i]) && (this.realSection <= S[i+1])) 
+                    if ((this.realSectionCable > S[i]) && (this.realSectionCable <= S[i+1])) 
                     {
                         this.computedCableSection=S[i+1];                        
                     }
             }
-        }   this.cable.length=cablellength
-            let strData=String(this.computedCableSection)
-            this.postDataCables(strData.replace('.', ','))       
+        }   
+        this.cable.length=value
+        let strData=String(this.computedCableSection)
+        this.postDataCables(strData.replace('.', ','))       
     },
     onFocusInput(value) {
         this.focusInput=value  
         this.activeAccessories=this.accessories['item'+value].title
+        if (value==3) {
+        let obj=this.vessels[this.computedVesselId]
+        let id=obj.id
+        this.$emit('onSelectVessel', id, obj)
+        }
+        if (value==1) {
+             this.onSelectController(this.idController)
+        }
+       
     },
-    onSelectCable(cable, id){
-        this.$emit('onSelectCable', cable, id)
+    onSelectCable(id, cable){
+        this.$emit('onSelectCable', id, cable)
     },
     onSelectController(id){
         let sourse=this.controllers
@@ -244,7 +341,6 @@ import Axios from 'axios';
               return el.id==id
             }
         )
-        console.log(dataControlBox)
         this.$emit('onSelectController', id, dataControlBox )
     },
     onSelectMufta(id){
@@ -256,38 +352,37 @@ import Axios from 'axios';
         this.$emit('onSelectMufta', id, dataMufta )
     },
     postDataControllers: function(current) {
-                const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
-                getPromise.then(response => {
-                this.controllers = response.data;
-                console.log(this.controllers);
-                })
-                .catch(error => {
-                });
+        const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
+        getPromise.then(response => {
+        this.controllers = response.data;
+        let sourse=this.controllers
+        let standartSelected= sourse.filter( function(el) {
+              return el.features.class=="Стандарт"
+            }
+        )
+        this.idController=standartSelected[0].id
+        this.onSelectController(this.idController)
+        })
+        .catch(error => {
+        });
     },
     postDataVessels: function(current) {
-                const getPromise = Axios.post(this.url+'db/getAllVessels');
-                getPromise.then(response => {
-                this.vessels = response.data;
-                console.log(response.data);
-                let sourse=this.vessels
-                let vesselsV=[]
-                for(let i=0; i<sourse.length; i++){
-                    let v=sourse[i].features.volume
-                    vesselsV.push(Number(v))
-                }
-
-                
-                console.log(vesselsV)
-                if (this.realNeedVessel <= vesselsV[0]) {
+        const getPromise = Axios.post(this.url+'db/getAllVessels');
+        getPromise.then(response => {
+        this.vessels = response.data;
+        let sourse=this.vessels
+        let vesselsV=[]
+        for(let i=0; i<sourse.length; i++){
+            let v=sourse[i].features.volume
+            vesselsV.push(Number(v))
+            }
+            if (this.realNeedVessel <= vesselsV[0]) {
                 this.computedVessel=vesselsV[0];
                 this.computedVesselId=0
-
-                console.log(this.computedVessel)
-                console.log(vesselsV.length)
                 }
-                    else {
-                        for(let i=1; i< vesselsV.length; i++) {
-                            if ((this.realNeedVessel > vesselsV[i]) && (this.realNeedVessel <= vesselsV[i+1])) 
+                else {
+                    for(let i=1; i< vesselsV.length; i++) {
+                        if ((this.realNeedVessel > vesselsV[i]) && (this.realNeedVessel <= vesselsV[i+1])) 
                             {
                                 this.computedVessel=vesselsV[i+1];  
                                 this.computedVesselId=i+1                     
@@ -299,21 +394,40 @@ import Axios from 'axios';
                 });
     },
     postDataCables: function(section) {
-                const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
-                getPromise.then(response => {
-                let dataArray=[]
-                this.cable.id= response.data[0].id;
-                this.cable.name= response.data[0].name;
-                this.cable.price= response.data[0].price;
-                this.cable.description= response.data[0].features.description;
-                this.cable.section= response.data[0].features.section;
-                let muftsLocal=response.data;
-                this.onSelectCable(this.cable, this.cable.id)   
-                console.log(response.data)
-                for (let i=1; i < muftsLocal.length;  i++) {
+            const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
+            getPromise.then(response => {
+            let dataArray=[]
+            this.cable.id= response.data[0].id;
+            this.cable.name= response.data[0].name;
+            this.cable.price= response.data[0].price;
+            this.cable.description= response.data[0].features.description;
+            this.cable.section= response.data[0].features.section;
+            let muftsLocal=response.data;
+            this.onSelectCable(this.cable, this.cable.id)
+            for (let i=1; i < muftsLocal.length;  i++) {
                     dataArray.push(muftsLocal[i]);
-                }
-                this.mufts=dataArray                
+            }
+            this.mufts=dataArray 
+            let sourse=this.mufts
+            console.log(this.mufts)
+            let standartSelected= sourse.filter( function(el) {
+            return el.features.class=="Стандарт"
+            })
+            this.idMufta=standartSelected[0].id
+            this.onSelectMufta(standartSelected[0].id)
+            console.log(standartSelected[0].id)
+        // this.idController=standartSelected[0].id
+        // this.onSelectController(this.idController)             
+            })
+            .catch(error => {
+            });
+    },
+    postDataJackets: function() {
+                const getPromise = Axios.post(this.url+'db/getAllJackets');
+                getPromise.then(response => {
+                let sourse=response.data;
+                this.jackets.vertical=sourse.slice(0,2)
+                this.jackets.horizontal=sourse.slice(2)  
                 })
                 .catch(error => {
                 });
@@ -388,6 +502,9 @@ p.detail-title {
     z-index: 5;
     position: relative;
 }
+.side-right-helper .circle_numder {
+    overflow: hidden;
+}
 .circle_numder.number_1 {
     top: 132px;
     left: 116px;
@@ -397,12 +514,12 @@ p.detail-title {
     left: 101px;
 }
 .circle_numder.number_3 {
-    top: 305px;
-    left: 23px;
+    top: 90px;
+    left: 263px;
 }
 .circle_numder.number_4 {
-    top: 160px;
-    left: 216px;
+    top: 392px;
+    left: -20px;
 }
 .pos-img {
     position: relative;
@@ -410,7 +527,7 @@ p.detail-title {
 }
 .side-right-helper{
     padding-top: 20px;
-    height: 380px;
+    height: 340px;
 }
 .row-item {
     padding: 0;
@@ -427,7 +544,7 @@ p.detail-title {
 }
 .circle_numder .symbolInCircle {
     position: relative;
-    top: -38px;
+    top: -34px;
     left: 12px;
     font-size: 20px;
     color: #fff;
@@ -494,7 +611,8 @@ p.sub-title {
     text-align: left;
     max-width: 450px;
     font-size: 14px;
-    margin: 20px;
+    margin: 0 20px;
+    vertical-align: top;
 }
 .block-accessoreis p {
     text-align: left    
@@ -508,7 +626,23 @@ span.name-item, .name-item {
     text-align: left;
     display: flex;
     justify-content: flex-start;
-
 }
+.accessorie {
+    text-align: left;
+}
+.lable-class {
+    position: relative;
+    top: -53px;
+    left: 0px;
+    font-size: 12px;
+    width: 80px;
+    /* margin: auto; */
+    text-align: center;
+    color: #fff;
+    /* font-weight: 600; */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 </style>
 

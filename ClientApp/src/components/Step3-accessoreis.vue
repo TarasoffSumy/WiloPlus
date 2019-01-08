@@ -60,16 +60,6 @@
   };
 </script>
 <style >
-.item-selected {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left
-}
-.item-selected i {
-    font-size: 20px;
-}
-.item-selected .expand-view {
-    display: none
-} 
+
 </style>
 

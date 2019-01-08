@@ -1,7 +1,7 @@
 <template>
     <div>        
         <el-col :span="6"> 
-            <div class="rect" >           
+            <div class="rect">           
             <div class="circle_numder">
             <svg height="55" width="53" class="circle">
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
@@ -23,6 +23,16 @@ export default {
     height: 140px;
     background: #eee;
 }
+.rect:hover, .active .rect:hover {
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 #eee;
+}
+ .active .rect:hover, .active .circle:hover {
+     background: #04b193
+ }
+.active .rect:hover  .circle {
+     fill: #04b193
+ }
 .circle {
     fill: #ebebeb;
     stroke: #686868
@@ -41,7 +51,7 @@ export default {
     color: #686868;
 }
 .title{
-    font-size: 19px;
+    font-size: 20px;
     line-height: 1.1;
     color: #4d4d4d;
     height: 30px;    
