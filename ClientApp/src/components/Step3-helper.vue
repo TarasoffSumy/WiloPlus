@@ -357,7 +357,7 @@ import Axios from 'axios';
         this.controllers = response.data;
         let sourse=this.controllers
         let standartSelected= sourse.filter( function(el) {
-              return el.features.class=="Стандарт"
+              return el.features.class=="Економ"
             }
         )
         this.idController=standartSelected[0].id
@@ -411,7 +411,7 @@ import Axios from 'axios';
             let sourse=this.mufts
             console.log(this.mufts)
             let standartSelected= sourse.filter( function(el) {
-            return el.features.class=="Стандарт"
+            return el.features.class=="Економ"
             })
             this.idMufta=standartSelected[0].id
             this.onSelectMufta(standartSelected[0].id)

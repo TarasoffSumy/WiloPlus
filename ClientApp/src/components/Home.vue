@@ -165,8 +165,14 @@ export default {
                 html2canvas: { scale: 2 },
                 jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true}
                 }).save();
-            },   
+            },
+            onClearSelectedAccessories()  {
+                for (let i=1; i<=5;i++) {
+                    this.selectedAccessories['item'+i].selected = false;
+                }  
+            },  
             onInputDataVolume(val) {
+                this.onClearSelectedAccessories()
                 this.volumeFlow=val
             },
             onInputFlowItems(id, val){
@@ -176,6 +182,7 @@ export default {
                 this.modelHeadItems['val'+id]=val;
             },
             onInputDataHead(val) {
+                this.onClearSelectedAccessories()
                 this.deliveryHead=val
             },
             onSaveSelectedPumpId(val){
