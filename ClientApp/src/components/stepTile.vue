@@ -2,7 +2,7 @@
     <div>        
         <el-col :span="6"> 
             <div class="rect">           
-            <div class="circle_numder">
+            <div class="circle_number">
             <svg height="55" width="53" class="circle">
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
             </svg> <span>{{number}} </span>            
@@ -37,15 +37,15 @@ export default {
     fill: #ebebeb;
     stroke: #686868
 }
-.circle_numder {
+.circle_number {
     padding-top: 20px;
     margin: auto;
     width: 50px;
     height: 50px;
 }
-.circle_numder span {
+.circle_number span {
     position: relative;
-    top: -53px;
+    top: -48px;
     left: 0px;
     font-size: 25px;
     color: #686868;
@@ -66,7 +66,7 @@ export default {
 .active .title {
     color: #fff
 }
-.active .circle_numder span{
+.active .circle_number span{
     color: #fff
 }
 

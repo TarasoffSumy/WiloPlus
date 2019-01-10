@@ -4,7 +4,7 @@
     <el-row>
         <el-col :span="12" class="side-left-helper">
             <div v-for="item in helperHead" :key="item.id" class="row-item" :class="[{ activeLeftCircle: focusInput==item.id}]">
-                <div class="circle_numder">                   
+                <div class="circle_number">                   
                     <svg height="36" width="36" class="circle">
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                     </svg><div class="symbolInCircle">{{item.letter}} </div> 
@@ -28,7 +28,7 @@
             </div>
         </el-col>
         <el-col :span="10" class="side-right-helper">
-            <el-button  v-for="item in helperHead" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_numder number_'+item.letter, {green: focusInput==item.id}]" type="text">                   
+            <el-button  v-for="item in helperHead" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_number number_'+item.letter, {green: focusInput==item.id}]" type="text">                   
                     <svg height="36" width="36" class="circle" >
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                     </svg><div class="symbolInCircle">{{item.letter}}</div>
@@ -114,7 +114,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
   };
 </script>
 <style scoped>
-.transition-box .circle_numder {
+.transition-box .circle_number {
     float: none;
 }
 @-webkit-keyframes pulse1 {
@@ -152,7 +152,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         transform: scale(1.5);
     }
 }
-.circle_numder.number_A, .circle_numder.number_B, .circle_numder.number_C {
+.circle_number.number_A, .circle_number.number_B, .circle_number.number_C {
     position: relative; 
     z-index: 6;    
 }
@@ -175,15 +175,15 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     z-index: 5;
     position: relative;
 }
-.circle_numder.number_A {
+.circle_number.number_A {
     top: 355px;
     left: -176px;
 }
-.circle_numder.number_B {
+.circle_number.number_B {
     top: 344px;
     left: -34px;
 }
-.circle_numder.number_C {
+.circle_number.number_C {
     top: 237px;
     left: 44px;
 }
@@ -199,7 +199,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     fill: #febf00;
     stroke: transparent;
 }
-.circle_numder {
+.circle_number {
     padding-top: 20px;
     margin: auto;
     width: 50px;
@@ -207,7 +207,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     display: inline-table;
     vertical-align: middle;
 }
-.circle_numder .symbolInCircle {
+.circle_number .symbolInCircle {
     position: relative;
     top: -32px;
     left: -2px;
@@ -216,7 +216,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     z-index: 6;
 }
 
-.side-left-helper .circle_numder .symbolInCircle
+.side-left-helper .circle_number .symbolInCircle
 {
     top: -32px;
     left: -1px;

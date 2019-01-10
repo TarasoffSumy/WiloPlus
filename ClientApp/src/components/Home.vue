@@ -1,6 +1,6 @@
 <template>
   <div> 
-      <el-card  v-loading="loading" style="width: 100%">
+      <div v-loading="loading" style="width: 100%">
       <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button> -->
      <!-- {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
@@ -35,7 +35,8 @@
                 :selectedPumpId="selectedPumpId"
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
-                :dataChart="dataChart" 
+                :dataChart="dataChart"
+                :exchangeRates="exchangeRates"
                 :selectedAccessories="selectedAccessories"
                 @onSaveSelectedPumpId="onSaveSelectedPumpId"
                 @onSaveSelectedAccessories="onSaveSelectedAccessories"
@@ -43,6 +44,7 @@
         <Step4 v-else-if='current==4' 
                 :url="url"
                 :pump="pump"
+                :exchangeRates="exchangeRates"
                 :selectedAccessories="selectedAccessories"
                 :selectedPumpId="selectedPumpId"
                 class="transition-box"/> 
@@ -57,7 +59,7 @@
         </el-col>
         </el-row>       
     </div>
-    </el-card>        
+    </div>        
   </div>
 </template>
 
@@ -72,6 +74,7 @@ export default {
         return {
                 loading: false,
                 url:'http://www.wiloexpert.com.ua/wilo/',
+                exchangeRates: 28.5,
                 current: 1,
                 refreshDataSearch:false,
                 isActive: false,
@@ -236,7 +239,7 @@ export default {
                 });
                 },
             next () {
-                if  (this.current == 3) {                    
+                if  (this.current == 2) {                    
                     this.postDataPump(this.volumeFlow, this.deliveryHead);
                 } 
                 if (this.current == 4) {
@@ -335,9 +338,6 @@ h4 {
     font-size: 19px;
     color: #009c81;
 }
-span {
-    font-family: 'Open Sans', sans-serif;
-}
 .first .rect::after {
     display: none
 }
@@ -435,19 +435,18 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
     text-align: center;
     padding: 20px 0
 }
- .transition-box .title {
+.transition-box .title {
     float: left;
     padding: 15px;
 }
-
 .transition-box .circle {
     fill: #009c81;
     stroke: transparent
 }
-.transition-box .circle_numder {
+.transition-box .circle_number {
     float: left;
 }
-.transition-box .circle_numder span {
+.transition-box .circle_number span {
     color: #fff
 }
 .greyBoxes-container {
@@ -502,6 +501,5 @@ ul li:before {
 .stronge-price {
     font-weight: bold;
     font-size: 16px;
-    padding-left: 40px;
 }
 </style>

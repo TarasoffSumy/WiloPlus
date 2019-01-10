@@ -11,6 +11,7 @@
             :dataChart="dataChart"
             :volumeFlow="volumeFlow"
             :deliveryHead="deliveryHead"
+            :exchangeRates="exchangeRates"
             @onSelectController="onSelectController"
             @onSelectCable="onSelectCable"
             @onSelectMufta="onSelectMufta"
@@ -19,9 +20,7 @@
             /> 
         <div slot="footer" class="dialog-footer">       
             <el-row class="navigation-footer">
-            <el-col :span="12" style="width:50%">
-            </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
                 <el-button type="primary" @click="onDialogAccept">Закрити<i class="el-icon-d-arrow-right el-icon-right"/></el-button>
             </el-col>
             </el-row>   
@@ -29,7 +28,7 @@
     </el-dialog>
 
     <el-row>
-        <div class="circle_numder">
+        <div class="circle_number">
             <svg height="55" width="53" class="circle">
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
             </svg> <span>3 </span>            
@@ -111,7 +110,7 @@
                             <el-row>
                             <strong>{{selectedAccessories.item1.name}} </strong>
                                 <p class="stronge-price">Ціна: {{selectedAccessories.item1.price}} грн з ПДВ</p>  
-                                <p><strong>Ток максимальний:</strong> {{selectedAccessories.item1.current_max}} A </p>
+                                <p>Ток максимальний:<strong>{{selectedAccessories.item1.current_max}}</strong>  A </p>
                                 <div class="expand-view">
                                 <p><strong>Розміри:</strong> {{selectedAccessories.item1.dim}}  </p>
                                 <p><strong>Тип пуску насоса:</strong> {{selectedAccessories.item1.start}}  </p> 
@@ -137,8 +136,8 @@
                         <el-col :span="17" :offset="1" class="text" v-html="selectedAccessories.item2.description"></el-col>
                         <el-row>
                         <p><strong>{{selectedAccessories.item2.name}} </strong></p>
-                        <p class="stronge-price">Ціна: {{selectedAccessories.item2.price}} грн з ПДВ</p>  
-                        <p><strong>Довжина {{selectedAccessories.item2.length}} </strong> м</p>
+                        <p class="stronge-price">Ціна: {{selectedAccessories.item2.price}} грн з ПДВ за 1м.п</p>  
+                        <p>Довжина:<strong>{{selectedAccessories.item2.length}} </strong>  м</p>
                         <div class="expand-view"></div>
                         </el-row>
                         </div> 
@@ -156,8 +155,9 @@
                         <el-col :span="17" :offset="1" class="text"></el-col>
                         <el-row>
                             <p><strong>{{selectedAccessories.item3.name}} </strong> </p>
-                            <p>Перетин  {{selectedAccessories.item3.section}} мм<sup>2</sup></p>
                             <p class="stronge-price">Ціна: {{selectedAccessories.item3.price}} грн з ПДВ </p>  
+                            <p>Перетин: <strong> {{selectedAccessories.item3.section}}</strong> мм<sup>2</sup></p>
+                           
                             <div class="expand-view"></div>
                         </el-row>
                     </div> 
@@ -175,7 +175,6 @@
                         <el-row>
                             <p><strong>{{selectedAccessories.item4.name}} </strong> </p>
                             <p class="stronge-price">Ціна: {{selectedAccessories.item4.price}} грн з ПДВ </p>  
-                            
                             <p>Об'єм: <strong>{{selectedAccessories.item4.volume}} </strong> літрів </p>
                             <div class="expand-view"> </div>
                         </el-row>
@@ -213,12 +212,12 @@ export default {
   props: [
     "volumeFlow",
     "deliveryHead",
-    "modelHeadItems",
     "dataChart",
     "pump",
     "selectedPumpId",
     "url",
-    "selectedAccessories"
+    "selectedAccessories",
+    "exchangeRates"
   ],
   data() {
     return {
@@ -255,7 +254,7 @@ export default {
         if (pumpsArr[key].id == this.idPump) {
           this.onSaveSelectedPumpId(pumpsArr[key].id);
           obj.name = pumpsArr[key].pump_name;
-          obj.price = pumpsArr[key].price;
+          obj.price = pumpsArr[key].price*this.exchangeRates;
           obj.id = pumpsArr[key].id;
           obj.current = pumpsArr[key].features.current;
           obj.shortName = obj.name.split("/")[0];
@@ -319,7 +318,7 @@ export default {
     onSelectController(id, dataControlBox) {
       this.selectedAccessoriesRefresh.item1.idController = id;
       this.selectedAccessoriesRefresh.item1.name = dataControlBox[0].name;
-      this.selectedAccessoriesRefresh.item1.price = dataControlBox[0].price;
+      this.selectedAccessoriesRefresh.item1.price = (dataControlBox[0].price*this.exchangeRates).toFixed(2);
       this.selectedAccessoriesRefresh.item1.current_max = dataControlBox[0].features.current_max;
       this.selectedAccessoriesRefresh.item1.description = dataControlBox[0].features.description;
       this.selectedAccessoriesRefresh.item1.dim = dataControlBox[0].features.dim;
@@ -329,7 +328,7 @@ export default {
     onSelectCable(cable, id) {
       this.selectedAccessoriesRefresh.item2.idCable = id;
       this.selectedAccessoriesRefresh.item2.name = cable.name;
-      this.selectedAccessoriesRefresh.item2.price = cable.price;
+      this.selectedAccessoriesRefresh.item2.price = (cable.price*this.exchangeRates).toFixed(2);
       this.selectedAccessoriesRefresh.item2.length = cable.length;
       this.selectedAccessoriesRefresh.item2.selected = true;
       this.onSaveSelectedAccessories()
@@ -337,7 +336,7 @@ export default {
     onSelectMufta(id, mufta) {
       this.selectedAccessoriesRefresh.item3.idMufta = id;
       this.selectedAccessoriesRefresh.item3.name = mufta[0].name;
-      this.selectedAccessoriesRefresh.item3.price = mufta[0].price;
+      this.selectedAccessoriesRefresh.item3.price = (mufta[0].price*this.exchangeRates).toFixed(2);
       this.selectedAccessoriesRefresh.item3.type = mufta[0].features.type;
       this.selectedAccessoriesRefresh.item3.section = mufta[0].features.section;
       this.selectedAccessoriesRefresh.item3.selected = true;
@@ -347,7 +346,7 @@ export default {
       this.selectedAccessoriesRefresh.item4.idVessel = id;
       this.selectedAccessoriesRefresh.item4.volume = vessel.features.volume;
       this.selectedAccessoriesRefresh.item4.name = vessel.name;
-      this.selectedAccessoriesRefresh.item4.price = vessel.price;
+      this.selectedAccessoriesRefresh.item4.price = (vessel.price*this.exchangeRates).toFixed(2);
       this.selectedAccessoriesRefresh.item4.selected = true;
       this.onSaveSelectedAccessories()
     },
@@ -355,7 +354,7 @@ export default {
       this.selectedAccessoriesRefresh.item5.idJecket = id;
       this.selectedAccessoriesRefresh.item5.length = jecket.features.length;
       this.selectedAccessoriesRefresh.item5.name = jecket.name;
-      this.selectedAccessoriesRefresh.item5.price = jecket.price;
+      this.selectedAccessoriesRefresh.item5.price = (jecket.price*this.exchangeRates).toFixed(2);
       this.selectedAccessoriesRefresh.item5.selected = true;
       this.onSaveSelectedAccessories()
     },

@@ -3,21 +3,23 @@
     <h2>Підбір приладдя до свердловинного насосу</h2>
     <el-row>
         <el-col :span="12" class="side-left-helper">
-            <el-button  v-for="item in accessories" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_numder number_'+item.id, {green: focusInput==item.id}]" type="text">                   
+            
+            <el-button  v-for="item in accessories" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_number number_'+item.id, {green: focusInput==item.id}]" type="text">                   
                     <svg height="36" width="36" class="circle" >
                     <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                     </svg><div class="symbolInCircle">{{item.id}}</div>
-                    <div :class="[{ active: focusInput==item.id}]"></div>                            
+                    <div :class="[{active: focusInput==item.id}]"></div>                            
             </el-button>
         <img style="margin-top:-20px;text-align: left; position: absolute; left: 54px;" :src="url+'assets/accessories.jpg'" width="450" alt="">
         </el-col>
         <el-col :span="10" class="side-right-helper">
             <div v-for="item in accessories" class="row-item" :key='item.id' :class="[{activeLeftCircle: focusInput==item.id}]">
-                        <div class="circle_numder">                   
+                
+                        <div class="circle_number">                   
                             <svg height="36" width="36" class="circle">
                             <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                             </svg><div class="symbolInCircle">{{item.id}} </div>  
-                        </div>
+                        </div>  <div v-show="item.checked" class="checked"></div>
                     <el-button type="text"><span class="item"  @click="onFocusInput(item.id)">{{item.title}}</span></el-button>         
             </div>           
         </el-col>
@@ -27,8 +29,9 @@
         <div v-if="focusInput==1" class="block-accessoreis"  v-for="item in controllers" :key="item.id">
             <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                                       
                     <el-col :span="1" style="padding-top:30px">
-                        <el-radio  v-model="idController"  @change="handleChange(item.id)" :label="item.id">
-                        <span > </span></el-radio>                                
+
+                        <!-- <el-radio  v-model="idController"  @change="handleChange(item.id)" :label="item.id">
+                        <span > </span></el-radio>                                 -->
                     </el-col>
                     <el-col :span="4">                           
                             <img :src="url+'assets/controller.jpg'" width="100px" alt="">
@@ -37,18 +40,27 @@
                                 </svg><div class="lable-class">{{item.features.class}}</div>  
                     </el-col>
                     <el-col :span="17" :offset="2" >
-                        
                             <div class="accessories">
-                            <p class="name-item">{{item.name}}</p> 
-                            <p class="text" v-html="item.features.description"></p>
-                            <p class="stronge-price">Ціна: {{item.price}} грн з ПДВ </p>  
+                            <p class="name-item">{{item.name}}</p>
+                            <el-collapse accordion> 
+                            <el-collapse-item name="1">
+                                <template slot="title">
+                                Детальніше<i class="header-icon el-icon-info"></i>
+                                </template>
+                                <p class="text" v-html="item.features.description"></p>
+                            </el-collapse-item>
+                            </el-collapse>
                             <p><strong>Ток максимальний:</strong> {{item.features.current_max}} A </p>
                             <p><strong>Розміри:</strong> {{item.features.dim}}  </p>
                             <div class="expand-view">
                             <p><strong>Тип пуску насоса:</strong> {{item.features.start}}  </p> 
                             <p><strong>Управління:</strong> {{item.features.operation}}  </p>                       
                             <p><strong>Захист від сухого ходу:</strong> {{item.features.dry_running}}  </p> 
-                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>
+                            <p class="stronge-price">Ціна: {{item.price*exchangeRates | aroundPrice}} грн з ПДВ </p> 
+                            <el-radio-group  v-model="idController" @change="handleChange(item.id)">
+                                <el-radio-button  :label="item.id">Вибрати</el-radio-button>
+                            </el-radio-group>   
                             </div></div>                               
                     </el-col> 
                 </el-row>               
@@ -63,29 +75,25 @@
                     <el-row v-if="computedCableSection">
                         <div class="" >
                             <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span>  </p>
-                            <div v-html="cable.description"></div>  
-                            <!-- <p>Перетин {{cable.section}} мм<sup>2</sup> -->
-                            <p class="stronge-price">{{cable.price}} грн з ПДВ за 1м.п.</p> 
+                            <el-collapse accordion> 
+                            <el-collapse-item name="1">
+                                <template slot="title">
+                                Детальніше<i class="header-icon el-icon-info"></i>
+                                </template>
+                                <div v-html="cable.description"></div> 
+                            </el-collapse-item>
+                            </el-collapse>
+                            
+                            <p class="stronge-price">{{cable.price*exchangeRates | aroundPrice}} грн з ПДВ за 1м.п.</p> 
                         </div>                
                     </el-row>                 
                 </el-col>
             </el-row>
             <el-row v-if="computedCableSection">
-                <h4>З’єднувальна муфта для кабеля</h4>
-                <!-- <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">           
-                    <el-radio  v-model="idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
-                                <span class="name-item">{{item.name}}</span></el-radio> 
-                                <div v-html="item.features.description"></div>  
-                                <p class="stronge-price">Ціна  {{item.price}} грн з ПДВ</p>
-                                 <p>Перетин  {{item.features.section}} мм<sup>2</sup> </p>                                      
-                </div> 
---> 
-
+            <h4>З’єднувальна муфта для кабеля</h4>
         <div class="block-accessoreis"  v-for="item in mufts" :key="item.id">
             <el-row>                                       
-                    <el-col :span="1" style="padding-top:30px">
-                        <el-radio   v-model="idMufta"  @change="handleChangeMufta(item.id)" :label="item.id">
-                        <span> </span></el-radio>                          
+                    <el-col :span="1" style="padding-top:30px">                     
                     </el-col>
                     <el-col :span="6">
                         <img v-if="item.features.type=='coupling filler'" :src="url+'assets/mufta_zal.jpg'" width="120px" alt="">
@@ -96,11 +104,21 @@
                     </el-col>
                     <el-col :span="15" :offset="2" >                        
                             <div class="accessories">
-                            <p class="name-item">{{item.name}}</p> 
-                            <p class="text" v-html="item.features.description"></p>
+                            <p class="name-item">{{item.name}}</p>                           
+                            <el-collapse accordion> 
+                            <el-collapse-item name="1">
+                                <template slot="title">
+                                Детальніше<i class="header-icon el-icon-info"></i>
+                                </template>
+                                <p class="text" v-html="item.features.description"></p>
+                            </el-collapse-item>
+                            </el-collapse>
                             <p>Перетин  {{item.features.section}} мм<sup>2</sup></p>
-                            <p class="stronge-price">Ціна: {{item.price}} грн з ПДВ </p>  
-                            <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
+                            <p class="stronge-price">Ціна: {{item.price*exchangeRates | aroundPrice}} грн з ПДВ </p> 
+                            <el-radio-group  v-model="idMufta"  @change="handleChangeMufta(item.id)">
+                                <el-radio-button  :label="item.id">Вибрати</el-radio-button>
+                            </el-radio-group>  
+                            
                             </div>                            
                     </el-col> 
             </el-row>               
@@ -114,8 +132,15 @@
                 </el-col>
                 <el-col  :span="8" class="accessorie">                    
                     <p class="name-item">{{vessels[computedVesselId].name}}</p>
-                    <p v-html="vessels[computedVesselId].features.description"></p> 
-                    <p class="stronge-price">Ціна: {{vessels[computedVesselId].price}} грн з ПДВ</p>
+                            <el-collapse accordion> 
+                            <el-collapse-item name="1">
+                                <template slot="title">
+                                Детальніше<i class="header-icon el-icon-info"></i>
+                                </template>
+                                <p v-html="vessels[computedVesselId].features.description"></p>
+                            </el-collapse-item>
+                            </el-collapse>
+                    <p class="stronge-price">Ціна: {{vessels[computedVesselId].price*exchangeRates | aroundPrice}} грн з ПДВ</p>
                     <p>Об'єм: <strong>{{vessels[computedVesselId].features.volume}}</strong> л</p>
                     <p>Тиск: <strong>{{vessels[computedVesselId].features.pressure}}</strong> Па </p>
                     <p>Диаметр: <strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  мм</p>
@@ -145,16 +170,31 @@
                         <p v-if="computedJacketsNotNeeded">Кожух не потрібен</p>
                         <div v-else-if="diametrSkvagina!=0">
                             <p class="name-item">{{computedJackets.name}}</p>
-                            <p>Длинна <strong>{{computedJackets.features.length}}</strong> мм</p>
-                            <p>Ціна <strong>{{computedJackets.price}}</strong> грн з ПДВ</p>
-                            <p v-html="computedJackets.features.description"></p>
+                            <p>Довжина <strong>{{computedJackets.features.length}}</strong> мм</p>
+                            <p class="stronge-price">Ціна {{computedJackets.price*exchangeRates | aroundPrice}} грн з ПДВ</p>
+                            <el-collapse accordion> 
+                            <el-collapse-item name="1">
+                                <template slot="title">
+                                Детальніше<i class="header-icon el-icon-info"></i>
+                                </template>
+                                <p v-html="computedJackets.features.description"></p>
+                            </el-collapse-item>
+                            </el-collapse>
+                            
                         </div>
                     </div>
                     <div v-if="typeInstallationJeckets =='horizontal'">               
                         <p class="name-item">{{computedJackets.name}}</p>
-                        <p>Длинна <strong>{{computedJackets.features.length}}</strong> мм</p>
-                        <p class="stronge-price">Ціна {{computedJackets.price}} грн з ПДВ</p>
-                        <p v-html="computedJackets.features.description"></p>
+                        <p>Довжина <strong>{{computedJackets.features.length}}</strong> мм</p>
+                        <p class="stronge-price">Ціна {{computedJackets.price*exchangeRates | aroundPrice}} грн з ПДВ</p>
+                            <el-collapse accordion> 
+                            <el-collapse-item name="1">
+                                <template slot="title">
+                                Детальніше<i class="header-icon el-icon-info"></i>
+                                </template>
+                                <p v-html="computedJackets.features.description"></p>
+                            </el-collapse-item>
+                            </el-collapse>
                     </div>                   
                 </el-col>
         </div>
@@ -165,40 +205,45 @@
 <script>
 import Axios from 'axios';
   export default {
-    props: ['url', "selectedAccessories", "paramOfSelectedPump", "volumeFlow", "deliveryHead", "dataChart"],
+    props: ['url', "selectedAccessories", "paramOfSelectedPump", "volumeFlow", "deliveryHead", "dataChart", "exchangeRates"],
     data() {
       return {
         accessories: {
             item1: {
                 id:1,
                 title: 'Прилад керування і захисту насоса',
+                checked: false
             },
             item2: {
                 id:2,
                 title: 'Кабель та З’єднання насоса',
+                checked: false
             },
             item3: {
                 id:3,
                 title: 'Мембранний напірний бак',
+                checked: false
             },
             item4: {
                 id:4,
                 title: 'Кожух',
+                checked: false
             }
         },
+        dataTest:4.56465,
         focusInput: 1,
-        activeAccessories:'',
-        controllers:'',
+        activeAccessories: '',
+        controllers: '',
         idController: this.selectedAccessories.item1.idController,
         cable:
-        {
-            description:'',
-            price:'',
-            section:'',
-            name:'',
-            id:'',
-            length: 0
-        },
+            {
+                description:'',
+                price:'',
+                section:'',
+                name:'',
+                id:'',
+                length: 0
+            },
         realSectionCable: 0,    
         computedCableSection: undefined,    
         mufts:'',
@@ -206,39 +251,47 @@ import Axios from 'axios';
         vessels:'',
         computedVessel:'',
         realNeedVessel:'',
-        computedVesselId: 0,
-               
+        computedVesselId: 0,   
         typeInstallationJeckets: 0,        
         jackets:
-        {
-            horizontal:[],
-            vertical: []
-        },
+            {
+                horizontal:[],
+                vertical: []
+            },
         computedJackets:
-        {
-            id:'',
-            name:'',
-            price:'',
-            features: {
-                description:'',
-                installation:'',                
-                length:'',
-                type:''
-            }  
-        },
+            {
+                id:'',
+                name:'',
+                price:'',
+                features: {
+                    description:'',
+                    installation:'',                
+                    length:'',
+                    type:''
+                }  
+            },
         realNeedJacket: 0,
         computedJacketsId:0,
         diametrSkvagina: Number(this.paramOfSelectedPump.dim_H2)+10,
         computedJacketsNotNeeded: false
-
       }
     },
-    computed: {
+    filters: {
+    aroundPrice: function (value) {
+       value = Number(value).toFixed(2)
+       return value
+    }
     },
-    created:  function(){
+    computed: {
+        selectedAccessoriesItem1 (){
+            if (this.selectedAccessories.item1.selected==true) {
+                return true
+            } 
+        }
+    },
+    created:  function() {
          this.realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
          this.realNeedJacket=Number(this.paramOfSelectedPump.dim_H2)+50     
-         
          this.postDataJackets()
          this.postDataControllers(this.paramOfSelectedPump.current+'A')
          this.postDataVessels()
@@ -259,7 +312,7 @@ import Axios from 'axios';
             }
             else {
                 this.computedJackets = this.jackets.horizontal[1]
-                }           
+            }           
         }
         else {
             let velosityFlow=this.volumeFlow/((Math.pow(this.diametrSkvagina*0.001, 2)-Math.pow(this.paramOfSelectedPump.dim_H2*0.001, 2))*Math.PI/4)/3600
@@ -279,9 +332,8 @@ import Axios from 'axios';
                 this.computedJacketsNotNeeded=true
             }            
         }
-        console.log(this.computedJackets.id)
         this.$emit('onSelectJecket', this.computedJackets.id, this.computedJackets)
-
+        this.accessories.item4.checked=true
     },        
     handleCommand(command) {
         this.computedVesselId=command        
@@ -326,14 +378,16 @@ import Axios from 'axios';
         let obj=this.vessels[this.computedVesselId]
         let id=obj.id
         this.$emit('onSelectVessel', id, obj)
+        this.accessories.item3.checked=true
         }
         if (value==1) {
-             this.onSelectController(this.idController)
+            //  this.onSelectController(this.idController)
         }
        
     },
     onSelectCable(id, cable){
         this.$emit('onSelectCable', id, cable)
+        this.accessories.item2.checked=true
     },
     onSelectController(id){
         let sourse=this.controllers
@@ -342,6 +396,7 @@ import Axios from 'axios';
             }
         )
         this.$emit('onSelectController', id, dataControlBox )
+        this.accessories.item1.checked=true
     },
     onSelectMufta(id){
         let sourse=this.mufts
@@ -350,18 +405,19 @@ import Axios from 'axios';
             }
         )
         this.$emit('onSelectMufta', id, dataMufta )
+        
     },
     postDataControllers: function(current) {
         const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
         getPromise.then(response => {
         this.controllers = response.data;
         let sourse=this.controllers
-        let standartSelected= sourse.filter( function(el) {
-              return el.features.class=="Економ"
-            }
-        )
-        this.idController=standartSelected[0].id
-        this.onSelectController(this.idController)
+        // let standartSelected= sourse.filter( function(el) {
+        //       return el.features.class=="Економ"
+        //     }
+        // )
+        // this.idController=standartSelected[0].id
+        // this.onSelectController(this.idController)
         })
         .catch(error => {
         });
@@ -397,6 +453,7 @@ import Axios from 'axios';
             const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
             getPromise.then(response => {
             let dataArray=[]
+            console.log(response.data)
             this.cable.id= response.data[0].id;
             this.cable.name= response.data[0].name;
             this.cable.price= response.data[0].price;
@@ -405,19 +462,16 @@ import Axios from 'axios';
             let muftsLocal=response.data;
             this.onSelectCable(this.cable, this.cable.id)
             for (let i=1; i < muftsLocal.length;  i++) {
-                    dataArray.push(muftsLocal[i]);
+                dataArray.push(muftsLocal[i]);
             }
             this.mufts=dataArray 
-            let sourse=this.mufts
-            console.log(this.mufts)
-            let standartSelected= sourse.filter( function(el) {
-            return el.features.class=="Економ"
-            })
-            this.idMufta=standartSelected[0].id
-            this.onSelectMufta(standartSelected[0].id)
-            console.log(standartSelected[0].id)
-        // this.idController=standartSelected[0].id
-        // this.onSelectController(this.idController)             
+            // let sourse=this.mufts
+            
+            // let standartSelected= sourse.filter( function(el) {
+            // return el.features.class=="Економ"
+            // })
+            // this.idMufta=standartSelected[0].id
+            // this.onSelectMufta(standartSelected[0].id)        
             })
             .catch(error => {
             });
@@ -479,7 +533,7 @@ p.detail-title {
     background: #eee;
     padding: 6px 14px;
 }
-.circle_numder.number_1, .circle_numder.number_2, .circle_numder.number_3, .circle_numder.number_4 {
+.circle_number.number_1, .circle_number.number_2, .circle_number.number_3, .circle_number.number_4 {
     position: relative; 
     z-index: 6;    
 }
@@ -502,22 +556,22 @@ p.detail-title {
     z-index: 5;
     position: relative;
 }
-.side-right-helper .circle_numder {
+.side-right-helper .circle_number {
     overflow: hidden;
 }
-.circle_numder.number_1 {
+.circle_number.number_1 {
     top: 132px;
     left: 116px;
 }
-.circle_numder.number_2 {
+.circle_number.number_2 {
     top: 214px;
     left: 101px;
 }
-.circle_numder.number_3 {
+.circle_number.number_3 {
     top: 90px;
     left: 263px;
 }
-.circle_numder.number_4 {
+.circle_number.number_4 {
     top: 392px;
     left: -20px;
 }
@@ -538,11 +592,11 @@ p.detail-title {
     fill: #febf00;
     stroke: transparent;
 }
-.circle_numder {
+.circle_number {
     padding-top: inherit;
     margin-top: 10px;
 }
-.circle_numder .symbolInCircle {
+.circle_number .symbolInCircle {
     position: relative;
     top: -34px;
     left: 12px;
@@ -551,7 +605,7 @@ p.detail-title {
     z-index: 6;
 }
 
-.side-left-helper .circle_numder .symbolInCircle
+.side-left-helper .circle_number .symbolInCircle
 {
     top: -33px;
     left: -1px;
@@ -609,7 +663,7 @@ p.sub-title {
     display: inline-block;
     padding: 20px;
     text-align: left;
-    max-width: 450px;
+    max-width: 420px;
     font-size: 14px;
     margin: 0 20px;
     vertical-align: top;
@@ -636,13 +690,31 @@ span.name-item, .name-item {
     left: 0px;
     font-size: 12px;
     width: 80px;
-    /* margin: auto; */
     text-align: center;
     color: #fff;
-    /* font-weight: 600; */
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-
+.checked {
+    display: inline-block;
+    position: relative;
+    left: -62px;
+    top: -9px;
+}
+.checked::before {
+    font-family: 'wilo-icons';
+    font-size: 22px;
+    margin-left: -20px;
+    color: #009c82;
+    content: "\2021";
+    width: 23px;
+    display: inline-table;
+    position: relative;
+    top: 0px;
+    font-weight: bold;
+}
+.el-radio-button:first-child:last-child .el-radio-button__inner {
+    border-radius: 0;
+}
 </style>
 

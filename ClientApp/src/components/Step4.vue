@@ -1,7 +1,7 @@
 <template>
     <div id="print">
         <el-row>
-        <div class="circle_numder">
+        <div class="circle_number">
             <svg height="55" width="53" class="circle">
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
             </svg> <span>4 </span>            
@@ -85,7 +85,7 @@
 
 <script>
   export default {
-    props: ['url', 'pump', 'selectedPumpId', 'selectedAccessories'],
+    props: ['url', 'pump', 'selectedPumpId', 'selectedAccessories', "exchangeRates"],
     data() {
       return {
         pumpId: this.selectedPumpId,
@@ -138,7 +138,7 @@
       }
     },
     created:function() {
-         console.log(this.pumpId)
+        
          if (this.pumpId) {
             this.message=false
             let sourse=this.pump
@@ -147,8 +147,7 @@
                 return el.id==id
                 })   
             this.tableData.pump.name=pumpSelected[0].pump_name
-            this.tableData.pump.price=pumpSelected[0].price
-            console.log(this.objSelectedAccessories)
+            this.tableData.pump.price=(pumpSelected[0].price*this.exchangeRates).toFixed(2)
             if (this.objSelectedAccessories!=undefined) {
                 if (this.objSelectedAccessories.item1.selected==true) {
                 this.tableData.controller.name=this.objSelectedAccessories.item1.name
@@ -157,6 +156,7 @@
                 }
                 if (this.objSelectedAccessories.item2.selected==true) {
                 this.tableData.cable.name=this.objSelectedAccessories.item2.name
+                this.tableData.cable.amount=this.objSelectedAccessories.item2.length
                 this.tableData.cable.selected=this.objSelectedAccessories.item2.selected
                 this.tableData.cable.price=this.objSelectedAccessories.item2.price
                 }
