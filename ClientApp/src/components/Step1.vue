@@ -24,7 +24,7 @@
     </el-dialog>
     
     <el-row>
-    <div class="circle_numder">
+    <div class="circle_number">
         <svg height="55" width="53" class="circle">
         <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
         </svg> <span>1 </span>            
