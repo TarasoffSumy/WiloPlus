@@ -12,6 +12,7 @@
             :volumeFlow="volumeFlow"
             :deliveryHead="deliveryHead"
             :exchangeRates="exchangeRates"
+            :dictionary="dictionary"
             @onSelectController="onSelectController"
             @onSelectCable="onSelectCable"
             @onSelectMufta="onSelectMufta"
@@ -49,8 +50,26 @@
                         <p>Тип живлення:</p>                
                                 <div v-for="item in pump" :value="item" :key="item.id" class="radio-item-phasa" >
                                     <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
-                                                    <span v-if="item.features.phase=='1'">однофазный</span>
-                                                    <span v-if="item.features.phase=='3'">трехфазный</span>
+                                                    <span  v-if="item.features.phase=='1'">
+                                                        <el-popover
+                                                            placement="top-start"
+                                                            :title=dictionary[5].short_text
+                                                            width="250"
+                                                            trigger="hover"
+                                                            :content=dictionary[5].full_text>
+                                                            <el-button type="text"  slot="reference"><span class="myTip">однофазный</span></el-button>
+                                                        </el-popover> 
+                                                        </span>
+                                                    <span v-if="item.features.phase=='3'">
+                                                        <el-popover
+                                                            placement="top-start"
+                                                            :title=dictionary[6].short_text
+                                                            width="250"
+                                                            trigger="hover"
+                                                            :content=dictionary[6].full_text>
+                                                            <el-button type="text"  slot="reference"><span class="myTip">трехфазный</span></el-button>
+                                                        </el-popover> 
+                                                    </span>
                                     </el-radio>       
                                 </div>
                                 <p class="sub-title">Насосний агрегат: {{objSelectedPump.name}}</p> 
@@ -217,7 +236,8 @@ export default {
     "selectedPumpId",
     "url",
     "selectedAccessories",
-    "exchangeRates"
+    "exchangeRates",
+    "dictionary"
   ],
   data() {
     return {

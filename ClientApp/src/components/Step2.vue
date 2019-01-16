@@ -8,6 +8,7 @@
     <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"
                   @onInputHeadItems="onInputHeadItems" 
                   :modelHeadItems="modelHeadItems"
+                  :dictionary="dictionary"
                   :url="url"
     /> 
     <span slot="footer" class="dialog-footer">       
@@ -38,10 +39,6 @@
                      <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="2" :min="20" :max="290"></el-input-number>
                  м
                  </p>
-                 <p class="alert"><i type="info" class="el-icon-info"></i>
-                 Як необхідно розраховувати витрату насоса. Беремо напір 
-                 <el-button type="text" @click="open">констативний</el-button>, та множимо на число
-                 </p>
              </div>
 
                  <div class="greyBox last-box">
@@ -57,7 +54,7 @@
 </template>
 <script>
   export default {
-    props: ['deliveryHead', 'modelHeadItems', 'url'],
+    props: ['deliveryHead', 'modelHeadItems', 'url', 'dictionary'],
     data() {
       return {
         deliveryHeadInput: this.deliveryHead,

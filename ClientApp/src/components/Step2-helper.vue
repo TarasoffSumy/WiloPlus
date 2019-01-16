@@ -10,11 +10,20 @@
                     </svg><div class="symbolInCircle">{{item.letter}} </div> 
                     <div ></div>    
                 </div>
-                <span class="item">{{item.title}}</span>    
+                <span v-html="item.title" class="item"></span>    
                 <el-input-number @focus="onFocusInput(item.id)" v-model="item.valueHead" @change="handleChange(item.valueHead, item.id)"  :precision="2" :min="0" ></el-input-number>
                 м 
             </div>
-            <div class="row-item"><div class="additional-volume-flow"><el-button type="text" class="link" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></div>  
+            <div class="row-item"><div class="additional-volume-flow">
+                  <el-popover
+                    placement="top-start"
+                    :title=dictionary[4].short_text
+                    width="150"
+                    trigger="hover"
+                    :content=dictionary[4].full_text>
+                    <el-button type="text" slot="reference"><span class="myTip">Додатковий напір</span></el-button>
+                  </el-popover>                
+                <i type="info" class="el-icon-question"></i></div>  
                 <el-input-number @focus="onFocusInput(0)" v-model="additionalHead"  @change="handleChange(additionalHead, 4)"  :precision="2" :min="0"></el-input-number>
                 м             
             </div>
@@ -44,7 +53,7 @@
 <script>
 import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
-    props: ['modelHeadItems', 'url'],
+    props: ['modelHeadItems', 'url', 'dictionary'],
     data() {
       return {
         helperHead: {
@@ -57,7 +66,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
             item_B: {
                 id:2,
                 letter: 'B',
-                title: 'Висота між землею і найвище розташованим приладом водоспоживання',
+                title: 'Висота від землі до <span class="myTip" title="Рівень води при роботі насосу на дебіті.">динамічного рівня</span> води в свердловині',
                 valueHead: this.modelHeadItems.val2
             },
             item_C: {
@@ -230,7 +239,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 }
 .additional-volume-flow {
     display: inline-table;
-    padding: 17px 55px 0 0px;
+    padding: 17px 80px 0 0px;
     text-align: left;
     margin-left: 78px;
 }

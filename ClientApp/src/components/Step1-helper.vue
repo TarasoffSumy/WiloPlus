@@ -1,6 +1,15 @@
 <template>
 <div>
-    <h2>Помічник визначення витрати насоса</h2>
+    <h2 class="title-helper1">Помічник визначення 
+        <el-popover
+                    placement="top-start"
+                    :title=dictionary[1].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[1].full_text>
+                    <el-button type="text" slot="reference">витрати насоса</el-button>
+                  </el-popover>
+    </h2>                     
     <p class="sub-title">
         Вкажіть кількість точок водозбору
     </p>
@@ -18,7 +27,16 @@
                 <el-input-number v-model="volumeFlow.Val3.val" @change="handleChange(volumeFlow.Val3.val, 3)" :min="0" ></el-input-number>
                 шт 
             </p>
-            <p><span class="additional-volume-flow"><el-button type="text" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></span>  
+            <p><span class="additional-volume-flow">
+                    <el-popover
+                    placement="top-start"
+                    :title=dictionary[2].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[2].full_text>
+                    <el-button type="text" slot="reference">Додаткові витарти</el-button>
+                  </el-popover> 
+                <i type="info" class="el-icon-question"></i></span>  
                 <el-input-number v-model="volumeFlow.Val7.val" @change="handleChange(volumeFlow.Val7.val, 7)" :min="0" ></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
@@ -53,7 +71,7 @@
 <script>
 import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
-    props: ['maxVolumeFlow', 'modelFlowItems', 'url'],
+    props: ['maxVolumeFlow', 'modelFlowItems', 'url', 'dictionary'],
     data() {
       return {
           volumeFlow: {
@@ -201,6 +219,10 @@ p.sub-title {
 }
 .additional-volume-flow button {
     color: #363640
+}
+.title-helper1 span .el-popover__reference  {
+    font-weight: 600;
+    font-size: 20px;
 }
 </style>
 
