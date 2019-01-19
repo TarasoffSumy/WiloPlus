@@ -1,39 +1,57 @@
 <template>
 <div>
-    <h2>Помічник визначення витрати насоса</h2>
+    <h2 class="title-helper1">Помічник визначення 
+        <el-popover
+                    placement="top-start"
+                    :title=dictionary[1].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[1].full_text>
+                    <el-button type="text" slot="reference">витрати насоса</el-button>
+                  </el-popover>
+    </h2>                     
     <p class="sub-title">
         Вкажіть кількість точок водозбору
     </p>
     <el-row>
         <el-col :span="12" class="side-side1-helper">
             <p><span class="item"> <img :src="url+'assets/kitchen.svg'" alt=""> Мийка кухні/умивальник </span>    
-                <el-input-number v-model="volumeFlow.Val1.val" @change="handleChange(volumeFlow.Val1.val, 1)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val1.val" @change="handleChange(volumeFlow.Val1.val, 1)" :precision="0" :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img :src="url+'assets/bath.svg'" alt=""> Ванна/душова кабіна </span>   
-                <el-input-number v-model="volumeFlow.Val2.val" @change="handleChange(volumeFlow.Val2.val, 2)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val2.val" @change="handleChange(volumeFlow.Val2.val, 2)" :precision="0"  :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img :src="url+'assets/dishwasher.svg'" alt=""> Посудомийна машина </span>  
-                <el-input-number v-model="volumeFlow.Val3.val" @change="handleChange(volumeFlow.Val3.val, 3)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val3.val" @change="handleChange(volumeFlow.Val3.val, 3)" :precision="0"  :min="0" ></el-input-number>
                 шт 
             </p>
-            <p><span class="additional-volume-flow"><el-button type="text" @click="open">Додаткові витарти<i type="info" class="el-icon-question"></i> </el-button></span>  
-                <el-input-number v-model="volumeFlow.Val7.val" @change="handleChange(volumeFlow.Val7.val, 7)" :min="0" ></el-input-number>
+            <p><span class="additional-volume-flow">
+                    <el-popover
+                    placement="top-start"
+                    :title=dictionary[2].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[2].full_text>
+                    <el-button type="text" slot="reference"><span class="myTip">Додаткові витарти</span></el-button>
+                  </el-popover> 
+                <i type="info" class="el-icon-question"></i></span>  
+                <el-input-number v-model="volumeFlow.Val7.val" @change="handleChange(volumeFlow.Val7.val, 7)" :precision="0"  :min="0" ></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
         </el-col>
         <el-col :span="10" class="side-side1-helper">
             <p><span class="item"> <img :src="url+'assets/washer.svg'" alt=""> Пральна машина</span>   
-                <el-input-number v-model="volumeFlow.Val4.val" @change="handleChange(volumeFlow.Val4.val, 4)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val4.val" @change="handleChange(volumeFlow.Val4.val, 4)" :precision="0"  :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img :src="url+'assets/bide.svg'" alt=""> Биде</span> 
-                <el-input-number v-model="volumeFlow.Val5.val" @change="handleChange(volumeFlow.Val5.val, 5)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val5.val" @change="handleChange(volumeFlow.Val5.val, 5)" :precision="0"  :min="0" ></el-input-number>
                 шт 
             </p>
             <p><span class="item"> <img :src="url+'assets/toilet.svg'" alt=""> Унитаз  </span>  
-                <el-input-number v-model="volumeFlow.Val6.val" @change="handleChange(volumeFlow.Val6.val, 6)" :min="0" ></el-input-number>
+                <el-input-number v-model="volumeFlow.Val6.val" @change="handleChange(volumeFlow.Val6.val, 6)" :precision="0"  :min="0" ></el-input-number>
                 шт 
             </p>
         </el-col>
@@ -53,7 +71,7 @@
 <script>
 import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
-    props: ['maxVolumeFlow', 'modelFlowItems', 'url'],
+    props: ['maxVolumeFlow', 'modelFlowItems', 'url', 'dictionary'],
     data() {
       return {
           volumeFlow: {
@@ -201,6 +219,10 @@ p.sub-title {
 }
 .additional-volume-flow button {
     color: #363640
+}
+.title-helper1 span .el-popover__reference  {
+    font-weight: 600;
+    font-size: 20px;
 }
 </style>
 

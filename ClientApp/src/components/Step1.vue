@@ -8,6 +8,7 @@
     <Step1-helper 
                 @onComputeVolumeFlow="onComputeVolumeFlow"
                 @onInputFlowItems="onInputFlowItems" 
+                :dictionary="dictionary"
                 :modelFlowItems="modelFlowItems"
                 :url="url"
                 /> 
@@ -36,22 +37,23 @@
             <div class="greyBox">
                  <!-- :precision="2" :min="0.5" :max="17" -->
                  <h3>Необхідна витрата насоса</h3>       
-                 <p>Витрата  <el-input-number v-model="volumeFlowInput" @change="onInputVolumeFlow"></el-input-number>
-                 м<sup>3</sup>/ч
+                 <p>Витрата  <el-input-number v-model="(volumeFlowInput)" :precision="2" @change="onInputVolumeFlow"></el-input-number>
+                 м<sup>3</sup>/год
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
-                  Визначена витрата повинна бути меншою ніж <el-tooltip placement="top">
-                  <div class="tolltip" slot="content">multiple lines<br/>second line</div> 
-                  <el-button type="text">дебіт свердловини</el-button>
-                 </el-tooltip>,
-                  як мінімум на 0,5м3/год. 
-                  В іншому випадку введіть витрату насосу рівною дебіту свердловину зменшеному на 0,5 м3/год
-                 
+                 Витрата насоса повинна бути меншою за <el-popover
+                    placement="top-start"
+                    :title=dictionary[0].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[0].full_text>
+                    <el-button type="text"  slot="reference"><span class="myTip">продуктивність свердловини</span></el-button>
+                  </el-popover>                 
                  </p>
             </div>
             <div class="greyBox last-box">
                  <font-awesome-icon icon="lightbulb" />
-                 <p style="text-align:left">Якщо необхідно розрахувати витрату, скористайтесь послугами нашого помічника</p>
+                 <p style="text-align:left">Невідома витрата? Скористайтесь послугами нашого помічника</p>
                  <div class="container-button"> 
                  <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
                  </div>
@@ -65,15 +67,15 @@
 import Axios from 'axios';
 import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
-    props: ['volumeFlow', 'maxVolumeFlow', "modelFlowItems", "url"],
+    props: ['volumeFlow', 'maxVolumeFlow', "modelFlowItems", "url", "dictionary"],
     data() {
       return {
+        dic: this.dictionary.id1,
         volumeFlowInput: this.volumeFlow,
         volumeFlowComputed: null,
         helperStep1: false,
         dialogVisible: false,
-        disabledAccept: true,
-        dictionary:''
+        disabledAccept: true        
       };
     },
     validations: {
@@ -82,14 +84,20 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         between: between(0.5, 17)
         }
     },
+    mounted() {
+      console.log(this.dictionary)
+    },
     created (){
         // this.postData(1)
+        
+         
     },
     methods: {
       dialogCancel() {
         this.dialogVisible=false 
       },
       onInputVolumeFlow(value) {
+        // alert(String(value))
         this.$emit('onInputDataVolume', value)
          console.log(value)
       },
@@ -117,13 +125,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
           }
       },      
       open() {
-        this.postData(1)
-        console.log(this.dictionary)
 
-        this.$alert(this.dictionary.full_text, this.dictionary.short_text, {
-          dangerouslyUseHTMLString: true,
-          confirmButtonText: 'OK',
-        });
       }
       }
     }
@@ -131,12 +133,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 
 <style scoped>
 
-button.el-button.el-button--text {
-    text-decoration: underline;
-    font-size: 15.5px;
-    color: #50b9f0;
-    padding: 0;
-}
+
 .tolltip {
     font-size: 14px
 }

@@ -1,21 +1,24 @@
 <template>
-  <div> 
-      <div v-loading="loading" style="width: 100%">
-      <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button> -->
-     <!-- {{deliveryHead}} - {{volumeFlow}}
+  <div style="width:1200px; margin:auto"> 
+    
+      <div v-loading="loading" >
+      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button>
+      <!-- {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
-     {{selectedPumpId}} -->
-      <div style="width: 1200px; margin: auto;">
+     {{selectedPumpId}}  -->
+
+        <HeaderPart />
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
         <a href="#" @click="step(2, $event)"><stepTile title="Напір насоса" number="2" :class="[{ active: current==2}]"/></a> 
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
-        <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
+        <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиція" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
     
         <transition name="flip" mode="out-in" >
-        <Step1 v-if='current==1'
+        <Step1 v-if="current==1 && step1=='ready'"
                 :url="url" 
+                :dictionary="dictionary"
                 :volumeFlow="volumeFlow"
                 :modelFlowItems="modelFlowItems"
                 :maxVolumeFlow="maxVolumeFlow"
@@ -25,6 +28,7 @@
         <Step2 v-else-if='current==2' 
                 :url="url" 
                 :deliveryHead="deliveryHead"
+                :dictionary="dictionary"
                 :modelHeadItems="modelHeadItems"
                 @onInputDataHead="onInputDataHead"
                 @onInputHeadItems="onInputHeadItems"
@@ -32,6 +36,8 @@
         <Step3 v-else-if="current==3 && step3=='ready'"
                 :url="url" 
                 :pump="pump"
+                :allPumps="allPumps"
+                :dictionary="dictionary"
                 :selectedPumpId="selectedPumpId"
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
@@ -39,7 +45,9 @@
                 :exchangeRates="exchangeRates"
                 :selectedAccessories="selectedAccessories"
                 @onSaveSelectedPumpId="onSaveSelectedPumpId"
+                @onRefreshDataPump="onRefreshDataPump"
                 @onSaveSelectedAccessories="onSaveSelectedAccessories"
+                @onGetDataChart="onGetDataChart"
                 class="transition-box"/>
         <Step4 v-else-if='current==4' 
                 :url="url"
@@ -49,7 +57,6 @@
                 :selectedPumpId="selectedPumpId"
                 class="transition-box"/> 
         </transition>     
-    
         <el-row class="navigation-footer">
         <el-col :span="12" style="width:50%">
              <el-button :disabled="current == 1"  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад </el-button>
@@ -58,8 +65,9 @@
             <el-button :disabled="current == 4"  @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
         </el-col>
         </el-row>       
-    </div>
-    </div>        
+    
+   
+    </div>    
   </div>
 </template>
 
@@ -96,8 +104,13 @@ export default {
                     val3:0,
                     val4:0
                 },
-                pump:[],
-                step3:'',   
+                pump: [],
+                allPumps: [],
+                links: [],
+                dictionary: '',
+                dic: '',
+                step3:'',  
+                step1:'', 
                 selectedPumpId: 0,
                 dataChart: {
                     CalcPoint:'',
@@ -153,21 +166,40 @@ export default {
                 }
             }
         },
-        created: function() {     
+        created: function() {  
+            this.postDataDictionary()    
+            this.get_cookie("currency")
+             
         },
         computed: {
         },
+        mounted() {
+            this.postDataAllPumps()                      
+        },
         methods: {
+            get_cookie( cookie_name )
+                {
+                // document.cookie="currency=28.55"
+                var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
+                if ( results ) {
+                    this.exchangeRates=unescape ( results[2] )
+                }               
+            },
              makePdf() {
                 // Get the element.
                 var element = document.getElementById('print');
                 // Generate the PDF.
-                html2pdf().from(element).set({
+                var bodySend=html2pdf().from(element).set({
                 margin: 1,
                 filename: 'test.pdf',
                 html2canvas: { scale: 2 },
                 jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true}
                 }).save();
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", url+"/db/printPumpDatasheet");
+                xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+                xhr.send(bodySend);
             },
             onClearSelectedAccessories()  {
                 for (let i=1; i<=5;i++) {
@@ -191,26 +223,44 @@ export default {
             onSaveSelectedPumpId(val){
                 this.selectedPumpId=val 
             },
+            onRefreshDataPump: function(obj) {
+                this.pump=obj
+            },
             onSaveSelectedAccessories(obj){
                 this.selectedAccessories=obj 
             },
-            postData: function() {
-                const getPromise = Axios.post(this.url+'db/getHelp', {"help_id" : 1});
+            postDataDictionary: function() {
+                this.loading=true
+                const getPromise = Axios.post(this.url+'db/getHelp');                
                 getPromise.then(response => {
+                    this.dictionary=response.data
+                    this.step1='ready'
+                    this.loading=false
+                     
                 });
                 },                
             postDataCableSelect: function() {
                 const getPromise = Axios.post(this.url+'db/cableSelect', {"section":"1,5"});
                 getPromise.then(response => {
-                // console.log(response.data)
+                // 
                 });
                 },
-            postDataGetDetail: function() {
-                const getPromise = Axios.post(this.url+'db/getDetails', {"id":"311"});
+            postDataAllPumps: function() {
+                const getPromise = Axios.post(this.url+'db/getAllPumps');                
                 getPromise.then(response => {
-                // console.log(response.data)
+                    let source=response.data
+                    let allPumps=[]
+                    for(let i=0; i<source.length; i++){
+                        let obj={}
+                        obj.value=source[i].pump_name.split(".")[1]
+                        obj.id=source[i].pump_id
+                        allPumps.push(obj)
+                    }
+                    console.log(allPumps)
+                    this.allPumps=allPumps
+                    
                 });
-                },
+                }, 
             postDataControllers: function(current) {
                 const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
                 getPromise.then(response => {        
@@ -226,7 +276,7 @@ export default {
                 this.pump = response.data;
                 if (this.pump!=undefined) {
                     this.selectedPumpId=this.pump[0].id                  
-                    this.onGetDataChart()                       
+                    this.onGetDataChart(this.pump)                       
                         this.loading=false
                         this.step3='ready'
                 }
@@ -265,8 +315,9 @@ export default {
                     this.postDataPump(this.volumeFlow, this.deliveryHead);                 
                 }            
             },
-            onGetDataChart(){
-            let source=this.pump          
+            onGetDataChart(obj){
+                console.log('emitchart')
+            let source=obj         
             function getFloat(value){
                 return parseFloat(value .replace(/,/, '.'));
                 }
@@ -467,13 +518,13 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
 .alert {
     padding: 10px;
     text-align: left;
-    font-size: 13px;
+    font-size: 15px;
     margin-top: 35px;
 } 
 ul li {
    list-style: none;    
 }
-ul li:before {
+.el-collapse-item__content ul li:before {
     font-family: 'wilo-icons';
     font-size: 22px;
     margin-left: -26px;
@@ -501,5 +552,14 @@ ul li:before {
 .stronge-price {
     font-weight: bold;
     font-size: 16px;
+}
+span.myTip {
+    cursor: pointer;
+    font-size: 15.5px;
+    color: #545759;
+    border-bottom: 1px dashed #4b4848;
+}
+button.el-button.el-button--text.el-popover__reference {
+    padding: 4px 0;
 }
 </style>

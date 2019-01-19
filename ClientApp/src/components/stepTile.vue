@@ -1,6 +1,6 @@
 <template>
     <div>        
-        <el-col :span="6"> 
+        <el-col :xs="12" :sm="6" :lg="6"> 
             <div class="rect">           
             <div class="circle_number">
             <svg height="55" width="53" class="circle">
@@ -19,8 +19,9 @@ export default {
 </script>
 <style>
 .rect {
-    width: 240px;
+    width: 90%;
     height: 140px;
+    margin-bottom: 20px;
     background: #eee;
 }
 .rect:hover, .active .rect:hover {
@@ -55,6 +56,7 @@ export default {
     line-height: 1.1;
     color: #4d4d4d;
     height: 30px;    
+    padding: 0 10px
 }
 .active .circle {
     fill: #009c81;

@@ -48,6 +48,7 @@
                                 Детальніше<i class="header-icon el-icon-info"></i>
                                 </template>
                                 <p class="text" v-html="item.features.description"></p>
+                                Реле тиску - Для пітримки потрібного тиску в системі.
                             </el-collapse-item>
                             </el-collapse>
                             <p><strong>Ток максимальний:</strong> {{item.features.current_max}} A </p>
@@ -55,7 +56,15 @@
                             <div class="expand-view">
                             <p><strong>Тип пуску насоса:</strong> {{item.features.start}}  </p> 
                             <p><strong>Управління:</strong> {{item.features.operation}}  </p>                       
-                            <p><strong>Захист від сухого ходу:</strong> {{item.features.dry_running}}  </p> 
+                            <p><el-popover
+                                placement="top-start"
+                                :title=dictionary[7].short_text
+                                width="250"
+                                trigger="hover"
+                                :content=dictionary[7].full_text>
+                                <el-button type="text"  slot="reference"><span class="myTip">Захист від сухого ходу:</span></el-button>
+                                </el-popover> 
+                                {{item.features.dry_running}}</p> 
                             <a src="#">Завантажити інструкцію з експлуатаціЇ</a>
                             <p class="stronge-price">Ціна: {{item.price*exchangeRates | aroundPrice}} грн з ПДВ </p> 
                             <el-radio-group  v-model="idController" @change="handleChange(item.id)">
@@ -160,14 +169,32 @@
                 <el-col :offset="5"  :span="3">
                     <img style="" :src="url+'assets/jeckets.jpg'" width="250" alt="">                    
                 </el-col>
-                <el-col :offset="2" :span="8" class="accessorie">
+                <el-col :offset="2" :span="10" class="accessorie">
                     <p>
-                        <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="vertical">Для монтажу в свердловині </el-radio>
-                        <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="horizontal">Для монтажу в резервуарі </el-radio>                     
+                        <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="vertical">
+                           <el-popover
+                            placement="top-start"
+                            :title=dictionary[11].short_text
+                            width="250"
+                            trigger="hover"
+                            :content=dictionary[11].full_text>
+                            <el-button type="text"  slot="reference"><span class="myTip">Для монтажу в свердловині</span></el-button>
+                        </el-popover> 
+                        </el-radio>
+                        <el-radio  v-model="typeInstallationJeckets"  @change="handleChangeTypeJeckets()" label="horizontal"> 
+                            <el-popover
+                            placement="top-start"
+                            :title=dictionary[12].short_text
+                            width="250"
+                            trigger="hover"
+                            :content=dictionary[12].full_text>
+                            <el-button type="text"  slot="reference"><span class="myTip">Для монтажу в резервуарі </span></el-button>
+                        </el-popover>
+                        </el-radio>                     
                     </p>
                     <div v-show="typeInstallationJeckets =='vertical'">
                         Вкажіть діаметр скважини  <el-input-number v-show="typeInstallationJeckets =='vertical'" @change="changeDiameterSkvagina()"  v-model="diametrSkvagina" :min="110"></el-input-number> мм                
-                        <p v-if="computedJacketsNotNeeded">Кожух не потрібен</p>
+                        <p v-if="computedJacketsNotNeeded">Кожух охолодження не потрібен</p>
                         <div v-else-if="diametrSkvagina!=0">
                             <p class="name-item">{{computedJackets.name}}</p>
                             <p>Довжина <strong>{{computedJackets.features.length}}</strong> мм</p>
@@ -205,7 +232,7 @@
 <script>
 import Axios from 'axios';
   export default {
-    props: ['url', "selectedAccessories", "paramOfSelectedPump", "volumeFlow", "deliveryHead", "dataChart", "exchangeRates"],
+    props: ['url', "dictionary", "selectedAccessories", "paramOfSelectedPump", "volumeFlow", "deliveryHead", "dataChart", "exchangeRates"],
     data() {
       return {
         accessories: {
@@ -226,7 +253,7 @@ import Axios from 'axios';
             },
             item4: {
                 id:4,
-                title: 'Кожух',
+                title: 'Кожух охолодження',
                 checked: false
             }
         },
@@ -281,6 +308,11 @@ import Axios from 'axios';
        value = Number(value).toFixed(2)
        return value
     }
+    },
+    mounted: function () {
+    this.$nextTick(function () {
+        
+    })
     },
     computed: {
         selectedAccessoriesItem1 (){
@@ -490,6 +522,7 @@ import Axios from 'axios';
   };
 </script>
 <style scoped>
+
 @-webkit-keyframes pulse1 {
     0% {
         opacity: 1;

@@ -8,7 +8,6 @@ export default {
 
   mounted () {
   this.renderChart({
-      type: 'line',
       datasets: [
       {
         label: 'Напір насоса',
@@ -27,7 +26,7 @@ export default {
         data: this.dataChart.Hsis,
       },
       {
-        label: 'Фактична точка',
+        label: 'Розрахована точка',
         backgroundColor: 'transparent',
         pointStyle: 'cross',
         radius: 10,
@@ -36,7 +35,7 @@ export default {
         borderWidth: 3
       },
       {
-        label: 'Розрахована точка',
+        label: 'Фактична точка',
         backgroundColor: 'transparent',
         pointStyle: 'cross',
         radius: 10,
