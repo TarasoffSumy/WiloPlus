@@ -37,12 +37,11 @@
             <div class="greyBox">
                  <!-- :precision="2" :min="0.5" :max="17" -->
                  <h3>Необхідна витрата насоса</h3>       
-                 <p>Витрата  <el-input-number v-model="(volumeFlowInput)" @change="onInputVolumeFlow"></el-input-number>
-                 м<sup>3</sup>/ч
+                 <p>Витрата  <el-input-number v-model="(volumeFlowInput)" :precision="2" @change="onInputVolumeFlow"></el-input-number>
+                 м<sup>3</sup>/год
                  </p>
                  <p class="alert"><i type="info" class="el-icon-info"></i>
-                 Витрата насоса повинна бути меншою за продуктивність свердловини
-                   <el-popover
+                 Витрата насоса повинна бути меншою за <el-popover
                     placement="top-start"
                     :title=dictionary[0].short_text
                     width="200"
@@ -54,7 +53,7 @@
             </div>
             <div class="greyBox last-box">
                  <font-awesome-icon icon="lightbulb" />
-                 <p style="text-align:left">Якщо необхідно розрахувати витрату, скористайтесь послугами нашого помічника</p>
+                 <p style="text-align:left">Невідома витрата? Скористайтесь послугами нашого помічника</p>
                  <div class="container-button"> 
                  <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
                  </div>

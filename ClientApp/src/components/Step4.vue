@@ -80,6 +80,7 @@
             Всього: <span style="color:#222">{{amount}} грн з ПДВ</span> 
         </h4>
         </div>
+        
     </div>   
 </template>
 

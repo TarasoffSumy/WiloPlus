@@ -43,7 +43,7 @@
 
                  <div class="greyBox last-box">
                   <font-awesome-icon icon="lightbulb" />
-                 <p style="text-align:left">Якщо необхідно розрахувати напір, скористайтесь послугами нашого помічника</p>
+                 <p style="text-align:left">Невідомий напір? Скористайтесь послугами нашого помічника!</p>
                  <div class="container-button">
                  <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
                  </div>

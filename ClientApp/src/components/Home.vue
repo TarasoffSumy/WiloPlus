@@ -1,25 +1,20 @@
 <template>
-  <div> 
-      <div v-loading="loading" style="width: 100%">
-      <!-- <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button> -->
-     <!-- {{deliveryHead}} - {{volumeFlow}}
+  <div style="width:1200px; margin:auto"> 
+    
+      <div v-loading="loading" >
+      <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button>
+      {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
-     {{selectedPumpId}} -->
-      <div style="width: 1200px; margin: auto;">
+     {{selectedPumpId}} 
+
+        <HeaderPart />
         <el-row :gutter="20" >        
         <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
         <a href="#" @click="step(2, $event)"><stepTile title="Напір насоса" number="2" :class="[{ active: current==2}]"/></a> 
         <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
-        <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиції" number="4" :class="[{ active: current==4}]"/></a>
+        <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиція" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>
-    <!-- <el-autocomplete
-      class="inline-input"
-      v-model="state2"
-      :fetch-suggestions="querySearch"
-      placeholder="Please Input"
-      :trigger-on-focus="false"
-      @select="handleSelect"
-    ></el-autocomplete> -->
+    
         <transition name="flip" mode="out-in" >
         <Step1 v-if="current==1 && step1=='ready'"
                 :url="url" 
@@ -41,6 +36,7 @@
         <Step3 v-else-if="current==3 && step3=='ready'"
                 :url="url" 
                 :pump="pump"
+                :allPumps="allPumps"
                 :dictionary="dictionary"
                 :selectedPumpId="selectedPumpId"
                 :volumeFlow="volumeFlow"
@@ -49,7 +45,9 @@
                 :exchangeRates="exchangeRates"
                 :selectedAccessories="selectedAccessories"
                 @onSaveSelectedPumpId="onSaveSelectedPumpId"
+                @onRefreshDataPump="onRefreshDataPump"
                 @onSaveSelectedAccessories="onSaveSelectedAccessories"
+                @onGetDataChart="onGetDataChart"
                 class="transition-box"/>
         <Step4 v-else-if='current==4' 
                 :url="url"
@@ -67,8 +65,9 @@
             <el-button :disabled="current == 4"  @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
         </el-col>
         </el-row>       
-    </div>
-    </div>        
+    
+   
+    </div>    
   </div>
 </template>
 
@@ -108,7 +107,6 @@ export default {
                 pump: [],
                 allPumps: [],
                 links: [],
-                state2:'',
                 dictionary: '',
                 dic: '',
                 step3:'',  
@@ -171,38 +169,14 @@ export default {
         created: function() {  
             this.postDataDictionary()    
             this.get_cookie("currency")
-            this.postDataAllPumps()       
+             
         },
         computed: {
         },
         mounted() {
-            this.links = this.loadAll();            
-            //this.allPumps=this.allPumps
-            console.log(this.links)
-            console.log()            
+            this.postDataAllPumps()                      
         },
         methods: {
-                // querySearch(queryString, cb) {
-                //     var links = this.links;
-                //     console.log(links)
-                //     var results = queryString ? links.filter(this.createFilter(queryString)) : links;
-                //     // call callback function to return suggestions
-                //     cb(results);
-                // },
-                // createFilter(queryString) {
-                //     return (link) => {
-                //     return (link.pump_article.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-                //     };
-                // },
-                // loadAll() {
-                //     return [
-                //     {"pump_article": "6083317", "pump_id": 204, "pump_name": "FIRST SPU4.01-10-B/XI4-50-1-230", "pump_price": "269" },
-                //     {"pump_article": "6083318", "pump_id": 204, "pump_name": "FIRST SPU4.01-10-B/XI4-50-1-230", "pump_price": "269" }
-                //     ];
-                // },
-                // handleSelect(item) {
-                //     console.log(item);
-                // },
             get_cookie( cookie_name )
                 {
                 // document.cookie="currency=28.55"
@@ -215,12 +189,17 @@ export default {
                 // Get the element.
                 var element = document.getElementById('print');
                 // Generate the PDF.
-                html2pdf().from(element).set({
+                var bodySend=html2pdf().from(element).set({
                 margin: 1,
                 filename: 'test.pdf',
                 html2canvas: { scale: 2 },
                 jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true}
                 }).save();
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", url+"/db/printPumpDatasheet");
+                xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+                xhr.send(bodySend);
             },
             onClearSelectedAccessories()  {
                 for (let i=1; i<=5;i++) {
@@ -244,6 +223,9 @@ export default {
             onSaveSelectedPumpId(val){
                 this.selectedPumpId=val 
             },
+            onRefreshDataPump: function(obj) {
+                this.pump=obj
+            },
             onSaveSelectedAccessories(obj){
                 this.selectedAccessories=obj 
             },
@@ -256,27 +238,29 @@ export default {
                     this.loading=false
                      
                 });
-                },
-            postDataAllPumps: function() {
-                const getPromise = Axios.post(this.url+'db/getAllPumps');                
-                getPromise.then(response => {
-                    this.allPumps=response.data
-                    console.log(this.allPumps)
-                    
-                });
-                },                 
+                },                
             postDataCableSelect: function() {
                 const getPromise = Axios.post(this.url+'db/cableSelect', {"section":"1,5"});
                 getPromise.then(response => {
                 // 
                 });
                 },
-            postDataGetDetail: function() {
-                const getPromise = Axios.post(this.url+'db/getDetails', {"id":"311"});
+            postDataAllPumps: function() {
+                const getPromise = Axios.post(this.url+'db/getAllPumps');                
                 getPromise.then(response => {
-                // 
+                    let source=response.data
+                    let allPumps=[]
+                    for(let i=0; i<source.length; i++){
+                        let obj={}
+                        obj.value=source[i].pump_name.split(".")[1]
+                        obj.id=source[i].pump_id
+                        allPumps.push(obj)
+                    }
+                    console.log(allPumps)
+                    this.allPumps=allPumps
+                    
                 });
-                },
+                }, 
             postDataControllers: function(current) {
                 const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
                 getPromise.then(response => {        
@@ -292,7 +276,7 @@ export default {
                 this.pump = response.data;
                 if (this.pump!=undefined) {
                     this.selectedPumpId=this.pump[0].id                  
-                    this.onGetDataChart()                       
+                    this.onGetDataChart(this.pump)                       
                         this.loading=false
                         this.step3='ready'
                 }
@@ -331,8 +315,9 @@ export default {
                     this.postDataPump(this.volumeFlow, this.deliveryHead);                 
                 }            
             },
-            onGetDataChart(){
-            let source=this.pump          
+            onGetDataChart(obj){
+                console.log('emitchart')
+            let source=obj         
             function getFloat(value){
                 return parseFloat(value .replace(/,/, '.'));
                 }

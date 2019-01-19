@@ -1,7 +1,7 @@
 <template>
   <div id="app">
   
-    <HeaderPart />
+   
     <Home msg="Welcome to Willo App"/>
      
  

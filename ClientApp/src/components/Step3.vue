@@ -41,14 +41,27 @@
     <div class="greyBoxes-container">
         <div class="greyBox" v-if="idPump">
                 <el-row>
-                    <h3>Підбраний насос </h3>
+                    <h3>Підбраний насос <el-button @click="onDeletePump" type="text"><i style="font-size:22px" class="el-icon-refresh"></i></el-button> </h3>
+
+
                     <el-col  :span="4" >
-                    <img width="150" :src="url+'assets/wilo-skvaginniy-nasos-actun-first-spu4.jpg'"/>   
+                    
+                    <img style="margin-left:-19px" width="150" :src="url+'assets/wilo-skvaginniy-nasos-actun-first-spu4.jpg'"/>   
                     </el-col>
-                    <el-col :offset="1"  :span="19" >
-                       <h4>ACTUN {{objSelectedPump.shortName}}</h4>
+                    <el-col  :offset="1"  :span="19" >
+                    <el-card v-if="refresh">
+                    FIRST SPU4. <el-autocomplete
+                            class="inline-input"
+                            v-model="itemSelect"
+                            :fetch-suggestions="querySearch"
+                            placeholder="введіть серію насосу"
+                            :trigger-on-focus="false"
+                            @select="handleSelect"
+                        ></el-autocomplete>                        
+                    </el-card>
+                       <h4 style="margin: 10px 0 15px 0;">ACTUN {{objSelectedPump.shortName}}</h4>
                         <p>Тип живлення:</p>                
-                                <div v-for="item in pump" :value="item" :key="item.id" class="radio-item-phasa" >
+                                <div v-for="item in objPump" :value="item" :key="item.id" class="radio-item-phasa" >
                                     <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
                                                     <span  v-if="item.features.phase=='1'">
                                                         <el-popover
@@ -57,7 +70,7 @@
                                                             width="250"
                                                             trigger="hover"
                                                             :content=dictionary[5].full_text>
-                                                            <el-button type="text"  slot="reference"><span class="myTip">однофазный</span></el-button>
+                                                            <el-button type="text"  slot="reference"><span class="myTip">однофазній</span></el-button>
                                                         </el-popover> 
                                                         </span>
                                                     <span v-if="item.features.phase=='3'">
@@ -67,37 +80,52 @@
                                                             width="250"
                                                             trigger="hover"
                                                             :content=dictionary[6].full_text>
-                                                            <el-button type="text"  slot="reference"><span class="myTip">трехфазный</span></el-button>
+                                                            <el-button type="text"  slot="reference"><span class="myTip">трихфазний</span></el-button>
                                                         </el-popover> 
                                                     </span>
                                     </el-radio>       
                                 </div>
                                 <p class="sub-title">Насосний агрегат: {{objSelectedPump.name}}</p> 
                                 <p class="sub-title price">Ціна {{objSelectedPump.price}} грн. з ПДВ</p>
+                                <el-collapse accordion> 
+                                    <el-collapse-item>
+                                        <template slot="title">
+                                        <p class="sub-title">Конструкція</p><i class="header-icon el-icon-info"></i>
+                                        </template>                                        
+                                        <p>Багатоступеневий насос 4" із занурюваним двигуном, виконання з кожухом, для вертикальної або горизонтальної установки</p>
+                                        <p><span class="sub-title">Номінальна потужність двигуна:</span> {{objSelectedPump.n_power}} kW </p>
+                                        <p><span class="sub-title">Номінальний струм:</span> {{objSelectedPump.current}} A </p>                    
+                                    </el-collapse-item>
+                                </el-collapse>
+
                     </el-col>                
                 </el-row>
 
-                <el-row style="margin-bottom: 20px;">
-                    <p class="sub-title">Конструкція</p>
-                    <p>Багатоступеневий насос 4" із занурюваним двигуном, виконання з кожухом, для вертикальної або горизонтальної установки</p>
-                    <span class="sub-title"></span>
-                    
-                    <el-col :span="12">
-                        <p><span class="sub-title">Потужність двигуна:</span> {{objSelectedPump.n_power}} kW </p>
-                        <p><span class="sub-title point">Робоча точка отримана від користувача:</span></p>                        
-                        <p><span class="sub-title">Витрата:</span> {{volumeFlow}} м<sup>3</sup>/ч </p> 
-                        <p><span class="sub-title">Напір:</span> {{deliveryHead}} м</p>   
+                <el-row style="margin: 20px 0;">
+
+                    <el-col :offset=1 :span="4">
+                       
+                        <p><span class="sub-title point"></span></p>                        
+                        <p><span class="sub-title">Витрата</span></p> 
+                        <p><span class="sub-title">Напір</span></p>   
                     </el-col>
-                    <el-col :span="12">
-                        <p><span class="sub-title">Номінальний струм:</span> {{objSelectedPump.current}} A </p>
+                    <el-col :span="10">
+                        
+                        <p><span class="sub-title point">Робоча точка отримана від користувача:</span></p>                        
+                        <p> {{volumeFlow}} м<sup>3</sup>/год</p> 
+                        <p>{{deliveryHead}} м</p>                          
+                    </el-col>
+                    <el-col :span="6">
+                        
                         <p><span class="sub-title point">Робоча точка фактична:</span></p>                        
-                        <p><span class="sub-title">Витрата:</span> {{dataChart.CalcPoint[0].x}} м<sup>3</sup>/ч </p> 
-                        <p><span class="sub-title">Напір:</span> {{dataChart.CalcPoint[0].y}} м</p>                          
+                        <p> {{dataChart.CalcPoint[0].x | aroundNumber}} м<sup>3</sup>/год </p> 
+                        <p> {{dataChart.CalcPoint[0].y | aroundNumber}} м</p>                          
                     </el-col>
                 </el-row>
                 <el-row>
                     <div id="print" style="margin-left:45px;position: relative; width:300px: top:20px">
-                    <Chart  :dataChart="dataChart"   />   
+
+                    <Chart :key="id" :dataChart="objDataChart"/>   
                     </div>                      
                 </el-row>      
                  
@@ -233,6 +261,7 @@ export default {
     "deliveryHead",
     "dataChart",
     "pump",
+    "allPumps",
     "selectedPumpId",
     "url",
     "selectedAccessories",
@@ -241,11 +270,16 @@ export default {
   ],
   data() {
     return {
+      id: 1 ,
       idPump: this.selectedPumpId,
+      objPump:this.pump,
+      objDataChart:this.dataChart,
+      refresh:false,
       selectedAccessoriesRefresh:this.selectedAccessories,
       deliveryHeadInput: this.deliveryHead,
       deliveryHeadComputed: null,
       dialogVisible: false,
+      itemSelect:'',
       paramOfSelectedPump: {
         phase: "",
         current: 0,
@@ -254,10 +288,13 @@ export default {
         H2: 0
       }
     };
-  },
-  created: function() {
-
-  },
+    },
+    filters: {
+    aroundNumber: function (value) {
+       value = Number(value).toFixed(2)
+       return value
+    }
+    },
   mounted: function(){
        this.onSaveSelectedAccessories()
        console.log(this.selectedAccessories)
@@ -265,7 +302,7 @@ export default {
   computed: {
     objSelectedPump: function() {
       let pumpsArr = [];
-      let source = this.pump;
+      let source = this.objPump;
       for (let key in source) {
         pumpsArr.push(source[key]);
       }
@@ -274,7 +311,7 @@ export default {
         if (pumpsArr[key].id == this.idPump) {
           this.onSaveSelectedPumpId(pumpsArr[key].id);
           obj.name = pumpsArr[key].pump_name;
-          obj.price = pumpsArr[key].price*this.exchangeRates;
+          obj.price = (pumpsArr[key].price*this.exchangeRates).toFixed(2);
           obj.id = pumpsArr[key].id;
           obj.current = pumpsArr[key].features.current;
           obj.shortName = obj.name.split("/")[0];
@@ -284,6 +321,7 @@ export default {
           obj.dim_H2 = pumpsArr[key].features.dim_H2;
         }
       }
+      
         this.paramOfSelectedPump=obj
         this.paramOfSelectedPump.U = obj.phase == 1 ? 230 : 400;
 
@@ -300,9 +338,35 @@ export default {
         return true;
     }
   },
+  
   methods: {
+    onDeletePump(){  
+        
+        this.refresh=!this.refresh
+          
+    },
+    handleSelect(itemSelect) {
+        console.log(itemSelect.id);
+        this.idPump=itemSelect.id
+        this.postDataGetDetail(itemSelect.id)
+        this.onSaveSelectedPumpId(itemSelect.id) 
+        this.onClearAccessories()       
+    },              
+    querySearch(queryString, cb) {
+        var links = this.allPumps;
+        var results = queryString ? links.filter(this.createFilter(queryString)) : links;
+        cb(results);
+        },
+    createFilter(queryString) {
+        return (link) => {
+        return (link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+        },
     onSaveSelectedPumpId(id) {
       this.$emit("onSaveSelectedPumpId", id);
+    },
+    onRefreshDataPump(obj) {
+      this.$emit("onRefreshDataPump", obj);
     },
     onClearItemAccessories() {
         this.selectedAccessoriesRefresh.item1.selected=false 
@@ -310,13 +374,12 @@ export default {
         this.selectedAccessoriesRefresh.item3.selected=false
         
     },
-    handleChangePhase(id) { 
-      this.onSaveSelectedPumpId(id)
+    onClearAccessories() {
       if (  this.selectedAccessoriesRefresh.item1.selected != false ||
             this.selectedAccessoriesRefresh.item2.selected != false ||
             this.selectedAccessoriesRefresh.item3.selected != false)
          {
-            this.$confirm('Після зміни типу живлення необхідно буде ще раз обрати приладдя залежні від току', 'Увага', {
+            this.$confirm('Обрані приладдя залежні від струму будуть видалені', 'Увага', {
                 confirmButtonText: 'Згода',
                 cancelButtonText: 'Cancel',
                 type: 'warning'
@@ -333,7 +396,12 @@ export default {
                 });
                         
                 });          
-      }     
+      }  
+    },
+    handleChangePhase(id) { 
+      this.onSaveSelectedPumpId(id)
+      this.onClearAccessories()
+   
     },
     onSelectController(id, dataControlBox) {
       this.selectedAccessoriesRefresh.item1.idController = id;
@@ -388,6 +456,23 @@ export default {
     onDeleteAccessories(id) {
       this.selectedAccessoriesRefresh['item'+id].selected = false;
     },
+    postDataGetDetail: function(id) {
+                const getPromise = Axios.post(this.url+'db/getDetails', {"id":id});
+                getPromise.then(response => {
+                    this.objPump = response.data;
+                    if (this.objPump!=undefined) {
+                    console.log(this.objPump)  
+                     this.onRefreshDataPump(this.objPump)
+                     this.$emit("onGetDataChart", this.objPump);  
+                     this.id ++    
+                                    
+                }
+                else {
+                    this.refreshDataSearch=false 
+                }
+                // 
+                });
+    },
     open() {
       this.$alert("This is a message", "Title", {
         confirmButtonText: "OK",
@@ -440,11 +525,11 @@ p.sub-title.price {
     color: #009c81;
 }
 span.sub-title.point {
-    min-height: 42px;
+    min-height: 40px;
     padding: 5px 0;
     display: block;
-    margin-top: 14px;
-    border-top: solid 1px #ddd;
+    margin-top: 0;
+    border-bottom: solid 1px #c4c0c0;
 }
 </style>
 
