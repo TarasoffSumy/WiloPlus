@@ -87,6 +87,8 @@
                                 </div>
                                 <p class="sub-title">Насосний агрегат: {{objSelectedPump.name}}</p> 
                                 <p class="sub-title price">Ціна {{objSelectedPump.price}} грн. з ПДВ</p>
+                                <p><span class="sub-title">Номінальна потужність двигуна:</span> {{objSelectedPump.n_power}} kW </p>
+                                <p><span class="sub-title">Номінальний струм:</span> {{objSelectedPump.current}} A </p> 
                                 <el-collapse accordion> 
                                     <el-collapse-item>
                                         <template slot="title">

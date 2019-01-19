@@ -456,6 +456,9 @@ button.el-button.el-button--success {
     background-color: #009c82;
     border-radius: 0;
 }
+.navigation-footer button.el-button.el-button--primary:hover {
+    background: #009c82;
+}
 .navigation-footer button.el-button.el-button--primary, .navigation-footer button.el-button.el-button--default  {
     background: #363640;
     color: #fff;
