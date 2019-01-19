@@ -80,7 +80,11 @@
             Всього: <span style="color:#222">{{amount}} грн з ПДВ</span> 
         </h4>
         </div>
-        
+        <el-card>
+          <el-button type="info" icon="el-icon-message">Надіслати </el-button>
+          <el-button type="info" icon="el-icon-printer">Друк пропозиції </el-button>           
+        </el-card>
+
     </div>   
 </template>
 

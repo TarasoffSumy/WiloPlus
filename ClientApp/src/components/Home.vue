@@ -3,9 +3,9 @@
     
       <div v-loading="loading" >
       <button class="btn btn-primary pl-5 pr-5" @click="makePdf">Download PDF  </button>
-      {{deliveryHead}} - {{volumeFlow}}
+      <!-- {{deliveryHead}} - {{volumeFlow}}
      {{pump}}  
-     {{selectedPumpId}} 
+     {{selectedPumpId}}  -->
 
         <HeaderPart />
         <el-row :gutter="20" >        
@@ -555,9 +555,9 @@ ul li {
 }
 span.myTip {
     cursor: pointer;
-    text-decoration: underline;
     font-size: 15.5px;
-    color: #50b9f0;
+    color: #545759;
+    border-bottom: 1px dashed #4b4848;
 }
 button.el-button.el-button--text.el-popover__reference {
     padding: 4px 0;

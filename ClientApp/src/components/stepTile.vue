@@ -56,6 +56,7 @@ export default {
     line-height: 1.1;
     color: #4d4d4d;
     height: 30px;    
+    padding: 0 10px
 }
 .active .circle {
     fill: #009c81;

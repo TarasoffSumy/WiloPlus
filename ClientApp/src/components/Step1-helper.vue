@@ -34,7 +34,7 @@
                     width="200"
                     trigger="hover"
                     :content=dictionary[2].full_text>
-                    <el-button type="text" slot="reference">Додаткові витарти</el-button>
+                    <el-button type="text" slot="reference"><span class="myTip">Додаткові витарти</span></el-button>
                   </el-popover> 
                 <i type="info" class="el-icon-question"></i></span>  
                 <el-input-number v-model="volumeFlow.Val7.val" @change="handleChange(volumeFlow.Val7.val, 7)" :precision="0"  :min="0" ></el-input-number>
