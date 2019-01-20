@@ -14,13 +14,15 @@
         </el-col>
         <el-col :span="10" class="side-right-helper">
             <div v-for="item in accessories" class="row-item" :key='item.id' :class="[{activeLeftCircle: focusInput==item.id}]">
-                
+                    <el-button type="text">
+                     
+                    <span class="item"  @click="onFocusInput(item.id)">
                         <div class="circle_number">                   
                             <svg height="36" width="36" class="circle">
                             <circle cx="17" cy="17" r="17" stroke="" stroke-width="2" fill="" />
                             </svg><div class="symbolInCircle">{{item.id}} </div>  
-                        </div>  <div v-show="item.checked" class="checked"></div>
-                    <el-button type="text"><span class="item"  @click="onFocusInput(item.id)">{{item.title}}</span></el-button>         
+                        </div>  <div v-show="item.checked" class="checked"></div>       
+                        <span style="font-weight: 600;">{{item.title}}</span></span></el-button>         
             </div>           
         </el-col>
     </el-row> 
@@ -240,7 +242,7 @@ import Axios from 'axios';
             },
             item2: {
                 id:2,
-                title: 'Кабель та З’єднання насоса',
+                title: 'Кабель та з’єднання насоса',
                 checked: false
             },
             item3: {
@@ -631,11 +633,11 @@ p.detail-title {
 }
 .circle_number {
     padding-top: inherit;
-    margin-top: 10px;
+    margin-top: -10px;
 }
 .circle_number .symbolInCircle {
     position: relative;
-    top: -34px;
+    top: -32px;
     left: 12px;
     font-size: 20px;
     color: #fff;
@@ -652,8 +654,7 @@ p.detail-title {
     margin: 4px 5px 15px 0px;
     vertical-align: middle;
     float: left;
-    color: #222;
-    font-weight: 600;
+    color: #222;    
 }
 .additional-volume-flow {
     display: inline-table;
@@ -747,7 +748,7 @@ span.name-item, .name-item {
     width: 23px;
     display: inline-table;
     position: relative;
-    top: 0px;
+    top: 8px;
     font-weight: bold;
 }
 .el-radio-button:first-child:last-child .el-radio-button__inner {
