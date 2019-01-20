@@ -56,12 +56,12 @@
             </p>
         </el-col>
     </el-row> 
-    <el-row class="row-before-nav">
-        <p class="computed-volumeFlow">
+    <el-row justice="center" class="row-before-nav">
+        <div class="computed-volumeFlow">
 
           <span class="label">Розрахована витрата</span>
           <span class="number"> {{compTotal}}</span> м<sup>3</sup>/ч 
-       </p>
+       </div>
         <span class="exeption-validation" v-if="!$v.volumeFlowValTotal.between">Нажаль серія насосів Actun SPU4 не може задовільнити ваші потреби, 
                  витрата не повинна перевищувати <strong>17 м<sup>3</sup>/ч</strong></span> 
      

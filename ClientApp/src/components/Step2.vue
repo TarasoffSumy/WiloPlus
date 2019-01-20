@@ -35,15 +35,16 @@
     <div class="greyBoxes-container">
              <div class="greyBox">
                  <h3>Необхідний напір насоса</h3>                
-                 <p>Напір 
+                 <el-row justify="center">Напір 
                      <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="2" :min="20" :max="290"></el-input-number>
                  м
-                 </p>
+                </el-row >
              </div>
 
                  <div class="greyBox last-box">
                   <font-awesome-icon icon="lightbulb" />
-                 <p style="text-align:left">Невідомий напір? Скористайтесь послугами нашого помічника!</p>
+                 <p>Невідомий напір?</p>
+                 <p>Скористайтесь послугами нашого помічника!</p>
                  <div class="container-button">
                  <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
                  </div>

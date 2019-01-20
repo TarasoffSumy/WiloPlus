@@ -33,27 +33,80 @@
     <h2 class="title">Витрата насоса</h2> 
     </el-row> 
     <el-row>
-    <div class="greyBoxes-container">
-            <div class="greyBox">
-                 <!-- :precision="2" :min="0.5" :max="17" -->
-                 <h3>Необхідна витрата насоса</h3>       
-                 <p>Витрата  <el-input-number v-model="(volumeFlowInput)" :precision="2" @change="onInputVolumeFlow"></el-input-number>
+        <!-- <el-tabs v-model="activeTab">
+        <el-tab-pane label="Необхідна витрата насоса" name="first">
+             <h3>Необхідна витрата насоса</h3>       
+                 <el-row justify="center">Витрата  <el-input-number v-model="(volumeFlowInput)" :precision="2" @change="onInputVolumeFlow"></el-input-number>
                  м<sup>3</sup>/год
-                 </p>
-                 <p class="alert"><i type="info" class="el-icon-info"></i>
+                 </el-row>
+                 <p><i type="info" class="el-icon-info"></i>
                  Витрата насоса повинна бути меншою за <el-popover
                     placement="top-start"
                     :title=dictionary[0].short_text
                     width="200"
                     trigger="hover"
                     :content=dictionary[0].full_text>
-                    <el-button type="text"  slot="reference"><span class="myTip">продуктивність свердловини</span></el-button>
-                  </el-popover>                 
+                    <el-button type="text"  slot="reference"><span class="myTip">продуктивність</span></el-button>
+                  </el-popover>
+                  <el-popover
+                    placement="top-start"
+                    :title=dictionary[0].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[0].full_text>
+                    <el-button type="text"  slot="reference"><span class="myTip">свердловини</span></el-button>
+                  </el-popover>                   
+                 </p>
+        </el-tab-pane>
+        <el-tab-pane label="Розрахувати" name="second">
+           <span slot="label"><i class="el-icon-date"></i> Розрахувати</span>
+          <Step1-helper 
+                        @onComputeVolumeFlow="onComputeVolumeFlow"
+                        @onInputFlowItems="onInputFlowItems" 
+                        :dictionary="dictionary"
+                        :modelFlowItems="modelFlowItems"
+                        :url="url"
+                />
+          <el-row class="navigation-footer">
+          <el-col :span="12">
+              <el-button @click="dialogCancel"  icon="el-icon-d-arrow-left">Назад</el-button>
+          </el-col>
+          <el-col :span="12">
+              <el-button :disabled="disabledAccept" type="primary" @click="onDialogAccept">Підтвердити <i class="el-icon-d-arrow-right el-icon-right"/></el-button>
+          </el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs> -->
+    <div class="greyBoxes-container">
+            <div class="greyBox">
+                 <!-- :precision="2" :min="0.5" :max="17" -->
+                 <h3>Необхідна витрата насоса</h3>       
+                 <el-row justify="center">Витрата  <el-input-number v-model="(volumeFlowInput)" :precision="2" @change="onInputVolumeFlow"></el-input-number>
+                 м<sup>3</sup>/год
+                 </el-row>
+                 <p><i type="info" class="el-icon-info"></i>
+                 Витрата насоса повинна бути меншою за <el-popover
+                    placement="top-start"
+                    :title=dictionary[0].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[0].full_text>
+                    <el-button type="text"  slot="reference"><span class="myTip">продуктивність</span></el-button>
+                  </el-popover>
+                  <el-popover
+                    placement="top-start"
+                    :title=dictionary[0].short_text
+                    width="200"
+                    trigger="hover"
+                    :content=dictionary[0].full_text>
+                    <el-button type="text"  slot="reference"><span class="myTip">свердловини</span></el-button>
+                  </el-popover>                   
                  </p>
             </div>
             <div class="greyBox last-box">
                  <font-awesome-icon icon="lightbulb" />
-                 <p style="text-align:left">Невідома витрата? Скористайтесь послугами нашого помічника</p>
+                 <p>Невідома витрата? </p>
+                 <p>Скористайтесь послугами нашого помічника!</p>
                  <div class="container-button"> 
                  <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
                  </div>
@@ -70,6 +123,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     props: ['volumeFlow', 'maxVolumeFlow', "modelFlowItems", "url", "dictionary"],
     data() {
       return {
+        activeTab:'first',
         dic: this.dictionary.id1,
         volumeFlowInput: this.volumeFlow,
         volumeFlowComputed: null,
@@ -85,12 +139,8 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         }
     },
     mounted() {
-      console.log(this.dictionary)
     },
-    created (){
-        // this.postData(1)
-        
-         
+    created (){ 
     },
     methods: {
       dialogCancel() {

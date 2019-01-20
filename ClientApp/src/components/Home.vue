@@ -161,6 +161,7 @@ export default {
                         img: "assets/jeckets.jpg",
                         price: "",
                         selected: false,
+                        typeInstallationJeckets:0,
                         idJecket: undefined
                     }
                 }
@@ -256,7 +257,6 @@ export default {
                         obj.id=source[i].pump_id
                         allPumps.push(obj)
                     }
-                    console.log(allPumps)
                     this.allPumps=allPumps
                     
                 });
@@ -264,7 +264,6 @@ export default {
             postDataControllers: function(current) {
                 const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : '11'});
                 getPromise.then(response => {        
-                // console.log(response.data);
                 })
                 .catch(error => {
                     });
@@ -381,6 +380,7 @@ export default {
 }
 p {
     color: #363640;
+    text-align: left;
 }
 h1, h2, h3 {
     color: #363640;
@@ -414,7 +414,6 @@ h4 {
     width: calc(100% - 40px);
     background-color: #ffffff;
     text-align: center;
-    padding: 20px 0;
     box-sizing: border-box;
 }
 
@@ -512,9 +511,11 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
     background: #f6f6f6;
     color: #212121;
     margin-right: 2%;
-    min-height: 225px;
+    min-height: 180px;
     width: 46%;
+    margin-bottom: 20px;
 }
+
 .last-box{
     margin-right: 0;
 }

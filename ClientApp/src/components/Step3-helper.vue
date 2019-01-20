@@ -1,7 +1,7 @@
 <template>
 <div>
     <h2>Підбір приладдя до свердловинного насосу</h2>
-    <el-row>
+    <el-row v-loading="loading">
         <el-col :span="12" class="side-left-helper">
             
             <el-button  v-for="item in accessories" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_number number_'+item.id, {green: focusInput==item.id}]" type="text">                   
@@ -29,9 +29,6 @@
         <div v-if="focusInput==1" class="block-accessoreis"  v-for="item in controllers" :key="item.id">
             <el-row v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">                                       
                     <el-col :span="1" style="padding-top:30px">
-
-                        <!-- <el-radio  v-model="idController"  @change="handleChange(item.id)" :label="item.id">
-                        <span > </span></el-radio>                                 -->
                     </el-col>
                     <el-col :span="4">                           
                             <img :src="url+'assets/controller.jpg'" width="100px" alt="">
@@ -67,7 +64,7 @@
                                 {{item.features.dry_running}}</p> 
                             <a src="#">Завантажити інструкцію з експлуатаціЇ</a>
                             <p class="stronge-price">Ціна: {{item.price*exchangeRates | aroundPrice}} грн з ПДВ </p> 
-                            <el-radio-group  v-model="idController" @change="handleChange(item.id)">
+                            <el-radio-group class="btn-choose" v-model="selectedAccessories.item1.idController" @change="handleChange(item.id)">
                                 <el-radio-button  :label="item.id">Вибрати</el-radio-button>
                             </el-radio-group>   
                             </div></div>                               
@@ -80,7 +77,7 @@
                     <img style="" :src="url+'assets/cable.jpg'" width="150" alt="">
                 </el-col>
                 <el-col  :span="8" class="accessorie">
-                    <p>Довжина кабелю <el-input-number v-model="cable.length" @change="handleChangeCableLength(cable.length)" :min="0" ></el-input-number> м</p>
+                    <p>Довжина кабелю <el-input-number v-model="cable.length" @change="handleChangeCableLength(cable.length)" :min="1" ></el-input-number> м</p>
                     <el-row v-if="computedCableSection">
                         <div class="" >
                             <p class="detail-title"> Перетин кабелю <span>4 х {{computedCableSection}} мм<sup>2</sup></span>  </p>
@@ -124,8 +121,8 @@
                             </el-collapse>
                             <p>Перетин  {{item.features.section}} мм<sup>2</sup></p>
                             <p class="stronge-price">Ціна: {{item.price*exchangeRates | aroundPrice}} грн з ПДВ </p> 
-                            <el-radio-group  v-model="idMufta"  @change="handleChangeMufta(item.id)">
-                                <el-radio-button  :label="item.id">Вибрати</el-radio-button>
+                            <el-radio-group class="btn-choose" v-model="selectedAccessories.item3.idMufta"  @change="handleChangeMufta(item.id)">
+                            <el-radio-button  :label="item.id">Вибрати</el-radio-button>
                             </el-radio-group>  
                             
                             </div>                            
@@ -257,7 +254,7 @@ import Axios from 'axios';
                 checked: false
             }
         },
-        dataTest:4.56465,
+        loading: false,
         focusInput: 1,
         activeAccessories: '',
         controllers: '',
@@ -269,7 +266,7 @@ import Axios from 'axios';
                 section:'',
                 name:'',
                 id:'',
-                length: 0
+                length: this.selectedAccessories.item2.length
             },
         realSectionCable: 0,    
         computedCableSection: undefined,    
@@ -279,7 +276,7 @@ import Axios from 'axios';
         computedVessel:'',
         realNeedVessel:'',
         computedVesselId: 0,   
-        typeInstallationJeckets: 0,        
+        typeInstallationJeckets: this.selectedAccessories.item5.typeInstallationJeckets,        
         jackets:
             {
                 horizontal:[],
@@ -310,9 +307,7 @@ import Axios from 'axios';
     }
     },
     mounted: function () {
-    this.$nextTick(function () {
-        
-    })
+       
     },
     computed: {
         selectedAccessoriesItem1 (){
@@ -322,11 +317,13 @@ import Axios from 'axios';
         }
     },
     created:  function() {
+        this.loading=true
          this.realNeedVessel=330*this.volumeFlow*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.deliveryHead))
          this.realNeedJacket=Number(this.paramOfSelectedPump.dim_H2)+50     
          this.postDataJackets()
          this.postDataControllers(this.paramOfSelectedPump.current+'A')
          this.postDataVessels()
+          console.log(this.idController)
     },
     methods: {
     handleChangeTypeJeckets() {
@@ -364,7 +361,7 @@ import Axios from 'axios';
                 this.computedJacketsNotNeeded=true
             }            
         }
-        this.$emit('onSelectJecket', this.computedJackets.id, this.computedJackets)
+        this.$emit('onSelectJecket', this.computedJackets.id, this.computedJackets, this.typeInstallationJeckets)
         this.accessories.item4.checked=true
     },        
     handleCommand(command) {
@@ -414,12 +411,11 @@ import Axios from 'axios';
         }
         if (value==1) {
             //  this.onSelectController(this.idController)
-        }
-       
+        }     
     },
     onSelectCable(id, cable){
-        this.$emit('onSelectCable', id, cable)
-        this.accessories.item2.checked=true
+            this.$emit('onSelectCable', id, cable)
+            this.accessories.item2.checked=true            
     },
     onSelectController(id){
         let sourse=this.controllers
@@ -440,10 +436,12 @@ import Axios from 'axios';
         
     },
     postDataControllers: function(current) {
+        
         const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
         getPromise.then(response => {
         this.controllers = response.data;
         let sourse=this.controllers
+        this.loading=false
         // let standartSelected= sourse.filter( function(el) {
         //       return el.features.class=="Економ"
         //     }
@@ -455,6 +453,7 @@ import Axios from 'axios';
         });
     },
     postDataVessels: function(current) {
+        
         const getPromise = Axios.post(this.url+'db/getAllVessels');
         getPromise.then(response => {
         this.vessels = response.data;
@@ -476,12 +475,14 @@ import Axios from 'axios';
                                 this.computedVesselId=i+1                     
                             }
                     }
-                }   
+                }
+               
                 })
                 .catch(error => {
                 });
     },
     postDataCables: function(section) {
+            
             const getPromise = Axios.post(this.url+'db/cableSelect', {"section" : section});
             getPromise.then(response => {
             let dataArray=[]
@@ -497,6 +498,7 @@ import Axios from 'axios';
                 dataArray.push(muftsLocal[i]);
             }
             this.mufts=dataArray 
+            
             // let sourse=this.mufts
             
             // let standartSelected= sourse.filter( function(el) {
@@ -509,11 +511,13 @@ import Axios from 'axios';
             });
     },
     postDataJackets: function() {
+                
                 const getPromise = Axios.post(this.url+'db/getAllJackets');
                 getPromise.then(response => {
                 let sourse=response.data;
                 this.jackets.vertical=sourse.slice(0,2)
-                this.jackets.horizontal=sourse.slice(2)  
+                this.jackets.horizontal=sourse.slice(2)
+                
                 })
                 .catch(error => {
                 });
@@ -748,6 +752,10 @@ span.name-item, .name-item {
 }
 .el-radio-button:first-child:last-child .el-radio-button__inner {
     border-radius: 0;
+}
+.btn-choose {
+    border: 2px solid #009c81;
+    border-radius: 7px;
 }
 </style>
 

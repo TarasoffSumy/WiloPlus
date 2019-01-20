@@ -27,7 +27,6 @@
             </el-row>   
         </div>
     </el-dialog>
-
     <el-row>
         <div class="circle_number">
             <svg height="55" width="53" class="circle">
@@ -94,9 +93,7 @@
                                         <template slot="title">
                                         <p class="sub-title">Конструкція</p><i class="header-icon el-icon-info"></i>
                                         </template>                                        
-                                        <p>Багатоступеневий насос 4" із занурюваним двигуном, виконання з кожухом, для вертикальної або горизонтальної установки</p>
-                                        <p><span class="sub-title">Номінальна потужність двигуна:</span> {{objSelectedPump.n_power}} kW </p>
-                                        <p><span class="sub-title">Номінальний струм:</span> {{objSelectedPump.current}} A </p>                    
+                                        <p>Багатоступеневий насос 4" із занурюваним двигуном, виконання з кожухом, для вертикальної або горизонтальної установки</p>                    
                                     </el-collapse-item>
                                 </el-collapse>
 
@@ -440,12 +437,14 @@ export default {
       this.selectedAccessoriesRefresh.item4.selected = true;
       this.onSaveSelectedAccessories()
     },
-    onSelectJecket(id, jecket) {
+    onSelectJecket(id, jecket, type) {
       this.selectedAccessoriesRefresh.item5.idJecket = id;
       this.selectedAccessoriesRefresh.item5.length = jecket.features.length;
       this.selectedAccessoriesRefresh.item5.name = jecket.name;
       this.selectedAccessoriesRefresh.item5.price = (jecket.price*this.exchangeRates).toFixed(2);
+      this.selectedAccessoriesRefresh.item5.typeInstallationJeckets=type
       this.selectedAccessoriesRefresh.item5.selected = true;
+      
       this.onSaveSelectedAccessories()
     },
     onSaveSelectedAccessories(){
@@ -457,6 +456,25 @@ export default {
     },
     onDeleteAccessories(id) {
       this.selectedAccessoriesRefresh['item'+id].selected = false;
+      if (id==1) {
+          this.selectedAccessoriesRefresh['item'+id].idController=undefined;
+      }
+      if (id==2) {
+          this.selectedAccessoriesRefresh['item'+id].idCable=undefined;
+          this.selectedAccessoriesRefresh['item'+id].length=0; 
+          console.log(this.selectedAccessories['item'+id].length)         
+      }
+      if (id==3) {
+          this.selectedAccessoriesRefresh['item'+id].idMufta=undefined;
+      }
+      if (id==4) {
+          this.selectedAccessoriesRefresh['item'+id].idVessel=undefined;
+      }
+      if (id==5) {
+          this.selectedAccessoriesRefresh['item'+id].idJecket=undefined;
+          this.selectedAccessories['item'+id].typeInstallationJeckets=0;
+          console.log(this.selectedAccessories)
+      }
     },
     postDataGetDetail: function(id) {
                 const getPromise = Axios.post(this.url+'db/getDetails', {"id":id});
