@@ -23,7 +23,7 @@
                     :content=dictionary[4].full_text>
                     <el-button type="text" slot="reference"><span class="myTip">Додатковий напір</span></el-button>
                   </el-popover>                
-                <i type="info" class="el-icon-question"></i></div>  
+                </div>  
                 <el-input-number @focus="onFocusInput(0)" v-model="additionalHead"  @change="handleChange(additionalHead, 4)"  :precision="2" :min="0"></el-input-number>
                 м             
             </div>
@@ -60,19 +60,19 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
             item_A: {
                 id:1,
                 letter: 'A',
-                title: 'Висота від землі до рівня води в свердловині',
+                title: 'Висота від землі до <span class="myTip" title="Рівень води при роботі насосу на дебіті.">динамічного рівня</span> води в свердловині',
                 valueHead: this.modelHeadItems.val1
             },
             item_B: {
                 id:2,
                 letter: 'B',
-                title: 'Висота від землі до <span class="myTip" title="Рівень води при роботі насосу на дебіті.">динамічного рівня</span> води в свердловині',
+                title: 'Відстань від свірдловини до будинку',
                 valueHead: this.modelHeadItems.val2
             },
             item_C: {
                 id:3,
                 letter: 'C',
-                title: 'Висота від землі до рівня води в свердловині',
+                title: 'Висота від землі до найвищої точки водоспоживання',
                 valueHead: this.modelHeadItems.val3
             }
         },
@@ -88,10 +88,10 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     },
     computed: {
         compTotal: function() {
-            let sum=this.helperHead.item_A.valueHead
-                         +this.helperHead.item_B.valueHead
-                         +this.helperHead.item_C.valueHead
-                         +this.additionalHead+18
+            let a=this.helperHead.item_A.valueHead
+            let b=this.helperHead.item_B.valueHead
+            let c=this.helperHead.item_C.valueHead
+            let sum=(a+c+0.2*(a+b+c)+18)+this.additionalHead
             this.HeadValTotal=sum
             this.$emit('onComputeDeliveryHead', this.HeadValTotal)
             return sum
@@ -218,7 +218,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 }
 .circle_number .symbolInCircle {
     position: relative;
-    top: -32px;
+    top: -34px;
     left: -2px;
     font-size: 20px;
     color: #fff;
@@ -239,9 +239,9 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 }
 .additional-volume-flow {
     display: inline-table;
-    padding: 17px 80px 0 0px;
+    padding: 17px 43px 0 0px;
     text-align: left;
-    margin-left: 78px;
+    margin-left: 142px;
 }
 .additional-volume-flow .link{
     color: #222222;

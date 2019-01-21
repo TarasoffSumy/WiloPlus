@@ -84,10 +84,9 @@ export default {
                 url:'http://www.wiloexpert.com.ua/wilo/',
                 exchangeRates: 28.5,
                 current: 1,
-                refreshDataSearch:false,
                 isActive: false,
                 deliveryHead: 30,
-                volumeFlow: 0.5,
+                volumeFlow: 2,
                 maxVolumeFlow: 17,
                 modelFlowItems: {
                     val1:0,
@@ -99,7 +98,7 @@ export default {
                     val7:0
                 },
                 modelHeadItems: {
-                    val1:10,
+                    val1:0,
                     val2:0,
                     val3:0,
                     val4:0
@@ -108,7 +107,6 @@ export default {
                 allPumps: [],
                 links: [],
                 dictionary: '',
-                dic: '',
                 step3:'',  
                 step1:'', 
                 selectedPumpId: 0,
@@ -180,7 +178,6 @@ export default {
         methods: {
             get_cookie( cookie_name )
                 {
-                // document.cookie="currency=28.55"
                 var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
                 if ( results ) {
                     this.exchangeRates=unescape ( results[2] )
@@ -269,7 +266,7 @@ export default {
                     });
                 },
             postDataPump: function(volumeFlow, deliveryHead) {
-                this.loading=true
+               this.loading=true
                 const getPromise = Axios.post(this.url+'db/pumpSelect', {'volumeFlow': volumeFlow, 'deliveryHead': deliveryHead});
                 getPromise.then(response => {
                 this.pump = response.data;
@@ -280,11 +277,16 @@ export default {
                         this.step3='ready'
                 }
                 else {
-                    this.refreshDataSearch=false 
+
+                    this.loading=false
+                    this.step3='ready'
+                    this.selectedPumpId=0 
                 }
                 })
                 .catch(error => {
+                    this.loading=false
                     console.log('error')
+                    this.step3='ready'
                 });
                 },
             next () {

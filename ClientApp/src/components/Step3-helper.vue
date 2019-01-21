@@ -386,7 +386,7 @@ import Axios from 'axios';
         }
 
         let S=[1.5, 2.5, 4, 6, 10, 16.0, 25, 35, 50, 70, 95]
-        this.realSectionCable=3.1*value*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/this.paramOfSelectedPump.U
+        this.realSectionCable=3.1*value*getFloat(this.paramOfSelectedPump.current)*getFloat(this.paramOfSelectedPump.cosf)/(this.paramOfSelectedPump.U*3)
         if (this.realSectionCable <= S[0]) {
                 this.computedCableSection=S[0];
             }

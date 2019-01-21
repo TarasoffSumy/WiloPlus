@@ -61,27 +61,27 @@
                        <h4 style="margin: 10px 0 15px 0;">ACTUN {{objSelectedPump.shortName}}</h4>
                         <p>Тип живлення:</p>                
                                 <div v-for="item in objPump" :value="item" :key="item.id" class="radio-item-phasa" >
-                                    <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
-                                                    <span  v-if="item.features.phase=='1'">
+                                       <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
+                                       <span v-if="item.features.phase=='1'"> 
                                                         <el-popover
                                                             placement="top-start"
                                                             :title=dictionary[5].short_text
                                                             width="250"
                                                             trigger="hover"
                                                             :content=dictionary[5].full_text>
-                                                            <el-button type="text"  slot="reference"><span class="myTip">однофазній</span></el-button>
-                                                        </el-popover> 
-                                                        </span>
-                                                    <span v-if="item.features.phase=='3'">
+                                                            <span type="text" class="myTip" slot="reference">однофазний</span>
+                                                        </el-popover>                                            
+                                       </span>
+                                       <span v-if="item.features.phase=='3'">                                                    
                                                         <el-popover
                                                             placement="top-start"
                                                             :title=dictionary[6].short_text
                                                             width="250"
-                                                            trigger="hover"
+                                                            trigger="click"
                                                             :content=dictionary[6].full_text>
-                                                            <el-button type="text"  slot="reference"><span class="myTip">трихфазний</span></el-button>
+                                                            <span type="text" class="myTip" slot="reference">трифазний</span>
                                                         </el-popover> 
-                                                    </span>
+                                         </span>           
                                     </el-radio>       
                                 </div>
                                 <p class="sub-title">Насосний агрегат: {{objSelectedPump.name}}</p> 
@@ -111,8 +111,8 @@
                     <el-col :span="10">
                         
                         <p><span class="sub-title point">Робоча точка отримана від користувача:</span></p>                        
-                        <p> {{volumeFlow}} м<sup>3</sup>/год</p> 
-                        <p>{{deliveryHead}} м</p>                          
+                        <p> {{volumeFlow | aroundNumber}} м<sup>3</sup>/год</p> 
+                        <p>{{deliveryHead | aroundNumber}} м</p>                          
                     </el-col>
                     <el-col :span="6">
                         
@@ -345,7 +345,6 @@ export default {
           
     },
     handleSelect(itemSelect) {
-        console.log(itemSelect.id);
         this.idPump=itemSelect.id
         this.postDataGetDetail(itemSelect.id)
         this.onSaveSelectedPumpId(itemSelect.id) 

@@ -81,10 +81,10 @@
             <div class="greyBox">
                  <!-- :precision="2" :min="0.5" :max="17" -->
                  <h3>Необхідна витрата насоса</h3>       
-                 <el-row justify="center">Витрата  <el-input-number v-model="(volumeFlowInput)" :precision="2" @change="onInputVolumeFlow"></el-input-number>
+                 <el-row justify="center">Витрата  <el-input-number v-model="(volumeFlowInput)" :min="0" :precision="2" @change="onInputVolumeFlow"></el-input-number>
                  м<sup>3</sup>/год
                  </el-row>
-                 <p><i type="info" class="el-icon-info"></i>
+                 <p>
                  Витрата насоса повинна бути меншою за <el-popover
                     placement="top-start"
                     :title=dictionary[0].short_text

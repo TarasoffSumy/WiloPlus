@@ -34,9 +34,9 @@
                     width="200"
                     trigger="hover"
                     :content=dictionary[2].full_text>
-                    <el-button type="text" slot="reference"><span class="myTip">Додаткові витарти</span></el-button>
+                    <el-button type="text" slot="reference"><span class="myTip">Додаткові витрати</span></el-button>
                   </el-popover> 
-                <i type="info" class="el-icon-question"></i></span>  
+                </span>  
                 <el-input-number v-model="volumeFlow.Val7.val" @change="handleChange(volumeFlow.Val7.val, 7)" :precision="0"  :min="0" ></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
@@ -58,7 +58,6 @@
     </el-row> 
     <el-row justice="center" class="row-before-nav">
         <div class="computed-volumeFlow">
-
           <span class="label">Розрахована витрата</span>
           <span class="number"> {{compTotal}}</span> м<sup>3</sup>/ч 
        </div>
@@ -94,7 +93,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
                 val: this.modelFlowItems.val4,
                 constantQ: 0.540,
                 label: 'Пральна машина'
-                } ,
+                },
             Val5: {
                 val: this.modelFlowItems.val5,
                 constantQ: 0.504,
@@ -181,6 +180,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 }
 .computed-volumeFlow {
     font-size: 16px;
+    padding-top: 35px;
 }
 .computed-volumeFlow .label, .computed-volumeFlow .number {    
     font-weight: 600;
@@ -215,7 +215,7 @@ p.sub-title {
     margin-bottom: 5px;
 }
 .additional-volume-flow {
-    padding: 0 28px 0 64px
+    padding: 0 63px 0 64px
 }
 .additional-volume-flow button {
     color: #363640
