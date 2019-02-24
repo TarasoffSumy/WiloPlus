@@ -1,9 +1,11 @@
 <template>
-<div >
-    <el-dialog
+<div>
+    <el-dialog 
+        class="helper-access"
         title=""
         :visible.sync="dialogVisible"
-        width="80%">
+        width="80%"
+        top="5vh">
         <Step3-helper 
             :url="url"
             :paramOfSelectedPump="paramOfSelectedPump"
@@ -17,12 +19,13 @@
             @onSelectCable="onSelectCable"
             @onSelectMufta="onSelectMufta"
             @onSelectVessel="onSelectVessel"
-            @onSelectJecket="onSelectJecket"
+            @onSelectJacket="onSelectJacket"
+            @onCloseHelper="onCloseHelper"
             /> 
-        <div slot="footer" class="dialog-footer">       
+        <div slot="footer" class="dialog-footer-helper-access">       
             <el-row class="navigation-footer">
             <el-col :span="24">
-                <el-button type="primary" @click="onDialogAccept">Закрити<i class="el-icon-d-arrow-right el-icon-right"/></el-button>
+
             </el-col>
             </el-row>   
         </div>
@@ -34,221 +37,127 @@
             </svg> <span>3 </span>            
         </div>
         <h2 class="title">Підбір насоса та приладдя </h2>
-    </el-row>
-    
-    <el-row>
-    <div class="greyBoxes-container">
-        <div class="greyBox" v-if="idPump">
-                <el-row>
-                    <h3>Підбраний насос <el-button @click="onDeletePump" type="text"><i style="font-size:22px" class="el-icon-refresh"></i></el-button> </h3>
+    </el-row> 
 
-
-                    <el-col  :span="4" >
-                    
-                    <img style="margin-left:-19px" width="150" :src="url+'assets/wilo-skvaginniy-nasos-actun-first-spu4.jpg'"/>   
-                    </el-col>
-                    <el-col  :offset="1"  :span="19" >
-                    <el-card v-if="refresh">
+    <el-tabs class="mobile" v-model="activeTab">
+        <el-tab-pane label="Підібраний насос" name="first">
+                    <div class="greyBox">               
+            <div class="" v-if="refresh || isZeroHeadAndVolume">
+                <el-card >
                     FIRST SPU4. <el-autocomplete
-                            class="inline-input"
+                    class="inline-input"
+                        v-model="itemSelect"
+                        :fetch-suggestions="querySearch"
+                        placeholder="введіть серію насосу"
+                        :trigger-on-focus="false"
+                        @select="handleSelect"
+                        ></el-autocomplete>                        
+                </el-card>                                                
+            </div>                 
+            <ChartOut :dataOut="dataOut" v-show="!selectedPumpId" />             
+            <div v-if="selectedPumpId">
+                    <Step3-selectedPump
+                    @onDeletePump="onDeletePump"
+                    @handleChangePhase="handleChangePhase"
+                    :url="url"
+                    :dictionary="dictionary"
+                    :objPump="objPump"
+                    :objSelectedPump="objSelectedPump"
+                    :dataChart="dataChart"
+                    :volumeFlow="volumeFlow"
+                    :deliveryHead="deliveryHead"
+                    />
+            </div>
+        </div>
+        <div v-show="!selectedPumpId" class="greyBox">
+            <h3 style="text-align:left">Неможливо підібрати насос на введені параметри </h3>
+            <p><i class="el-icon-info"></i>Спробуйте змінити напір та витрату</p>
+        </div>
+        </el-tab-pane>
+        <el-tab-pane label="Приладдя" name="second">
+           <span slot="label"><i class="el-icon-date"></i> Приладдя</span>
+                <Step3-accessoreis
+                    :selectedAccessories="selectedAccessories"
+                    :url="url"
+                    @onDeleteAccessories="onDeleteAccessories"
+                />
+        </el-tab-pane>
+        <el-tab-pane label="Підібрати приладдя" name="third">
+           <span slot="label"><i class="el-icon-date"></i> Підібрати приладдя</span>
+            <Step3-helper 
+            :url="url"
+            :paramOfSelectedPump="paramOfSelectedPump"
+            :selectedAccessories="selectedAccessories"
+            :dataChart="dataChart"
+            :volumeFlow="volumeFlow"
+            :deliveryHead="deliveryHead"
+            :exchangeRates="exchangeRates"
+            :dictionary="dictionary"
+            @onSelectController="onSelectController"
+            @onSelectCable="onSelectCable"
+            @onSelectMufta="onSelectMufta"
+            @onSelectVessel="onSelectVessel"
+            @onSelectJacket="onSelectJacket"
+            @onCloseHelper="onCloseHelper"
+            /> 
+        </el-tab-pane>
+    </el-tabs> 
+    <div class="desktop">
+        <div class="greyBoxes-container" v-loading="loading">        
+            <div class="greyBox">               
+                <div class="" v-if="refresh || isZeroHeadAndVolume">
+                    <el-card >
+                        FIRST SPU4. <el-autocomplete
+                        class="inline-input"
                             v-model="itemSelect"
                             :fetch-suggestions="querySearch"
                             placeholder="введіть серію насосу"
                             :trigger-on-focus="false"
                             @select="handleSelect"
-                        ></el-autocomplete>                        
-                    </el-card>
-                       <h4 style="margin: 10px 0 15px 0;">ACTUN {{objSelectedPump.shortName}}</h4>
-                        <p>Тип живлення:</p>                
-                                <div v-for="item in objPump" :value="item" :key="item.id" class="radio-item-phasa" >
-                                       <el-radio v-model="idPump" :label="item.id" @change="handleChangePhase(item.id)">
-                                       <span v-if="item.features.phase=='1'"> 
-                                                        <el-popover
-                                                            placement="top-start"
-                                                            :title=dictionary[5].short_text
-                                                            width="250"
-                                                            trigger="hover"
-                                                            :content=dictionary[5].full_text>
-                                                            <span type="text" class="myTip" slot="reference">однофазний</span>
-                                                        </el-popover>                                            
-                                       </span>
-                                       <span v-if="item.features.phase=='3'">                                                    
-                                                        <el-popover
-                                                            placement="top-start"
-                                                            :title=dictionary[6].short_text
-                                                            width="250"
-                                                            trigger="click"
-                                                            :content=dictionary[6].full_text>
-                                                            <span type="text" class="myTip" slot="reference">трифазний</span>
-                                                        </el-popover> 
-                                         </span>           
-                                    </el-radio>       
-                                </div>
-                                <p class="sub-title">Насосний агрегат: {{objSelectedPump.name}}</p> 
-                                <p class="sub-title price">Ціна {{objSelectedPump.price}} грн. з ПДВ</p>
-                                <p><span class="sub-title">Номінальна потужність двигуна:</span> {{objSelectedPump.n_power}} kW </p>
-                                <p><span class="sub-title">Номінальний струм:</span> {{objSelectedPump.current}} A </p> 
-                                <el-collapse accordion> 
-                                    <el-collapse-item>
-                                        <template slot="title">
-                                        <p class="sub-title">Конструкція</p><i class="header-icon el-icon-info"></i>
-                                        </template>                                        
-                                        <p>Багатоступеневий насос 4" із занурюваним двигуном, виконання з кожухом, для вертикальної або горизонтальної установки</p>                    
-                                    </el-collapse-item>
-                                </el-collapse>
-
-                    </el-col>                
-                </el-row>
-
-                <el-row style="margin: 20px 0;">
-
-                    <el-col :offset=1 :span="4">
-                       
-                        <p><span class="sub-title point"></span></p>                        
-                        <p><span class="sub-title">Витрата</span></p> 
-                        <p><span class="sub-title">Напір</span></p>   
-                    </el-col>
-                    <el-col :span="10">
-                        
-                        <p><span class="sub-title point">Робоча точка отримана від користувача:</span></p>                        
-                        <p> {{volumeFlow | aroundNumber}} м<sup>3</sup>/год</p> 
-                        <p>{{deliveryHead | aroundNumber}} м</p>                          
-                    </el-col>
-                    <el-col :span="6">
-                        
-                        <p><span class="sub-title point">Робоча точка фактична:</span></p>                        
-                        <p> {{dataChart.CalcPoint[0].x | aroundNumber}} м<sup>3</sup>/год </p> 
-                        <p> {{dataChart.CalcPoint[0].y | aroundNumber}} м</p>                          
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <div id="print" style="margin-left:45px;position: relative; width:300px: top:20px">
-
-                    <Chart :key="id" :dataChart="objDataChart"/>   
-                    </div>                      
-                </el-row>      
-                 
-                      
-                 
+                            ></el-autocomplete>                        
+                    </el-card>                                                
+                </div>                 
+                <ChartOut :dataOut="dataOut" v-show="!selectedPumpId" />             
+                <div v-if="selectedPumpId">
+                        <Step3-selectedPump
+                        @onDeletePump="onDeletePump"
+                        @handleChangePhase="handleChangePhase"
+                        :url="url"
+                        :dictionary="dictionary"
+                        :objPump="objPump"
+                        :objSelectedPump="objSelectedPump"
+                        :dataChart="dataChart"
+                        :volumeFlow="volumeFlow"
+                        :deliveryHead="deliveryHead"
+                        />
+                </div>
             </div>
-            <div v-else class="greyBox">
-                Насос не знайден!
-                Скорегуйте напор та витрату
+            <div v-show="!selectedPumpId" class="greyBox">
+                <h3 style="text-align:left">Неможливо підібрати насос на введені параметри </h3>
+                <p><i class="el-icon-info"></i>Спробуйте змінити напір та витрату</p>
             </div>
-        <div class="greyBox last-box">
-                 <font-awesome-icon icon="lightbulb" />
-                 <p style="padding-top: 20px;">Підібрати приладдя до насосу</p>
-                 <div class="container-button">
-                 <el-button class="calc-btn" style="margin-top: -20px;"  type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Підібрати</el-button>                                     
-                 </div>
-             
-            <div  v-if="existAccessories" class="item-selected">
-            <h3>Підібране приладдя</h3>
-            <el-card  class="box-card" v-if="selectedAccessories.item1.selected">
-                <h3>{{selectedAccessories.item1.title}}</h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(1)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
-                    <el-col :span="20">
-                        <div class="accessories">
-                            <el-col :span="6">
-                                <img :src="url+'assets/controller.jpg'" width="100px" alt="">
-                            </el-col>
-                            <el-col :span="17" :offset="1" class="text"></el-col>
-                            <el-row>
-                            <strong>{{selectedAccessories.item1.name}} </strong>
-                                <p class="stronge-price">Ціна: {{selectedAccessories.item1.price}} грн з ПДВ</p>  
-                                <p>Ток максимальний:<strong>{{selectedAccessories.item1.current_max}}</strong>  A </p>
-                                <div class="expand-view">
-                                <p><strong>Розміри:</strong> {{selectedAccessories.item1.dim}}  </p>
-                                <p><strong>Тип пуску насоса:</strong> {{selectedAccessories.item1.start}}  </p> 
-                                <p><strong>Управління:</strong> {{selectedAccessories.item1.operation}}  </p>                       
-                                <p><strong>Захист від сухого ходу:</strong> {{selectedAccessories.item1.dry_running}}  </p> 
-                                <a src="#">Завантажити інструкцію з експлуатаціЇ</a>  
-                                </div>                                                          
-                            </el-row>
-                        </div>
-                    </el-col>                  
-            </el-card>
-            <el-card   class="box-card" v-if="selectedAccessories.item2.selected"> 
-                    <h3>
-                    {{selectedAccessories.item2.title}}
-                    </h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(2)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> 
-                    </el-col>
-                    <el-col :span="20">        
-                        <div class="accessories">
-                        <el-col :span="6">
-                        <img :src="url+'assets/cable.jpg'" width="100px" alt="">
-                        </el-col>
-                        <el-col :span="17" :offset="1" class="text" v-html="selectedAccessories.item2.description"></el-col>
-                        <el-row>
-                        <p><strong>{{selectedAccessories.item2.name}} </strong></p>
-                        <p class="stronge-price">Ціна: {{selectedAccessories.item2.price}} грн з ПДВ за 1м.п</p>  
-                        <p>Довжина:<strong>{{selectedAccessories.item2.length}} </strong>  м</p>
-                        <div class="expand-view"></div>
-                        </el-row>
-                        </div> 
-                    </el-col>                                                          
-                </el-card>
-                <el-card   class="box-card"  v-if="selectedAccessories.item3.selected"> 
-                <h3>{{selectedAccessories.item3.title}}</h3>  
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(3)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
-                    <el-col :span="20">
-                    <div class="accessories">
-                        <el-col :span="6">
-                        <img v-if="selectedAccessories.item3.type=='coupling filler'" :src="url+'assets/mufta_zal.jpg'" width="90px" alt="">
-                        <img v-else-if="selectedAccessories.item3.type=='coupling thermo'" :src="url+'assets/mufta_termo.jpg'" width="90px" alt="">
-                        </el-col>
-                        <el-col :span="17" :offset="1" class="text"></el-col>
-                        <el-row>
-                            <p><strong>{{selectedAccessories.item3.name}} </strong> </p>
-                            <p class="stronge-price">Ціна: {{selectedAccessories.item3.price}} грн з ПДВ </p>  
-                            <p>Перетин: <strong> {{selectedAccessories.item3.section}}</strong> мм<sup>2</sup></p>
-                           
-                            <div class="expand-view"></div>
-                        </el-row>
-                    </div> 
-                    </el-col>                
-                </el-card> 
-                <el-card   class="box-card"  v-if="selectedAccessories.item4.selected"> 
-                <h3>{{selectedAccessories.item4.title}}</h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(4)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
-                    <el-col :span="20">
-                    <div class="accessories">
-                        <el-col :span="6">
-                        <img :src="url+'assets/bak.jpg'" width="100px" alt="">
-                        </el-col>
-                        <el-col :span="17" :offset="1" class="text"></el-col>
-                        <el-row>
-                            <p><strong>{{selectedAccessories.item4.name}} </strong> </p>
-                            <p class="stronge-price">Ціна: {{selectedAccessories.item4.price}} грн з ПДВ </p>  
-                            <p>Об'єм: <strong>{{selectedAccessories.item4.volume}} </strong> літрів </p>
-                            <div class="expand-view"> </div>
-                        </el-row>
-                    </div> 
-                    </el-col>                
-                </el-card>
-                <el-card   class="box-card"  v-if="selectedAccessories.item5.selected"> 
-                <h3>{{selectedAccessories.item5.title}}</h3>
-                    <el-col :span="2" :offset="1"><el-button @click="onDeleteAccessories(5)" type="text"><i class="el-icon-circle-close-outline"></i></el-button> </el-col>
-                    <el-col :span="20">
-                    <div class="accessories">
-                        <el-col :span="6">
-                        <img :src="url+'assets/jeckets.jpg'" width="100px" alt="">
-                        </el-col>
-                        <el-col :span="17" :offset="1" class="text"></el-col>
-                        <el-row>
-                            <p><strong>{{selectedAccessories.item5.name}} </strong> </p>
-                            <p class="stronge-price">Ціна: {{selectedAccessories.item5.price}} грн з ПДВ </p>                            
-                            <p>Довжена: <strong>{{selectedAccessories.item5.length}} </strong> мм </p>
-                            <div class="expand-view"></div>
-                        </el-row>
-                    </div> 
-                    </el-col>                
-                </el-card>  
-        </div> 
-        </div>      
+            <div v-show="selectedPumpId" class="greyBox last-box">
+                <div class="box-helper-info">
+                        <font-awesome-icon icon="lightbulb" />
+                        <h3 style="text-align:left">Підібрати приладдя до насосу!</h3>                    
+                        <div class="container-button">
+                        <el-button class="calc-btn" style="margin-top: -20px;"  type="primary" @click="dialogVisible = true">
+                        <img  width="20" :src="url+'assets/calc.png'">Підібрати</el-button> 
+                        </div>                                    
+                </div>             
+                <div  v-if="existAccessories" class="item-selected">
+                    <h3>Підібране приладдя</h3>
+                    <Step3-accessoreis
+                        :selectedAccessories="selectedAccessories"
+                        :url="url"
+                        @onDeleteAccessories="onDeleteAccessories"
+                    />
+                    <div style="margin:10px" v-if="allAccessoriesSelected"> Всі приладдя підбрані!</div>        
+                </div>
+            </div>         
+        </div>
     </div>
-    </el-row> 
+
 </div> 
 </template>
 
@@ -269,18 +178,20 @@ export default {
   ],
   data() {
     return {
+      activeTab:'first',
       id: 1 ,
       idPump: this.selectedPumpId,
       objPump:this.pump,
       objDataChart:this.dataChart,
       refresh:false,
+      loading: false,
       selectedAccessoriesRefresh:this.selectedAccessories,
       deliveryHeadInput: this.deliveryHead,
       deliveryHeadComputed: null,
       dialogVisible: false,
       itemSelect:'',
       paramOfSelectedPump: {
-        phase: "",
+        phase: 0,
         current: 0,
         cosf: 0,
         U: 0,
@@ -289,66 +200,107 @@ export default {
     };
     },
     filters: {
-    aroundNumber: function (value) {
-       value = Number(value).toFixed(2)
-       return value
-    }
-    },
-  mounted: function(){
-       this.onSaveSelectedAccessories()
-       console.log(this.selectedAccessories)
-  },
-  computed: {
-    objSelectedPump: function() {
-      let pumpsArr = [];
-      let source = this.objPump;
-      for (let key in source) {
-        pumpsArr.push(source[key]);
-      }
-      let obj = {};
-      for (let key in pumpsArr) {
-        if (pumpsArr[key].id == this.idPump) {
-          this.onSaveSelectedPumpId(pumpsArr[key].id);
-          obj.name = pumpsArr[key].pump_name;
-          obj.price = (pumpsArr[key].price*this.exchangeRates).toFixed(2);
-          obj.id = pumpsArr[key].id;
-          obj.current = pumpsArr[key].features.current;
-          obj.shortName = obj.name.split("/")[0];
-          obj.n_power = pumpsArr[key].features.n_power;
-          obj.cosf = pumpsArr[key].features.cosf;
-          obj.phase = pumpsArr[key].features.phase;
-          obj.dim_H2 = pumpsArr[key].features.dim_H2;
+        aroundPrice: function (value) {
+            let val = (value/1).toFixed(0)
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")+',- '
+        },
+        aroundNumber: function (value) {
+            value = Number(value).toFixed(2)
+            return value
         }
-      }
-      
-        this.paramOfSelectedPump=obj
-        this.paramOfSelectedPump.U = obj.phase == 1 ? 230 : 400;
-
-      return obj;
     },
+    mounted: function(){
+       this.onSaveSelectedAccessories()      
+    },
+    computed: {
+        dataOut: function() {
+                let obj
+                obj={
+                    x: this.volumeFlow,
+                    y: this.deliveryHead
+                }
+                return obj
+        },
+        objSelectedPump: function() {
+            this.onSaveSelectedPumpId(this.selectedPumpId)
+            this.objPump=this.pump
+            let source=this.pump
+            if (this.selectedPumpId) {
+                let obj = {};
+                for (let key in source) {
+                    if (source[key].id == this.selectedPumpId) {        
+                    obj.name = source[key].pump_name;
+                    obj.price = (source[key].price*this.exchangeRates).toFixed(2);
+                    obj.id = source[key].id;
+                    this.objPump.id=obj.id;
+                    obj.current = source[key].features.current;
+                    obj.shortName = obj.name.split("/")[0];
+                    obj.n_power = source[key].features.n_power;
+                    obj.cosf = source[key].features.cosf;
+                    obj.phase = source[key].features.phase;
+                    obj.dim_H2 = source[key].features.dim_H2;
+                    obj.article = source[key].article;
+                    }
+                }   
+                this.paramOfSelectedPump=obj
+                this.paramOfSelectedPump.U = obj.phase == 1 ? 230 : 400; 
+                return obj             
+            }
+            else 
+            {   
+                return 
+            }
+
+        
+        },
     existAccessories: function() {
       if (
         this.selectedAccessoriesRefresh.item1.selected != false ||
         this.selectedAccessoriesRefresh.item2.selected != false ||
         this.selectedAccessoriesRefresh.item3.selected != false ||
         this.selectedAccessoriesRefresh.item4.selected != false ||
-        this.selectedAccessoriesRefresh.item5.selected != false
-      )
-        return true;
+        this.selectedAccessoriesRefresh.item5.selected != false  ) 
+        {
+            return true;
+        }
+    },
+    allAccessoriesSelected: function() {
+      if (
+            this.selectedAccessoriesRefresh.item1.selected  &&
+            this.selectedAccessoriesRefresh.item2.selected  &&
+            this.selectedAccessoriesRefresh.item4.selected  &&
+            this.selectedAccessoriesRefresh.item5.selected 
+        ) 
+        {
+           //this.onDialogAccept()
+            return true;
+        }
+    },
+
+    isZeroHeadAndVolume: function() {
+        if (this.deliveryHead==0 && this.volumeFlow==0) {
+        return true
+        }
     }
+
   },
   
   methods: {
-    onDeletePump(){  
-        
-        this.refresh=!this.refresh
-          
+    onDeletePump(){ 
+        this.refresh=!this.refresh 
+       // this.selectedPumpId=0
+    },
+    onCloseHelper: function(){
+        this.onDialogAccept()
     },
     handleSelect(itemSelect) {
+        this.loading=true
         this.idPump=itemSelect.id
         this.postDataGetDetail(itemSelect.id)
-        this.onSaveSelectedPumpId(itemSelect.id) 
-        this.onClearAccessories()       
+        this.onSaveSelectedPumpId(itemSelect.id)         
+        this.onClearAccessories()         
+        this.refresh=true 
+          
     },              
     querySearch(queryString, cb) {
         var links = this.allPumps;
@@ -365,85 +317,79 @@ export default {
     },
     onRefreshDataPump(obj) {
       this.$emit("onRefreshDataPump", obj);
+      
     },
-    onClearItemAccessories() {
-        this.selectedAccessoriesRefresh.item1.selected=false 
-        this.selectedAccessoriesRefresh.item2.selected=false
-        this.selectedAccessoriesRefresh.item3.selected=false
-        
+    onClearItemAccessoriesDependetCurrent() {
+        this.onDeleteAccessories(1)
+        this.onDeleteAccessories(2)
+        this.onDeleteAccessories(3)
     },
     onClearAccessories() {
       if (  this.selectedAccessoriesRefresh.item1.selected != false ||
             this.selectedAccessoriesRefresh.item2.selected != false ||
             this.selectedAccessoriesRefresh.item3.selected != false)
          {
-            this.$confirm('Обрані приладдя залежні від струму будуть видалені', 'Увага', {
-                confirmButtonText: 'Згода',
-                cancelButtonText: 'Cancel',
+             this.$notify({
+                title: 'Увага',
+                message: 'Обрані приладдя, залежні від струму, видалені!',
                 type: 'warning'
-                }).then(() => {
-                this.$message({
-                    type: 'info',
-                    message: 'Обрані приладдя вилучені'
                 });
-                this.onClearItemAccessories()
-                }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: 'Обрані приладдя залишились'
-                });
-                        
-                });          
+                this.onClearItemAccessoriesDependetCurrent()        
       }  
     },
-    handleChangePhase(id) { 
+    handleChangePhase(id) {
+      this.idPump=id
       this.onSaveSelectedPumpId(id)
-      this.onClearAccessories()
-   
+      this.onClearAccessories()   
     },
     onSelectController(id, dataControlBox) {
       this.selectedAccessoriesRefresh.item1.idController = id;
       this.selectedAccessoriesRefresh.item1.name = dataControlBox[0].name;
+      this.selectedAccessoriesRefresh.item1.article = dataControlBox[0].article;
       this.selectedAccessoriesRefresh.item1.price = (dataControlBox[0].price*this.exchangeRates).toFixed(2);
       this.selectedAccessoriesRefresh.item1.current_max = dataControlBox[0].features.current_max;
       this.selectedAccessoriesRefresh.item1.description = dataControlBox[0].features.description;
       this.selectedAccessoriesRefresh.item1.dim = dataControlBox[0].features.dim;
+      this.selectedAccessoriesRefresh.item1.img = dataControlBox[0].features.img;
       this.selectedAccessoriesRefresh.item1.selected = true;
       this.onSaveSelectedAccessories()
     },
     onSelectCable(cable, id) {
-      this.selectedAccessoriesRefresh.item2.idCable = id;
-      this.selectedAccessoriesRefresh.item2.name = cable.name;
-      this.selectedAccessoriesRefresh.item2.price = (cable.price*this.exchangeRates).toFixed(2);
-      this.selectedAccessoriesRefresh.item2.length = cable.length;
-      this.selectedAccessoriesRefresh.item2.selected = true;
+      this.selectedAccessoriesRefresh.item2.idCable = id
+      this.selectedAccessoriesRefresh.item2.name = cable.name
+      this.selectedAccessoriesRefresh.item2.article = cable.article
+      this.selectedAccessoriesRefresh.item2.price = (cable.price*this.exchangeRates).toFixed(2)
+      this.selectedAccessoriesRefresh.item2.length = cable.length
+      this.selectedAccessoriesRefresh.item2.selected = true
       this.onSaveSelectedAccessories()
     },
     onSelectMufta(id, mufta) {
-      this.selectedAccessoriesRefresh.item3.idMufta = id;
-      this.selectedAccessoriesRefresh.item3.name = mufta[0].name;
-      this.selectedAccessoriesRefresh.item3.price = (mufta[0].price*this.exchangeRates).toFixed(2);
-      this.selectedAccessoriesRefresh.item3.type = mufta[0].features.type;
-      this.selectedAccessoriesRefresh.item3.section = mufta[0].features.section;
-      this.selectedAccessoriesRefresh.item3.selected = true;
+      this.selectedAccessoriesRefresh.item3.idMufta = id
+      this.selectedAccessoriesRefresh.item3.name = mufta[0].name
+      this.selectedAccessoriesRefresh.item3.article =mufta[0].article 
+      this.selectedAccessoriesRefresh.item3.price = (mufta[0].price*this.exchangeRates).toFixed(2)
+      this.selectedAccessoriesRefresh.item3.type = mufta[0].features.type
+      this.selectedAccessoriesRefresh.item3.section = mufta[0].features.section
+      this.selectedAccessoriesRefresh.item3.selected = true
       this.onSaveSelectedAccessories()
     },
     onSelectVessel(id, vessel) {
-      this.selectedAccessoriesRefresh.item4.idVessel = id;
-      this.selectedAccessoriesRefresh.item4.volume = vessel.features.volume;
-      this.selectedAccessoriesRefresh.item4.name = vessel.name;
-      this.selectedAccessoriesRefresh.item4.price = (vessel.price*this.exchangeRates).toFixed(2);
-      this.selectedAccessoriesRefresh.item4.selected = true;
+      this.selectedAccessoriesRefresh.item4.idVessel = id
+      this.selectedAccessoriesRefresh.item4.volume = vessel.features.volume
+      this.selectedAccessoriesRefresh.item4.name = vessel.name
+      this.selectedAccessoriesRefresh.item4.article = vessel.article
+      this.selectedAccessoriesRefresh.item4.price = (vessel.price*this.exchangeRates).toFixed(2)
+      this.selectedAccessoriesRefresh.item4.selected = true
       this.onSaveSelectedAccessories()
     },
-    onSelectJecket(id, jecket, type) {
-      this.selectedAccessoriesRefresh.item5.idJecket = id;
-      this.selectedAccessoriesRefresh.item5.length = jecket.features.length;
-      this.selectedAccessoriesRefresh.item5.name = jecket.name;
-      this.selectedAccessoriesRefresh.item5.price = (jecket.price*this.exchangeRates).toFixed(2);
-      this.selectedAccessoriesRefresh.item5.typeInstallationJeckets=type
-      this.selectedAccessoriesRefresh.item5.selected = true;
-      
+    onSelectJacket(id, jacket, type) {
+      this.selectedAccessoriesRefresh.item5.idJacket = id;
+      this.selectedAccessoriesRefresh.item5.length = jacket.features.length;
+      this.selectedAccessoriesRefresh.item5.name = jacket.name;
+      this.selectedAccessoriesRefresh.item5.article = jacket.article;
+      this.selectedAccessoriesRefresh.item5.price = (jacket.price*this.exchangeRates).toFixed(2);
+      this.selectedAccessoriesRefresh.item5.typeInstallationjackets=type
+      this.selectedAccessoriesRefresh.item5.selected = true;      
       this.onSaveSelectedAccessories()
     },
     onSaveSelectedAccessories(){
@@ -460,8 +406,7 @@ export default {
       }
       if (id==2) {
           this.selectedAccessoriesRefresh['item'+id].idCable=undefined;
-          this.selectedAccessoriesRefresh['item'+id].length=0; 
-          console.log(this.selectedAccessories['item'+id].length)         
+          this.selectedAccessoriesRefresh['item'+id].length=0;                    
       }
       if (id==3) {
           this.selectedAccessoriesRefresh['item'+id].idMufta=undefined;
@@ -470,9 +415,8 @@ export default {
           this.selectedAccessoriesRefresh['item'+id].idVessel=undefined;
       }
       if (id==5) {
-          this.selectedAccessoriesRefresh['item'+id].idJecket=undefined;
-          this.selectedAccessories['item'+id].typeInstallationJeckets=0;
-          console.log(this.selectedAccessories)
+          this.selectedAccessoriesRefresh['item'+id].idJacket=undefined;
+          this.selectedAccessories['item'+id].typeInstallationjackets=0;
       }
     },
     postDataGetDetail: function(id) {
@@ -480,34 +424,38 @@ export default {
                 getPromise.then(response => {
                     this.objPump = response.data;
                     if (this.objPump!=undefined) {
-                    console.log(this.objPump)  
                      this.onRefreshDataPump(this.objPump)
                      this.$emit("onGetDataChart", this.objPump);  
                      this.id ++    
-                                    
+                     this.loading=false              
                 }
                 else {
                     this.refreshDataSearch=false 
-                }
-                // 
+                    this.loading=false 
+                } 
                 });
-    },
-    open() {
-      this.$alert("This is a message", "Title", {
-        confirmButtonText: "OK",
-        callback: action => {
-          this.$message({
-            type: "info",
-            message: `action: ${action}`
-          });
-        }
-      });
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
+.img-pump{
+    width: 65px;
+    float: right;
+    margin: 40px 0 0 -15px;
+}
+.el-button.delete.el-button--text {
+    position: relative;
+    top: 119px;
+}
+i.el-icon-circle-close-outline.delete-accessories {
+    position: relative;
+    top: 15px;
+}
+span.el-alert__title.is-bold {
+    color: #555;
+}
 .greyBox {
   text-align: left;
   min-height: 100px;
@@ -515,16 +463,25 @@ export default {
 .greyBox p {
   margin: 5px;
 }
-.radio-item-phasa {
-    display: inline-block;
-    margin: 12px 0;
-    padding-right: 10px;
+.box-helper-info {
+    background: #f6f6f6;
+    margin-top: -20px;
+    height: 139px;
+    padding: 20px 20px 10px 20px;
+    width: 99%;
+}
+.last-box {
+    background: none
 }
 .accessories img {
     padding-bottom: 30px
 }
 .item-selected {
     text-align: left;
+    background: #f6f6f6;
+    padding: 20px 23px;
+    margin-top: 25px;
+    width: 98%;
 }
 .item-selected i {
     font-size: 20px;
@@ -534,14 +491,14 @@ export default {
 } 
 .el-card.box-card.is-always-shadow {
     margin-bottom: 5px;
+    padding-bottom: 20px;
 }
 .sub-title {
     font-weight: 600
 }
 p.sub-title.price {
     margin: 15px 5px;
-    font-size: 19px;
-    color: #009c81;
+
 }
 span.sub-title.point {
     min-height: 40px;
@@ -549,6 +506,9 @@ span.sub-title.point {
     display: block;
     margin-top: 0;
     border-bottom: solid 1px #c4c0c0;
+}
+.navigation-footer.el-row {
+    margin-bottom: 20px;
 }
 </style>
 

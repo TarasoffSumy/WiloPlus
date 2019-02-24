@@ -5,7 +5,7 @@
             <div class="circle_number">
             <svg height="55" width="53" class="circle">
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
-            </svg> <span>{{number}} </span>            
+            </svg> <span>{{number}}</span>            
             </div> 
             <p class="title">{{title}}</p>     
             </div>
@@ -22,7 +22,7 @@ export default {
     width: 90%;
     height: 140px;
     margin-bottom: 20px;
-    background: #eee;
+    background: #ebebeb;
 }
 .rect:hover, .active .rect:hover {
     box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);

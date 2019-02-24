@@ -14,52 +14,51 @@
         Вкажіть кількість точок водозбору
     </p>
     <el-row>
-        <el-col :span="12" class="side-side1-helper">
+        <el-col :md="10" :offset="1" class="side-right">
             <p><span class="item"> <img :src="url+'assets/kitchen.svg'" alt=""> Мийка кухні/умивальник </span>    
                 <el-input-number v-model="volumeFlow.Val1.val" @change="handleChange(volumeFlow.Val1.val, 1)" :precision="0" :min="0" ></el-input-number>
-                шт 
+                од. 
             </p>
             <p><span class="item"> <img :src="url+'assets/bath.svg'" alt=""> Ванна/душова кабіна </span>   
                 <el-input-number v-model="volumeFlow.Val2.val" @change="handleChange(volumeFlow.Val2.val, 2)" :precision="0"  :min="0" ></el-input-number>
-                шт 
+                од. 
             </p>
             <p><span class="item"> <img :src="url+'assets/dishwasher.svg'" alt=""> Посудомийна машина </span>  
                 <el-input-number v-model="volumeFlow.Val3.val" @change="handleChange(volumeFlow.Val3.val, 3)" :precision="0"  :min="0" ></el-input-number>
-                шт 
+                од. 
             </p>
-            <p><span class="additional-volume-flow">
+            <p><span class="item" style="padding-left: 6px;">
                     <el-popover
                     placement="top-start"
-                    :title=dictionary[2].short_text
                     width="200"
                     trigger="hover"
                     :content=dictionary[2].full_text>
-                    <el-button type="text" slot="reference"><span class="myTip">Додаткові витрати</span></el-button>
+                    <el-button type="text" slot="reference"><span class="myTip">Додаткові витрати, якщо відомі</span></el-button>
                   </el-popover> 
                 </span>  
-                <el-input-number v-model="volumeFlow.Val7.val" @change="handleChange(volumeFlow.Val7.val, 7)" :precision="0"  :min="0" ></el-input-number>
+                <el-input-number v-model="aditionalVolumeFlow" @change="handleChange(aditionalVolumeFlow, 7)" :precision="0"  :min="0" ></el-input-number>
                 м<sup>3</sup>/ч              
             </p>
         </el-col>
-        <el-col :span="10" class="side-side1-helper">
+        <el-col :md="10" :offset="1" class="side-right left">
             <p><span class="item"> <img :src="url+'assets/washer.svg'" alt=""> Пральна машина</span>   
                 <el-input-number v-model="volumeFlow.Val4.val" @change="handleChange(volumeFlow.Val4.val, 4)" :precision="0"  :min="0" ></el-input-number>
-                шт 
+                од. 
             </p>
-            <p><span class="item"> <img :src="url+'assets/bide.svg'" alt=""> Биде</span> 
+            <p><span class="item"> <img :src="url+'assets/bide.svg'" alt=""> Біде</span> 
                 <el-input-number v-model="volumeFlow.Val5.val" @change="handleChange(volumeFlow.Val5.val, 5)" :precision="0"  :min="0" ></el-input-number>
-                шт 
+                од. 
             </p>
-            <p><span class="item"> <img :src="url+'assets/toilet.svg'" alt=""> Унитаз  </span>  
+            <p><span class="item"> <img :src="url+'assets/toilet.svg'" alt=""> Унітаз  </span>  
                 <el-input-number v-model="volumeFlow.Val6.val" @change="handleChange(volumeFlow.Val6.val, 6)" :precision="0"  :min="0" ></el-input-number>
-                шт 
+                од. 
             </p>
         </el-col>
     </el-row> 
     <el-row justice="center" class="row-before-nav">
         <div class="computed-volumeFlow">
           <span class="label">Розрахована витрата</span>
-          <span class="number"> {{compTotal}}</span> м<sup>3</sup>/ч 
+          <span class="number"> {{compTotal | aroundNumber}}</span> м<sup>3</sup>/ч 
        </div>
         <span class="exeption-validation" v-if="!$v.volumeFlowValTotal.between">Нажаль серія насосів Actun SPU4 не може задовільнити ваші потреби, 
                  витрата не повинна перевищувати <strong>17 м<sup>3</sup>/ч</strong></span> 
@@ -102,14 +101,10 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
             Val6: {
                 val: this.modelFlowItems.val6,
                 constantQ: 0.504,
-                label: ''
-            },
-            Val7: {
-                val: this.modelFlowItems.val7,
-                constantQ: 1,
                 label: 'Унитаз'
             }                 
-          },         
+          },  
+        aditionalVolumeFlow:this.modelFlowItems.aditionalFlow,       
         volumeFlowValTotal: 0,
         Qrez: 0
       }
@@ -120,10 +115,15 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         between: between(0, 17)
         }
     },
+    filters: {
+    aroundNumber: function (value) {
+       value = Number(value).toFixed(2)
+       return value
+    }
+    },
     computed: {
         compTotal: function() {
             var source=Object.values(this.volumeFlow);
-
              let Qrez=0;
              for (let i in source){
                  Qrez=Qrez+source[i].val*source[i].constantQ
@@ -146,24 +146,14 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
             else if ((Qrez > 50.0) && (Qrez <= 150)) {
                 this.volumeFlowValTotal=1.8644*getLog(Qrez)+0.4326
             }
+            this.volumeFlowValTotal=this.volumeFlowValTotal+this.aditionalVolumeFlow
             this.$emit('onComputeVolumeFlow', this.volumeFlowValTotal)
-            return this.volumeFlowValTotal.toFixed(2)
+            return this.volumeFlowValTotal
         }
     },
     methods: {
       handleChange(value, id) {
         this.$emit('onInputFlowItems', id ,value)
-      },
-      open() {
-        this.$alert('This is a message', 'Title', {
-          confirmButtonText: 'OK',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: `action: ${ action }`
-            });
-          }
-        });
       }
     }
   };
@@ -172,15 +162,18 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 .row-before-nav {
     height: 100px;
 }
-.side-side1-helper .item {
-    min-width: 250px;
+.side-right .item {
+    min-width: 220px;
     text-align: left;
     display: inline-table;
     margin: 3px 0;
 }
+.left .item {
+    min-width: 210px;
+}
 .computed-volumeFlow {
     font-size: 16px;
-    padding-top: 35px;
+    padding: 35px 0 5px 0;
 }
 .computed-volumeFlow .label, .computed-volumeFlow .number {    
     font-weight: 600;
@@ -203,10 +196,10 @@ p.sub-title {
     font-size: 16px;
     font-weight: 600;
 }
-.side-side1-helper p {
+.side-right p {
     text-align: center
 }
-.side-side1-helper img {
+.side-right img {
     vertical-align: middle;
     display: inline-block;
     width: 42px;

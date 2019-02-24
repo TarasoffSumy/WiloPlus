@@ -3,7 +3,8 @@
     <el-dialog
     title=""
     :visible.sync="dialogVisible"
-    width="80%"
+    width="85%"
+    top="5vh"
     >
     <Step1-helper 
                 @onComputeVolumeFlow="onComputeVolumeFlow"
@@ -33,7 +34,7 @@
     <h2 class="title">Витрата насоса</h2> 
     </el-row> 
     <el-row>
-        <!-- <el-tabs v-model="activeTab">
+      <el-tabs class="mobile"  v-model="activeTab">
         <el-tab-pane label="Необхідна витрата насоса" name="first">
              <h3>Необхідна витрата насоса</h3>       
                  <el-row justify="center">Витрата  <el-input-number v-model="(volumeFlowInput)" :precision="2" @change="onInputVolumeFlow"></el-input-number>
@@ -76,41 +77,35 @@
           </el-col>
           </el-row>
         </el-tab-pane>
-      </el-tabs> -->
-    <div class="greyBoxes-container">
-            <div class="greyBox">
-                 <!-- :precision="2" :min="0.5" :max="17" -->
-                 <h3>Необхідна витрата насоса</h3>       
-                 <el-row justify="center">Витрата  <el-input-number v-model="(volumeFlowInput)" :min="0" :precision="2" @change="onInputVolumeFlow"></el-input-number>
-                 м<sup>3</sup>/год
-                 </el-row>
-                 <p>
-                 Витрата насоса повинна бути меншою за <el-popover
-                    placement="top-start"
-                    :title=dictionary[0].short_text
-                    width="200"
-                    trigger="hover"
-                    :content=dictionary[0].full_text>
-                    <el-button type="text"  slot="reference"><span class="myTip">продуктивність</span></el-button>
-                  </el-popover>
-                  <el-popover
-                    placement="top-start"
-                    :title=dictionary[0].short_text
-                    width="200"
-                    trigger="hover"
-                    :content=dictionary[0].full_text>
-                    <el-button type="text"  slot="reference"><span class="myTip">свердловини</span></el-button>
-                  </el-popover>                   
-                 </p>
-            </div>
-            <div class="greyBox last-box">
-                 <font-awesome-icon icon="lightbulb" />
-                 <p>Невідома витрата? </p>
-                 <p>Скористайтесь послугами нашого помічника!</p>
-                 <div class="container-button"> 
-                 <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
-                 </div>
-            </div>
+      </el-tabs> 
+    <div class="desktop">
+      <div class="greyBoxes-container">
+              <div class="greyBox">
+                  <!-- :precision="2" :min="0.5" :max="17" -->
+                  <h3>Необхідна витрата насоса</h3>       
+                  <el-row justify="center">Витрата  <el-input-number v-model="(volumeFlowInput)" :min="0" :precision="2" @change="onInputVolumeFlow"></el-input-number>
+                  м<sup>3</sup>/год
+                  </el-row>
+                  <p>
+                  Витрата насоса повинна бути меншою за
+                    <el-popover
+                      placement="top-start"
+                      width="200"
+                      trigger="hover"
+                      :content=dictionary[0].full_text>
+                      <el-button type="text"  slot="reference"><span class="myTip">продуктивність свердловини</span></el-button>
+                    </el-popover>                   
+                  </p>
+              </div>
+              <div class="greyBox last-box">
+                  <font-awesome-icon icon="lightbulb" />
+                  <h3 style="text-align:left">Невідома витрата? </h3>
+                  <p>Скористайтесь послугами нашого помічника!</p>
+                  <div class="container-button"> 
+                  <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
+                  </div>
+              </div>
+      </div>
     </div>
     </el-row>        
 </div>        
@@ -147,9 +142,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         this.dialogVisible=false 
       },
       onInputVolumeFlow(value) {
-        // alert(String(value))
         this.$emit('onInputDataVolume', value)
-         console.log(value)
       },
       onInputFlowItems(id, val){
         this.$emit('onInputFlowItems', id, val )
@@ -182,10 +175,8 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
 </script>
 
 <style scoped>
+/* // Small devices (landscape phones, 576px and up) */
 
 
-.tolltip {
-    font-size: 14px
-}
 </style>
 

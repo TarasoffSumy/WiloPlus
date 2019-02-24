@@ -3,12 +3,14 @@
     <el-dialog
     title=""
     :visible.sync="dialogVisible"
-    width="80%"
+    width="85%"
+    top="5vh"
     >
     <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"
                   @onInputHeadItems="onInputHeadItems" 
                   :modelHeadItems="modelHeadItems"
                   :dictionary="dictionary"
+                  :volumeFlow="volumeFlow"
                   :url="url"
     /> 
     <span slot="footer" class="dialog-footer">       
@@ -17,47 +19,74 @@
             <el-button @click="dialogVisible = false">Назад</el-button>
         </el-col>
         <el-col :span="12">
-            <el-button :disabled="disabledAccept" type="primary" @click="onDialogAccept">Підтвердити</el-button>
+            <el-button type="primary" @click="onDialogAccept">Підтвердити</el-button>
         </el-col>
         </el-row>   
     </span>
     </el-dialog>
 
     <el-row>
-    <div class="circle_number">
-        <svg height="55" width="53" class="circle">
-        <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
-        </svg> <span>2 </span>            
-    </div>
-    <h2 class="title">Напір насоса</h2> 
-    </el-row> 
-    <el-row>
-    <div class="greyBoxes-container">
-             <div class="greyBox">
-                 <h3>Необхідний напір насоса</h3>                
-                 <el-row justify="center">Напір 
-                     <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="1" :min="0" :max="290"></el-input-number>
-                 м
-                </el-row >
-             </div>
-
-                 <div class="greyBox last-box">
-                  <font-awesome-icon icon="lightbulb" />
-                 <p>Невідомий напір?</p>
-                 <p>Скористайтесь послугами нашого помічника!</p>
-                 <div class="container-button">
-                 <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
-                 </div>
-             </div>
-    </div>
+        <div class="circle_number">
+            <svg height="55" width="53" class="circle">
+            <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
+            </svg> <span>2 </span>            
+        </div>
+        <h2 class="title">Напір насоса</h2> 
+        </el-row> 
+        <el-row>
+        <el-tabs class="mobile"  v-model="activeTab">
+            <el-tab-pane label="Необхідна витрата насоса" name="first">
+                    <h3>Необхідний напір насоса</h3>                
+                    <el-row justify="center">Напір 
+                        <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="1" :min="0"></el-input-number> м
+                    </el-row >
+            </el-tab-pane>
+            <el-tab-pane label="Розрахувати" name="second">
+            <span slot="label"><i class="el-icon-date"></i> Розрахувати</span>
+                    <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"
+                                @onInputHeadItems="onInputHeadItems" 
+                                :modelHeadItems="modelHeadItems"
+                                :dictionary="dictionary"
+                                :volumeFlow="volumeFlow"
+                                :url="url"
+                    /> 
+            <el-row class="navigation-footer">
+            <el-col :span="12">
+                 <el-button @click="dialogVisible = false">Назад</el-button>
+            </el-col>
+            <el-col :span="12">
+                <el-button type="primary" @click="onDialogAccept">Підтвердити</el-button>
+            </el-col>
+            </el-row>
+            </el-tab-pane>
+        </el-tabs> 
+        <div class="desktop">
+            <div class="greyBoxes-container">
+                    <div class="greyBox">
+                        <h3>Необхідний напір насоса</h3>                
+                        <el-row justify="center">Напір 
+                            <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="1" :min="0"></el-input-number> м
+                        </el-row >
+                    </div>
+                    <div class="greyBox last-box">
+                        <font-awesome-icon icon="lightbulb" />
+                        <h3 style="text-align:left">Невідомий напір? </h3>
+                        <p>Скористайтесь послугами нашого помічника!</p>
+                        <div class="container-button">
+                        <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
+                        </div>
+                    </div>
+            </div>
+        </div>
     </el-row>        
 </div>           
 </template>
 <script>
   export default {
-    props: ['deliveryHead', 'modelHeadItems', 'url', 'dictionary'],
+    props: ['deliveryHead', 'modelHeadItems', 'url', 'dictionary', 'volumeFlow'],
     data() {
       return {
+        activeTab:'first',
         deliveryHeadInput: this.deliveryHead,
         deliveryHeadComputed: null,
         helperStep1: false,
@@ -86,29 +115,9 @@
         this.dialogVisible=false       
     }, 
     onComputeDeliveryHead(value){        
-        this.onDisableButtonAccept(value) 
+       
         this.deliveryHeadComputed=value
-      }, 
-    onDisableButtonAccept(value){
-        if ((value <= this.maxDeliveryHead) && (value > this.minDeliveryHead)) {
-            this.disabledAccept=false      
-        }
-        else {
-            this.disabledAccept=true 
-        }
-          console.log(this.disabledAccept)
-      },    
-      open() {
-        this.$alert('This is a message', 'Title', {
-          confirmButtonText: 'OK',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: `action: ${ action }`
-            });
-          }
-        });
-      }
+      }    
       }
     }
 </script>
