@@ -1,97 +1,94 @@
 <template>
-  <div> 
-      <div class="container" >      
+<div> 
+    <div class="container" >      
         <el-dialog
-        :visible.sync="cokiesDialogVisible"
-        width="100%"
-        top='81vh'
-        customClass='cookis-notify'
-        center>
-        <span class="dialog-text-cookis">Цей веб-сайт використовує файли cookie з функціональних, зручних та статистичних причин. Якщо ви приймаєте використання файлів cookie, натисніть кнопку "Я згоден" <a style="display: inline;"  class="download" href="http://www.wilo.com/en/legal/#.WbaDk9NJalM" target="_blank" title="legal information">legal information</a></span>
-        <span class="dialog-button-cookis">
-            <el-button type="primary" @click="onAgreeUseCookies">Згодні</el-button>
-        </span>
+            :visible.sync="cokiesDialogVisible"
+            width="100%"
+            top='81vh'
+            customClass='cookis-notify'
+            center>
+            <span class="dialog-text-cookis">Цей веб-сайт використовує файли cookie з функціональних, зручних та статистичних причин. Якщо ви приймаєте використання файлів cookie, натисніть кнопку "Я згоден" <a style="display: inline;"  class="download" href="http://www.wilo.com/en/legal/#.WbaDk9NJalM" target="_blank" title="legal information">legal information</a></span>
+            <span class="dialog-button-cookis">
+                <el-button type="primary" @click="onAgreeUseCookies">Згоден</el-button>
+            </span>
         </el-dialog>
-
-      <div v-loading="loading" >
-          <!-- {{deliveryHead}}
+      <!-- <div v-loading="loading" >
+          {{deliveryHead}}
           {{volumeFlow}}
           {{selectedPumpId}}
           {{pump}} -->
         <HeaderPart />
         <el-row :gutter="20" >        
-        <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
-        <a href="#" @click="step(2, $event)"><stepTile title="Напір насоса" number="2" :class="[{ active: current==2}]"/></a> 
-        <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
-        <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиція" number="4" :class="[{ active: current==4}]"/></a>
+            <a href="#"  class="first" @click="step(1, $event)" ><stepTile title="Витрата насоса" number="1" :class="[{ active: current==1}]" /></a>        
+            <a href="#" @click="step(2, $event)"><stepTile title="Напір насоса" number="2" :class="[{ active: current==2}]"/></a> 
+            <a href="#" @click="step(3, $event)"><stepTile title="Підбір насоса та приладдя" number="3"  :class="[{ active: current==3}]"/></a>
+            <a href="#" @click="step(4, $event)"><stepTile slot="first" title="Пропозиція" number="4" :class="[{ active: current==4}]"/></a>
         </el-row>   
-        
         <transition name="flip" mode="out-in" >
-        <Step1 v-if="current==1 && step1=='ready'"
-                :url="url" 
-                :dictionary="dictionary"
-                :volumeFlow="volumeFlow"
-                :modelFlowItems="modelFlowItems"
-                :maxVolumeFlow="maxVolumeFlow"
-                @onInputDataVolume="onInputDataVolume"
-                @onInputFlowItems="onInputFlowItems"
-                class="transition-box"/>              
-        <Step2 v-else-if='current==2' 
-                :url="url" 
-                :deliveryHead="deliveryHead"
-                :volumeFlow="volumeFlow"
-                :dictionary="dictionary"
-                :modelHeadItems="modelHeadItems"
-                @onInputDataHead="onInputDataHead"
-                @onInputHeadItems="onInputHeadItems"
-                class="transition-box"/>         
-        <Step3 v-else-if="current==3 && step3=='ready'"
-                :url="url" 
-                :pump="pump"
-                :allPumps="allPumps"
-                :dictionary="dictionary"
-                :selectedPumpId="selectedPumpId"
-                :volumeFlow="volumeFlow"
-                :deliveryHead="deliveryHead"
-                :dataChart="dataChart"
-                :exchangeRates="exchangeRates"
-                :selectedAccessories="selectedAccessories"
-                @onSaveSelectedPumpId="onSaveSelectedPumpId"
-                @onRefreshDataPump="onRefreshDataPump"
-                @onSaveSelectedAccessories="onSaveSelectedAccessories"
-                @onGetDataChart="onGetDataChart"
-                class="transition-box"/>
-        <Step4 v-else-if='current==4' 
-                :url="url"
-                :pump="pump"
-                :qtyPump="qtyPump"
-                :volumeFlow="volumeFlow"
-                :deliveryHead="deliveryHead"
-                :exchangeRates="exchangeRates"
-                :selectedAccessories="selectedAccessories"
-                :selectedPumpId="selectedPumpId"
-                class="transition-box"/> 
+            <Step1 v-if="current==1 && step1=='ready'"
+                    :url="url" 
+                    :dictionary="dictionary"
+                    :deliveryHead="deliveryHead"
+                    :volumeFlow="volumeFlow"
+                    :modelFlowItems="modelFlowItems"
+                    @onInputDataVolume="onInputDataVolume"
+                    @onInputFlowItems="onInputFlowItems"
+                    class="transition-box"
+                    />              
+            <Step2 v-else-if='current==2' 
+                    :url="url" 
+                    :deliveryHead="deliveryHead"
+                    :volumeFlow="volumeFlow"
+                    :dictionary="dictionary"
+                    :modelHeadItems="modelHeadItems"
+                    @onInputDataHead="onInputDataHead"
+                    @onInputHeadItems="onInputHeadItems"
+                    class="transition-box"
+                    />         
+            <Step3 v-else-if="current==3 && step3=='ready'"
+                    :url="url" 
+                    :pump="pump"
+                    :allPumps="allPumps"
+                    :dictionary="dictionary"
+                    :selectedPumpId="selectedPumpId"
+                    :volumeFlow="volumeFlow"
+                    :deliveryHead="deliveryHead"
+                    :dataChart="dataChart"
+                    :exchangeRates="exchangeRates"
+                    :selectedAccessories="selectedAccessories"
+                    @onSaveSelectedPumpId="onSaveSelectedPumpId"
+                    @onRefreshDataPump="onRefreshDataPump"
+                    @onSaveSelectedAccessories="onSaveSelectedAccessories"
+                    @onGetDataChart="onGetDataChart"
+                    class="transition-box"
+                    />
+            <Step4 v-else-if='current==4' 
+                    :url="url"
+                    :pump="pump"
+                    :qtyPump="qtyPump"
+                    :volumeFlow="volumeFlow"
+                    :deliveryHead="deliveryHead"
+                    :exchangeRates="exchangeRates"
+                    :selectedAccessories="selectedAccessories"
+                    :selectedPumpId="selectedPumpId"
+                    class="transition-box"
+                    /> 
         </transition>     
         <el-row class="navigation-footer">
-        <el-col :span="12" >&nbsp;
-             <el-button v-show="current != 1"  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад </el-button>
-        </el-col>
-        <el-col :span="12" >&nbsp;
-            <el-button v-show="current != 4"  @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
-        </el-col>
+            <el-col :span="12" >&nbsp;
+                <el-button v-show="current != 1"  @click="back" type="primary" icon="el-icon-d-arrow-left">Назад </el-button>
+            </el-col>
+            <el-col :span="12" >&nbsp;
+                <el-button v-show="current != 4"  @click="next" type="primary">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
+            </el-col>
         </el-row>
     </div>   
-    </div> 
-  </div>
+</div> 
 </template>
 
 <script>
 import Axios from 'axios';
 export default {
-  name: 'Home',
-  props: {
-    msg: String
-  },
   data () {
         return {
                 loading: false,
@@ -99,10 +96,8 @@ export default {
                 url:'https://www.wiloexpert.com.ua/',
                 exchangeRates: 28.5,
                 current: 1,
-                isActive: false,
-                deliveryHead: 25,
-                volumeFlow: 5,
-                maxVolumeFlow: 17,
+                deliveryHead: 0,
+                volumeFlow: 0,
                 modelFlowItems: {
                     val1:0,
                     val2:0,
@@ -120,7 +115,6 @@ export default {
                 },
                 pump: [],
                 allPumps: [],
-                links: [],
                 dictionary: '',
                 step3:'',  
                 step1:'', 
@@ -189,8 +183,9 @@ export default {
         },
         created: function() { 
             this.postDataDictionary()   
-            // this.exchangeRates=this.get_cookie("currency")*1.2  
-            // this.exchangeRates=this.get_cookie("currency")*1.2   
+            // document.cookie = "currency=30.5" 
+             this.exchangeRates=this.get_cookie("currency")*1.2  
+             //this.exchangeRates=this.exchangeRates  
             // document.cookie = "existPumpOrAccessoreis=true; path=/; expires=" + date.toUTCString()
             // document.cookie = "idPump=343; path=/; expires=" + date.toUTCString()
             // document.cookie = "idController=440; path=/; expires=" + date.toUTCString()
@@ -208,8 +203,7 @@ export default {
             // document.cookie = "volumeFlow=3; path=/; expires=" + date.toUTCString()
 
             if (this.get_cookie('existPumpOrAccessoreis')) {
-                
-                    
+    
                     this.deliveryHead=Number(this.get_cookie('deliveryHead'))
                     this.volumeFlow=Number(this.get_cookie('volumeFlow'))
                     if (this.get_cookie('idController')) {
@@ -233,16 +227,13 @@ export default {
                     this.deleteCookie('currency');              
             }
         },
-        computed: {
-
-        },
         mounted() {
              if  (!this.get_cookie('cookies')) { this.cokiesDialogVisible=true } 
             this.postDataAllPumps()                      
         },
         methods: {
             onAgreeUseCookies() {
-                 document.cookie = "cookies=true"                
+                 document.cookie = "cookies=true path=/; expires=Mon, 31 Aug 2025 00:00:00 GMT;"                
                  this.cokiesDialogVisible=false
             },
             get_cookie(cookie_name)
@@ -259,7 +250,6 @@ export default {
                     var date = new Date(0);
                     document.cookie = el + "=; path=/; expires=" + date.toUTCString();
                     }
-
                 });
             },
             onClearSelectedAccessories()  {
@@ -290,6 +280,7 @@ export default {
             onSaveSelectedAccessories(obj){
                 this.selectedAccessories=obj 
             },
+            //get data from coockies source 
             postDataGetDetail: function(id, item, qty) {
                 const getPromise = Axios.post(this.url+'db/getDetails', {"id":id});
                 getPromise.then(response => {                   
@@ -304,7 +295,7 @@ export default {
                         this.selectedAccessories[item].description = obj[0].features.description;
                         this.selectedAccessories[item].img = obj[0].features.img;
                         this.selectedAccessories[item].selected = true;
-                       this.deleteCookie('idController');
+                        this.deleteCookie('idController');
                         this.deleteCookie('controllerQty');         
                     }
                     if (obj && item=='item2') {
@@ -370,6 +361,7 @@ export default {
                     }         
                 });
             },
+            //get data dictionary
             postDataDictionary: function() {
                 this.loading=true
                 const getPromise = Axios.post(this.url+'db/getHelp');                
@@ -382,7 +374,8 @@ export default {
 
                      
                 });
-                },                
+                },    
+            //get data all pumps            
             postDataAllPumps: function() {
                 const getPromise = Axios.post(this.url+'db/getAllPumps');                
                 getPromise.then(response => {
@@ -398,6 +391,7 @@ export default {
                     
                 });
                 },
+            //get computed pump
             postDataPump: function(volumeFlow, deliveryHead) {
                 this.selectedPumpId=0
                 this.loading=true
@@ -406,31 +400,27 @@ export default {
                 this.pump = response.data;
                 if (this.pump!=undefined) {
                     this.selectedPumpId=this.pump[0].id  
-                    this.onGetDataChart(this.pump), 1000;                
-                                           
-                        this.loading=false
-                        this.step3='ready'
+                    this.onGetDataChart(this.pump), 1000;                    
+                    this.loading=false
+                    this.step3='ready'
                 }
                 })
                 .catch(error => {
                     this.loading=false                   
                     this.pump=this.pump[0].status.type  
                     this.selectedPumpId=0                
-                    this.step3='ready'
-                    
+                    this.step3='ready'                    
                 });
                 },
+            //navigations 
             next () {
                 if  (this.current == 2) {     
-
-                       this.postDataPump(this.volumeFlow, this.deliveryHead);
-                    
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);                    
                 } 
                 if (this.current == 4) {
                     this.current = 1;
                 } else {
                     this.current+= 1;
-                    this.isActive=true
                 }
             },
             back () {
@@ -445,70 +435,70 @@ export default {
             },
             step (n) {
                this.current = n
-                if  (this.current == 3) {   
-
-                    this.postDataPump(this.volumeFlow, this.deliveryHead);
-              
-                                     
+                if  (this.current == 3) { 
+                    this.postDataPump(this.volumeFlow, this.deliveryHead);                 
                 }            
             },
+            //compute array for chart 
             onGetDataChart(obj){
-            let source=obj         
-            function getFloat(value){
-                return parseFloat(value .replace(/,/, '.'));
-                }
-            let Q=getFloat(source[0].features.Qmax)
-            let A=getFloat(source[0].features.Ax2)
-            let B=getFloat(source[0].features.Bx)
-            let C=getFloat(source[0].features.C)
-           
-            let Qmax=[0, Q/5, 2*Q/5, 3*Q/5, 4*Q/5, 5*Q/5]
+                let source=obj         
+                function getFloat(value){
+                    return parseFloat(value .replace(/,/, '.'));
+                    }
+                let Q=getFloat(source[0].features.Qmax)
+                let A=getFloat(source[0].features.Ax2)
+                let B=getFloat(source[0].features.Bx)
+                let C=getFloat(source[0].features.C)
             
-            function Hn(d){
-                return  (A*Math.pow(d, 2)+B*d+C).toFixed(4)
-            }
-            let arrHn=[]
-            for (let i=0; i <= Qmax.length-1; i++){
-                let point={
-                    x: Qmax[i].toFixed(4),
-                    y: Hn(Qmax[i])
-                }
-                arrHn.push(point)
-            }
-            this.dataChart.Hnas=arrHn
-            let Ah=this.modelHeadItems.val1            
-            let Bh=this.modelHeadItems.val2
-            let Ch=this.modelHeadItems.val3
-            if (this.deliveryHead==0 && this.volumeFlow==0)
-            {
-               this.deliveryHead=getFloat(source[0].features.Hnom)
-               this.volumeFlow=getFloat(source[0].features.Qnom)
-            }
+                let Qmax=[0, Q/5, 2*Q/5, 3*Q/5, 4*Q/5, 5*Q/5]
+                
+                function Hn(d){
+                        return  (A*Math.pow(d, 2)+B*d+C).toFixed(4)
+                    }
+                let arrHn=[]
+                for (let i=0; i <= Qmax.length-1; i++){
+                        let point={
+                            x: Qmax[i].toFixed(4),
+                            y: Hn(Qmax[i])
+                        }
+                        arrHn.push(point)
+                    }
+                this.dataChart.Hnas=arrHn
+                let Ah=this.modelHeadItems.val1            
+                let Bh=this.modelHeadItems.val2
+                let Ch=this.modelHeadItems.val3
 
-            let deliveryHead=this.deliveryHead
-            let volumeFlow=this.volumeFlow
-            let Ksys=(deliveryHead-Ah-Ch)/Math.pow(volumeFlow, 2)
-            let Deskr=Math.pow(B, 2)-4*(A-Ksys)*(C-Ah-Ch)
-            let Flow=(-B-Math.sqrt(Deskr))/(2*(A-Ksys))
-            let Head=(Ah+Ch)+Ksys*Math.pow(Flow, 2)
-            
-            this.dataChart.CalcPoint=[{x: Flow.toFixed(4), y: Head.toFixed(4)}]
-            this.dataChart.WorkPoint=[{ x: volumeFlow.toFixed(4), y: deliveryHead.toFixed(4)}]
+                if (this.deliveryHead==0 && this.volumeFlow==0)
+                    {
+                    this.deliveryHead=getFloat(source[0].features.Hnom)
+                    this.volumeFlow=getFloat(source[0].features.Qnom)
+                    }
 
-            let Qf=[0,  0.3*Flow, 0.6*Flow, 0.9*Flow, 1.2*Flow]
-            function Hf(i) {
-                return (Ah+Ch)+Ksys*Math.pow(i, 2).toFixed(4)
-            }
-            let arr=[]
-            for (let i=0; i<=Qf.length-1; i++) {
-                let point= 
-                {
-                    x: (Qf[i]).toFixed(4),
-                    y: Hf(Qf[i])
-                }
-                arr.push(point)
-            }
-            this.dataChart.Hsis=arr 
+                let deliveryHead=this.deliveryHead
+                let volumeFlow=this.volumeFlow
+                let Ksys=(deliveryHead-Ah-Ch)/Math.pow(volumeFlow, 2)
+                let Deskr=Math.pow(B, 2)-4*(A-Ksys)*(C-Ah-Ch)
+                let Flow=(-B-Math.sqrt(Deskr))/(2*(A-Ksys))
+                let Head=(Ah+Ch)+Ksys*Math.pow(Flow, 2)
+                
+                this.dataChart.CalcPoint=[{x: Flow.toFixed(4), y: Head.toFixed(4)}]
+                
+                this.dataChart.WorkPoint=[{ x: volumeFlow.toFixed(4), y: deliveryHead.toFixed(4)}]
+
+                let Qf=[0,  0.3*Flow, 0.6*Flow, 0.9*Flow, 1.2*Flow]
+                function Hf(i) {
+                        return (Ah+Ch)+Ksys*Math.pow(i, 2).toFixed(4)
+                    }
+                let arr=[]
+                for (let i=0; i<=Qf.length-1; i++) {
+                        let point= 
+                        {
+                            x: (Qf[i]).toFixed(4),
+                            y: Hf(Qf[i])
+                        }
+                        arr.push(point)
+                    }
+                this.dataChart.Hsis=arr 
             }
         }
 }
@@ -535,19 +525,6 @@ h4 {
     color: #f16262;
     font-size: 14px;
 }
-.rect:after {
-    width: 20px;
-    height: 10px;
-    content: "\E613";
-    display: block;
-    top: -84px;
-    left: -39px;
-    position: relative;
-    font-family: element-icons;
-    font-size: 33px;
-    color: #555;
-}
-
 .transition-box {
     margin-bottom: 10px;
     width: calc(100% - 40px);
@@ -555,12 +532,9 @@ h4 {
     text-align: center;
     box-sizing: border-box;
 }
-
-.flip-enter{}
 .flip-enter-active {
   animation: flipInX 0.3s linear ;
 }
-.flip-leave{}
 .flip-leave-active {
   animation: flipOutX 0.3s linear ;
 }
@@ -628,6 +602,7 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
 .transition-box .title {
     float: left;
     padding: 15px;
+    height: auto;
 }
 .transition-box .circle {
     fill: #009c81;
@@ -647,7 +622,6 @@ svg.svg-inline--fa.fa-lightbulb.fa-w-11 {
     min-height: 180px;
     margin-bottom: 20px;
 }
-
 .last-box{
     margin-right: 0;
     background: #f6f6f6;
@@ -673,7 +647,6 @@ ul li {
     top: 2px;
     font-weight: bold;
 }
-
 .my-font::before {
     font-family: 'wilo-icons';
     font-style: normal;
@@ -714,11 +687,11 @@ button.el-button.el-button--text.el-popover__reference {
 }
 .dialog-text-cookis {
     width: 70%;
-    padding: 0 20px;
+    padding: 10px 20px;
 }
- 
-span.dialog-footer-cookis {
-    margin: 5px 10px;
+span.dialog-button-cookis {
+    padding: 0 20px;
+    margin-top: 8px;
 }
 .el-dialog.el-dialog--center.cookis-notify {
     margin: 0;

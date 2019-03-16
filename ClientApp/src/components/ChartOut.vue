@@ -107,15 +107,8 @@ export default {
                   labelString: 'Витрата, м3/год'
                 }
             }]
-
     }
     })
-  },
-  created : function(){
-
   }
 }
 </script>
-
-<style>
-</style>

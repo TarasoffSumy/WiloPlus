@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="header-bg">
     <el-alert class="my-alert" v-if="markIe"
     title="Заваньтажте сучасний веб-переглядач"
     type="error"
@@ -16,10 +16,6 @@
             <h1> Підбір свердловинних насосів</h1>
         </el-col>   
     </el-row>  
-
-
-    
-    
 </div>
 </template>
 
@@ -44,7 +40,6 @@ export default {
 }
 </script>
 <style scoped>
- img { cursor: pointer; padding: 10px}
  .el-alert.my-alert.el-alert--error {
     height: 200px;
     text-align: center;

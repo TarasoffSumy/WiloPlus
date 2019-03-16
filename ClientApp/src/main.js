@@ -27,8 +27,9 @@ import Step3Helper from './components/Step3-helper.vue';
 import Step3Accessoreis from './components/Step3-accessoreis.vue';
 import Step3SelectedPump from './components/Step3-selectedPump.vue';
 import Step3HelperController from './components/Step3-helperController.vue';
-
-
+import Step3HelperCableMufta from './components/Step3-helperCableMufta.vue';
+import Step3HelperVessel from './components/Step3-helperVessel.vue';
+import Step3HelperJacket from './components/Step3-helperJacket.vue';
 
 Vue.component('Home', Home);
 Vue.component('HeaderPart', HeaderPart);
@@ -43,11 +44,13 @@ Vue.component('Step3-helper', Step3Helper);
 Vue.component('Step3-accessoreis', Step3Accessoreis);
 Vue.component('Step3-selectedPump', Step3SelectedPump);
 Vue.component('Step3-helperController', Step3HelperController);
+Vue.component('Step3-helperCableMufta', Step3HelperCableMufta);
+Vue.component('Step3-helperVessel', Step3HelperVessel);
+Vue.component('Step3-helperJacket', Step3HelperJacket);
 Vue.component('Chart', Chart);
 Vue.component('ChartOut', ChartOut);
 
 
-library.add(faCoffee);
 library.add(faLightbulb);
 library.add(faServer);
 

@@ -22,9 +22,6 @@
                 </span>  
                 <span v-else-if="item.id==2 || item.id==3" v-html="item.title" class="item"></span>
                 <span class="wrap-input ">
-
-                
-
                 <el-input-number @focus="onFocusInput(item.id)" v-model="item.valueHead" @change="handleChange(item.valueHead, item.id)"  :precision="2" :min="0" ></el-input-number>
                 м 
                 </span>
@@ -50,16 +47,13 @@
                     :content=dictionary[13].full_text>
                     <el-button type="text" slot="reference"><span class="myTip">Рекомендований діаметр</span></el-button>
                     </el-popover> трубопроводів для вашої витрати 
-            <span v-if='compDiametr.equally'>дорівнює  <strong>DN{{compDiametr.max_around}}</strong>  </span>
-            <span v-else>від <strong>DN{{compDiametr.min_around}}</strong>  до <strong>DN{{compDiametr.max_around}}</strong> </span>
-                <!-- {{compDiametr.min}} {{compDiametr.max}} -->
+                    <span v-if='compDiametr.equally'>дорівнює  <strong>DN{{compDiametr.max_around}}</strong>  </span>
+                    <span v-else>від <strong>DN{{compDiametr.min_around}}</strong>  до <strong>DN{{compDiametr.max_around}}</strong> </span>
                 </p>
                 <div class="computed-deliveryHead">
-                <span class="label">Розрахований напір</span>
-                <span class="number"> {{compTotal}}</span> м 
+                    <span class="label">Розрахований напір</span>
+                    <span class="number"> {{compTotal}}</span> м 
                 </div> 
-                <!-- <span class="exeption-validation" v-if="!$v.HeadValTotal.between">
-                 діапазон <strong>20м - 200м</strong></span>                 -->
             </div>
         </el-col>
         <el-col :md="12" :sm="24" class="side-right-helper">
@@ -70,12 +64,8 @@
                         </svg><div class="symbolInCircle">{{item.letter}}</div>
                         <div :class="[{ active: focusInput==item.id}]"></div>                            
                 </el-button>
-            </div>
-
-            
+            </div>            
         </el-col>
-    </el-row> 
-    <el-row >    
     </el-row> 
 </div>
 </template>
@@ -110,11 +100,6 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
         focusInput: 0
       }
     },
-    // validations: {
-    //     HeadValTotal: {
-    //     between: between(20, 290)
-    //     }
-    // },
     computed: {
         compTotal: function() {
             let a=this.helperHead.item_A.valueHead
@@ -126,47 +111,31 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
             return sum
         },
         compDiametr: function(){
-            let dim={}
-           
+            let dim={}           
             dim.min=18.81*Math.sqrt((this.volumeFlow)/1.5)
             dim.max=18.81*Math.sqrt((this.volumeFlow)/1)
             dim.min_around=(this.onFindeDimInArr(dim.min))
             dim.max_around=(this.onFindeDimInArr(dim.max))
             if  (dim.min_around===dim.max_around) {
                 dim.equally=true
-            }
-            else
-            {
-                dim.equally=false
-            }
+                }
+                else
+                {
+                    dim.equally=false
+                }
 
             return dim
         }
-
-    },
-    created:  function(){
-         //dimArr=[32, 40, 50, 65, 80, 90, 100, 125, 150]
-                // if (val <= dimArr[0]) {
-                //      return dimArr[0]
-                // }
-                // else {
-                //     for(let i=1; i< dimArr.length; i++) {
-                //         if ((val > dimArr[i]) && (val <= dimArr[i+1])) 
-                //             {
-                //                 return dimArr[i+1];                     
-                //             }
-                //     }
-                // } 
     },
     methods: {
-      handleChange(value, id) {
-       this.focusInput=id  
-       this.$emit('onInputHeadItems', id, value)
-      },
-      onFocusInput(value) {
-        this.focusInput=value
-      },
-      onFindeDimInArr(val) {
+        handleChange(value, id) {
+            this.focusInput=id  
+            this.$emit('onInputHeadItems', id, value)
+            },
+        onFocusInput(value) {
+            this.focusInput=value
+            },
+        onFindeDimInArr(val) {
            let dimArr=[32, 40, 50, 65, 80, 90, 100, 125, 150]
                 if (val <= dimArr[0]) {
                      return dimArr[0]
@@ -179,7 +148,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
                             }
                     }
                 } 
-      }
+            }
     }
   };
 </script>
@@ -328,7 +297,7 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     text-align: center;
     margin-top: 17px;
     color: #171717;
-    padding: 15px;
+    padding: 15px 7px;
 }
 .computed-deliveryHead .label {    
     font-weight: 600;

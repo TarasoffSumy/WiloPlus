@@ -1,9 +1,7 @@
 <template>
 <div>
-    {{controllers}}
-    <p>4546546</p>
-              <el-row class="accesorias-item" :gutter="20">
-                <div v-for="item in controllers" :key="item.id">                
+        <el-row class="accesorias-item" :gutter="20">
+            <div v-for="item in controllers" :key="item.id">                
                 <el-col v-if="!(paramOfSelectedPump.phase==3 && item.features.phase==1)">            
                     <el-card style="min-width:300px">                                   
                                 <div style="float:right">
@@ -32,50 +30,46 @@
                                 :content=dictionary[7].full_text>
                                 <el-button type="text"  slot="reference"><span class="myTip">Захист від сухого ходу:</span></el-button>
                                 </el-popover> 
-                                {{item.features.dry_running}}</p> 
-                                
-                                <a class="download" :href="url+'assets/'+item.features.OM+'.pdf'" download><i class="el-icon-document"></i> Завантажити інструкцію з експлуатації</a>
-                                                                                        
+                                {{item.features.dry_running}}</p>                                
+                                <a class="download" :href="url+'assets/'+item.features.OM+'.pdf'" download><i class="el-icon-document"></i> Завантажити інструкцію з експлуатації</a>                                                          
                             </el-collapse-item>
                             </el-collapse>
                             <p >Ціна <span class="stronge-price">{{item.price*exchangeRates | aroundPrice}}</span>грн з пдв</p> 
-                            <el-radio-group  v-model="selectedAccessories.item1.idController" @change="handleChange(item.id)">
+                            <el-radio-group  v-model="selectedAccessories.item1.idController" @change="$emit('handleChange', item.id)">
                                 <el-radio-button v-show="item.id!=selectedAccessories.item1.idController" type="primary" :label="item.id">Вибрати</el-radio-button>
                             </el-radio-group> 
-                            <el-button v-show="item.id==selectedAccessories.item1.idController" type="primary" @click="ClearControllerSelect()">Відмінити</el-button>  
+                            <el-button v-show="item.id==selectedAccessories.item1.idController" type="primary" @click="$emit('ClearControllerSelect')">Відмінити</el-button>  
                     </el-card>
                 </el-col>
-                </div> 
-            </el-row>
+            </div> 
+        </el-row>
 </div>
 </template>
  
 <script>
   export default {
-    props: ['url', 'selectedAccessories', 'dictionary', 'controllers', 'paramOfSelectedPump' ],
+    props: ['url', 'selectedAccessories', 'dictionary', 'controllers', 'paramOfSelectedPump', 'exchangeRates' ],
     data() {        
       return {
-        focusInput: 0
       }
     },
     filters: {
         aroundPrice: function (value) {
             let val = (value/1).toFixed(0)
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")+',- '
-        },
+            },
         aroundNumber: function (value) {
             value = Number(value).toFixed(2)
             return value
-        }
-    },
-    computed: {        
-    },
-    created:  function(){
-    },
-    methods: {       
+            }
     }
   };
 </script>
-<style >
-
+<style>
+.image {
+    display: block;
+    height: 100px;
+    padding: 0 0 0 14%;
+    margin: 0 auto;
+    }
 </style>

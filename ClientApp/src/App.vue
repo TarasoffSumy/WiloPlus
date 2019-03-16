@@ -1,17 +1,10 @@
 <template>
-  <div id="app">
-  
-   
+  <div id="app">  
     <Home msg="Welcome to Willo App"/>
-     
- 
   </div>
 </template>
 
 <script>
-
-
-
 export default {
   name: 'app',
  }
@@ -27,6 +20,13 @@ body {
   text-align: center;
   color: #2c3e50;
   font-family: 'wilo-font', sans-serif;
+}
+
+.el-card {
+    margin: 5px;
+}
+.el-collapse-item__content {
+    padding: 0 10px;
 }
 .el-radio-button__inner, .el-checkbox-button__inner {
     border: 1px solid #009c81!important;
@@ -57,12 +57,150 @@ body {
 .el-checkbox-button:last-child .el-checkbox-button__inner {
     border-radius: 0!important;
 }
+.el-collapse-item__header {
+    font-size: 15px!important;
+    padding: 5px 15px;
+}
+.el-tabs__item {
+    font-size: 16px!important;
+}
 .el-form-item__label {
     line-height: 30px!important;
 }
-
-
+.el-tabs__header {
+    margin: 0!important;
+}
+.accesorias-item-mufts {
+    width: 47%; 
+    margin: 0px 1.5%; 
+    float: left;
+    }
+.el-tabs__content {
+    background: #f7f6f6;
+    padding: 10px;
+}
+img.calc-bg {
+    background: #009c81;
+    position: relative;
+    top: 7px;
+    left: -1px;
+    width: 16px;
+    padding: 1px;
+}
+.title{
+    font-size: 20px;
+    line-height: 1.1;
+    color: #4d4d4d;
+    height: 30px;    
+    padding: 0 10px;
+    text-align: center;
+}
+.circle_number {
+    padding-top: 20px;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+}
+.circle_number span {
+    position: relative;
+    top: -48px;
+    left: 0px;
+    font-size: 25px;
+    color: #686868;
+}
+.rect {
+    width: 90%;
+    height: 140px;
+    margin-bottom: 20px;
+    background: #ebebeb;
+}
+.rect:after {
+    width: 20px;
+    height: 10px;
+    content: "\E613";
+    display: block;
+    top: -84px;
+    left: -39px;
+    position: relative;
+    font-family: element-icons;
+    font-size: 33px;
+    color: #555;
+}
+img.logo-img {
+    cursor: pointer;
+    padding: 10px;
+}
+span.name-equipment {
+    padding-left: 10px;
+}
+span.sub-title.point {
+    min-height: 40px;
+    padding: 5px 0;
+    display: block;
+    margin: 0 5px 0 5px;
+    border-bottom: solid 1px #c4c0c0;
+}
 @media (max-width: 575px)  {
+    canvas#line-chart {
+    margin-left: -20px;
+}
+    span.sub-title.point {
+        min-height: 50px;
+    }
+    .title {
+        text-align: left;
+    }
+    .name-equipment{
+        font-weight: bold;
+        padding-left: 5px;
+        text-transform: uppercase;
+        font-size: 15px;
+    }
+    svg.circle {
+        width: 38px;
+        height: 38px;
+    }
+    circle {
+        cx: 19px;
+        cy: 19px;
+        r: 18;
+    }
+    .circle_number span {
+        top: -36px;
+    }
+    .header-bg {
+        background:transparent;
+    }
+    img.logo-img {
+        width: 90px;
+        padding: 0;
+        margin-top: 7px;
+    }
+    h1 {
+    font-size: 20px;
+    }
+    .header-bg  {
+        background: #eee;
+        margin-bottom: 5px;
+    }
+    .circle_number {
+        margin-left: 5px;
+        float: left; 
+    }
+    .rect {
+        height: 90px;
+        width: 99%;
+        margin-bottom: 5px; 
+    }
+    .rect:after {
+        display: none;
+    }
+    .title {
+    font-size: 18px;
+    line-height: 1.1;
+    height: 50px;
+    padding: 20px 5px;
+    }
     .radio-jackets {
         text-align: center;
         margin: 5px;
@@ -84,17 +222,33 @@ body {
         float: left
     }
     .greyBox {
-        width: 88%;
+        width: 99%;
     }
     .box-helper-info {
         padding: 20px;
         width: 100%;
         margin-left: -20px;
     }
+    .accesorias-item-mufts {
+    width: 100%;
+    }
 
  }
 /* // Medium devices (tablets, 768px and up) */
 @media (min-width: 576px) and (max-width: 767px) {
+    .header-bg  {
+        background: #eee;
+        margin-bottom: 5px;
+    }
+    h1 {
+        font-size: 20px;
+    }
+    .title {
+        font-size: 16px;
+        line-height: 1.0;
+        height: 20px;
+        padding: 10px;
+    }
     .radio-jackets {
         text-align: center;
         margin: 5px;
@@ -112,6 +266,9 @@ body {
         padding: 20px;
         width: 100%;
         margin-left: -20px;
+    }
+    .accesorias-item-mufts {
+    width: 100%;
     }
 
  }
@@ -135,6 +292,9 @@ body {
         text-align: center;
         margin: 5px;
     }
+    .accesorias-item-mufts {
+        width: 47%;
+    }
  }
 
 /* // Large devices (desktops, 992px and up) */
@@ -146,7 +306,7 @@ body {
         display:block;
     }
     .container {
-        width: 70%;
+        width: 75%;
         margin: auto;
     }
     .greyBoxes-container {
@@ -171,7 +331,6 @@ body {
     }
     .accesorias-item-mufts {
         width: 47%; 
-        margin: 0px 1.5%; float: left;
     }
     .radio-jackets {
         display: inline-block;
@@ -190,7 +349,7 @@ body {
         display:block;
     }
     .container {
-        width: 70%;
+        width: 75%;
         margin: auto;
     }
     .greyBoxes-container {

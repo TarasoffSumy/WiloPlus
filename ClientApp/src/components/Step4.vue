@@ -1,6 +1,6 @@
 <template>
-    <div>      
-        <p class="hidden-xs-only"></p>
+    <div v-loading="loading">      
+        <p class="hidden-xs-only" ></p>
         <el-dialog title="" 
                 :visible.sync="dialogFormVisible"
                 :send="send"
@@ -36,7 +36,7 @@
                         width="500"
                         trigger="click">
                         <div style="background:#efeded; padding: 1px 20px;">
-                            <p>Заповненням цієї форми  я надаю згоду на обробку моїх персональних даних з метою організації системи управління взаємовідносин з партнерами та контрагентами, зберігання в базах  даних ТОВ «ВІЛО УКРАЇНА»: 1С, CRM; на web-сайті  wiloexpert.ua; CRM-системі Групи компаній Wilo та на web-сайті  wilo de.</p>
+                            <p>Заповненням цієї форми  я надаю згоду на обробку моїх персональних даних з метою організації системи управління взаємовідносин з партнерами та контрагентами, зберігання в базах  даних ТОВ «ВІЛО УКРАЇНА»: 1С, CRM; на web-сайті  wiloexpert.ua; CRM-системі Групи компаній Wilo та на web-сайті <a href="https://wilo.com/en/Legal.html#.WbaDk9NJalM"></a>https://wilo.com</p>
                             <p>Під обробкою моїх персональних даних, згоду на яку я надаю добровільно, мається на увазі будь-яка дія та/або сукупність дій, таких як збирання, реєстрація, накопичення, зберігання, адаптування, зміна, поновлення, використання і поширення (розповсюдження, реалізація, передача), знеособлення, знищення персональних даних, у тому числі з використанням інформаційних (автоматизованих) систем.</p>
                             <p>Я підтверджую, що ознайомлений зі змістом ЗУ «Про захист персональних даних» та основними положеннями Регламенту (ЄС) 2016/679 Європейського парламенту та Європейської ради від 27 квітня 2016 року «Про захист фізичних осіб стосовно обробки персональних даних та про вільне переміщення таких даних та скасування Директиви 95/46 / ЄС (Загальний порядок захисту персональних даних)»</p>    
                         </div>                        
@@ -72,7 +72,6 @@
         Скористайтеся кроком 3 для підбору насоса
         </div>
         <div v-else>  
-
         <table  id="pumps-accessorias">
             <thead>
                 <colgroup span="4"></colgroup>
@@ -80,7 +79,7 @@
                     <th>{{thead.name}}</th>
                     <th>{{thead.article}}</th>
                     <th>{{thead.qty}}</th>                    
-                    <th>{{thead.price}}/th>
+                    <th>{{thead.price}}</th>
                     <th>{{thead.total}}</th>
                 </tr>
             </thead>
@@ -89,10 +88,10 @@
                     <td style="text-align:left: paddin-left:10px">
                         
                         <el-button type="text"  @click="handleDelete(0)"><i class="el-icon-error"></i></el-button>
-                            Насос {{tableData.pump.name}}
+                        <span class="name-equipment">Насос {{tableData.pump.name}}</span>
                     </td>
                     <td :data-label='thead.article'>{{tableData.pump.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.pump.qty" @change="handleChange()" :min="1" ></el-input-number></td>
+                    <td :data-label='thead.qty'><el-input-number v-model="tableData.pump.qty" :min="1" ></el-input-number></td>
                     
                     <td :data-label='thead.price'>{{tableData.pump.price | aroundNumber}}</td>
                     <td :data-label='thead.total'>{{tableData.pump.price*tableData.pump.qty | aroundNumber}}</td>
@@ -100,52 +99,55 @@
                 <tr v-if="tableData.controller.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(1)"><i class="el-icon-error"></i></el-button>
-                    {{tableData.controller.name}}</td>
+                    <span class="name-equipment">{{tableData.controller.name}}</span></td>
                     <td :data-label='thead.article'>{{tableData.controller.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.controller.qty" @change="handleChange()" :min="1" ></el-input-number></td>
+                    <td :data-label='thead.qty'><el-input-number v-model="tableData.controller.qty" :min="1" ></el-input-number></td>
                     <td :data-label='thead.price'>{{tableData.controller.price | aroundNumber}}</td>
                     <td :data-label='thead.total'>{{tableData.controller.price*tableData.controller.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.cable.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(2)"><i class="el-icon-error"></i></el-button>
-                    {{tableData.cable.name}}</td>
+                    <span class="name-equipment">{{tableData.cable.name}}</span></td>
                     <td :data-label='thead.article'>{{tableData.cable.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.cable.qty" @change="handleChange()" :disabled="true" :min="1" ></el-input-number></td>
+                    <td :data-label='thead.qty'>
+                        <el-tooltip content="Зміна можлива через вибір приладдя" placement="top">
+                        <el-input-number  @change="handleChangeCable()" :disabled="true" v-model="tableData.cable.qty" :min="1" ></el-input-number>
+                        </el-tooltip>
+                    </td>
                     <td :data-label='thead.price'>{{tableData.cable.price | aroundNumber}}</td>
                     <td :data-label='thead.total'>{{tableData.cable.price*tableData.cable.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.mufta.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(3)"><i class="el-icon-error"></i></el-button>
-                    {{tableData.mufta.name}}</td>
+                    <span class="name-equipment">{{tableData.mufta.name}}</span></td>
                     <td :data-label='thead.article'>{{tableData.mufta.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.mufta.qty" @change="handleChange()" :min="1"></el-input-number></td>
+                    <td :data-label='thead.qty'><el-input-number v-model="tableData.mufta.qty" :min="1"></el-input-number></td>
                     <td :data-label='thead.price'>{{tableData.mufta.price | aroundNumber}}</td>
                     <td :data-label='thead.total'>{{tableData.mufta.price*tableData.mufta.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.vessel.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(4)"><i class="el-icon-error"></i></el-button>
-                    {{tableData.vessel.name}}</td>
+                    <span class="name-equipment">{{tableData.vessel.name}}</span></td>
                     <td :data-label='thead.article'>{{tableData.vessel.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.vessel.qty" @change="handleChange()" :min="1"></el-input-number></td>
+                    <td :data-label='thead.qty'><el-input-number v-model="tableData.vessel.qty" :min="1"></el-input-number></td>
                     <td :data-label='thead.price'>{{tableData.vessel.price | aroundNumber}}</td>
                     <td :data-label='thead.total'>{{tableData.vessel.price*tableData.vessel.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.jacket.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(5)"><i class="el-icon-error"></i></el-button>
-                    {{tableData.jacket.name}}</td>
+                    <span class="name-equipment">{{tableData.jacket.name}}</span></td>
                     <td :data-label='thead.article'>{{tableData.jacket.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.jacket.qty" @change="handleChange()" :min="1"></el-input-number></td>
+                    <td :data-label='thead.qty'><el-input-number v-model="tableData.jacket.qty" :min="1"></el-input-number></td>
                     <td :data-label='thead.price'>{{tableData.jacket.price | aroundNumber}}</td>
                     <td :data-label='thead.total'>{{tableData.jacket.price*tableData.jacket.qty | aroundNumber}}</td>
                 </tr>
             </tbody>
         </table> 
-        <p style="text-align:center" class="sub-title price">Ціна <span class="stronge-price">{{qty | aroundNumber}}</span>грн з пдв</p>
-        
+        <p style="text-align:center" class="sub-title price">Ціна <span class="stronge-price">{{qty | aroundNumber}}</span>грн з пдв</p>  
         <el-row>
           <el-button  @click="dialogOpenEmail" type="info" icon="el-icon-message">Надіслати </el-button>
           <el-button  @click="dialogOpenPrint" type="info" icon="el-icon-printer">Друк пропозиції </el-button>           
@@ -161,6 +163,7 @@ import { required, minLength, between, email, sameAs } from 'vuelidate/lib/valid
     props: ['url', 'pump', 'qtyPump', 'selectedPumpId', 'selectedAccessories', "exchangeRates", "volumeFlow", "deliveryHead"],
     data() {
       return {
+        loading: false,
         thead: {
             name :'Найменування',
             article:'Артикул',
@@ -261,8 +264,7 @@ import { required, minLength, between, email, sameAs } from 'vuelidate/lib/valid
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")+',- '
     }
     },
-    created:function() {  
-        
+    created:function() {     
          if (this.pumpId) {
             this.message=false
             let sourse=this.pump
@@ -328,7 +330,7 @@ import { required, minLength, between, email, sameAs } from 'vuelidate/lib/valid
                 return true
             else
                 return false
-        },
+            },
         qty: function() {
             let sum =this.tableData.pump.price*this.tableData.pump.qty+
                     this.tableData.jacket.price*this.tableData.jacket.qty+ 
@@ -336,18 +338,18 @@ import { required, minLength, between, email, sameAs } from 'vuelidate/lib/valid
                     this.tableData.mufta.price*this.tableData.mufta.qty+
                     this.tableData.cable.price*this.tableData.cable.qty+
                     this.tableData.controller.price*this.tableData.controller.qty  
-        return sum.toFixed(1);
-        }  
+            return sum.toFixed(1);
+            }  
     },
     methods: {
         dialogOpenEmail(){
             this.send=true
             this.dialogFormVisible=true
-        },
+            },
         dialogOpenPrint(){
             this.send=false
             this.dialogFormVisible=true
-        },
+            },
         onCreateSendObj() {
             let source=this.tableData
             let idArr=[]
@@ -373,7 +375,7 @@ import { required, minLength, between, email, sameAs } from 'vuelidate/lib/valid
                                 condition: this.form.condition
                             }
                             }
-        },  
+            },  
         dialogSendForm(send){
             if (send==true) {
                 this.dialogSendFormEmail()
@@ -382,84 +384,86 @@ import { required, minLength, between, email, sameAs } from 'vuelidate/lib/valid
             {
                 this.dialogSendFormPrint()
             }
-        },
+            },
         dialogSendFormEmail(){
-          this.showValidationMesseges=true
-          if (!this.$v.validationGroupEmail.$invalid){
-            this.onCreateSendObj()
-            this.sendObj.sendEmail=true
-            let jsonObj=JSON.stringify(this.sendObj)
-            this.dialogFormVisible=false
+            this.showValidationMesseges=true
+            this.loading=true
+            if (!this.$v.validationGroupEmail.$invalid){
+                this.onCreateSendObj()
+                this.sendObj.sendEmail=true
+                let jsonObj=JSON.stringify(this.sendObj)
+                this.dialogFormVisible=false            
+                
                 const getPromise = Axios.post(this.url+'db/printOffer', jsonObj);                
-                getPromise.then(response => {
-                    this.$notify({
-                        title: response.data['status'].title,
-                        message: response.data['status'].message,
-                        type: response.data['status'].priority
-                    });
-                });             
-          }
-        },
+                    getPromise.then(response => {
+                        this.loading=false
+                        this.$notify({
+                            title: response.data['status'].title,
+                            message: response.data['status'].message,
+                            type: response.data['status'].priority
+                        });
+                    });             
+            }
+            },
         dialogSendFormPrint(){
-          this.showValidationMesseges=true
-          if (!this.$v.validationGroupPrint.$invalid){
-            this.onCreateSendObj()            
-            this.sendObj.sendEmail=false
-            let jsonObj=JSON.stringify(this.sendObj)
-            this.dialogFormVisible=false
-                const getPromise = Axios.post('https://www.wiloexpert.com.ua/db/printOffer', jsonObj);                
-                getPromise.then(response => {
-
-                    function OpenPdf() {
-                        window.open('https://www.wiloexpert.com.ua/db/printOffer', '_blank');
-                    }
-                    setTimeout(OpenPdf, 1000);
-                });               
-          }
-      },
-      handleChange() {
-      },
+            this.showValidationMesseges=true
+            if (!this.$v.validationGroupPrint.$invalid){
+                this.onCreateSendObj()            
+                this.sendObj.sendEmail=false
+                let jsonObj=JSON.stringify(this.sendObj)
+                this.dialogFormVisible=false
+                    const getPromise = Axios.post(this.url+'db/printOffer', jsonObj);                
+                    getPromise.then(response => {
+                        var allUrl=this.url+'db/printOffer'
+                        function OpenPdf() {
+                            window.open(allUrl, '_blank');
+                        }
+                        setTimeout(OpenPdf, 1000);
+                        
+                    });               
+            }
+            },
       handleDelete(id) {
-          if (id==0) {
-               this.tableData.pump.selected=false
-               this.tableData.pump.qty=0
-          }
-          if (id==1) {
-                this.tableData.controller.selected=false
-                this.tableData.controller.qty=0
-                this.selectedAccessories.item1.idController=undefined
-                this.selectedAccessories.item1.selected=false
-                this.selectedAccessories.item1.qty=0
-          }
-          if (id==2) {
-                this.tableData.cable.selected=false
-                this.tableData.cable.qty=0
-                this.selectedAccessories.item2.idCable=undefined
-                this.selectedAccessories.item2.selected=false
-                this.selectedAccessories.item2.qty=0
-          }
-          if (id==3) {
-                this.tableData.mufta.selected=false
-                this.tableData.mufta.qty=0
-                this.selectedAccessories.item3.idMufta=undefined
-                this.selectedAccessories.item3.selected=false
-                this.selectedAccessories.item3.qty=0
-          }
-          if (id==4) {
-               this.tableData.vessel.selected=false
-               this.tableData.vessel.qty=0
-               this.selectedAccessories.item4.idVessel=undefined
-               this.selectedAccessories.item4.selected=false
-               this.selectedAccessories.item4.qty=0
-          }
-          if (id==5) {
-                this.tableData.jacket.selected=false
-                this.tableData.jacket.qty=0
-                this.selectedAccessories.item5.idJacket=undefined
-                this.selectedAccessories.item5.selected=false
-                this.selectedAccessories.item5.qty=0
-          }         
-      }
+            if (id==0) {
+                this.tableData.pump.selected=false
+                this.tableData.pump.qty=0
+            }
+            if (id==1) {
+                    this.tableData.controller.selected=false
+                    this.tableData.controller.qty=0
+                    this.selectedAccessories.item1.idController=undefined
+                    this.selectedAccessories.item1.selected=false
+                    this.selectedAccessories.item1.qty=0
+            }
+            if (id==2) {
+                    this.tableData.cable.selected=false
+                    this.tableData.cable.qty=0
+                    this.selectedAccessories.item2.idCable=undefined
+                    this.selectedAccessories.item2.selected=false
+                    this.selectedAccessories.item2.qty=0
+            }
+            if (id==3) {
+                    this.tableData.mufta.selected=false
+                    this.tableData.mufta.qty=0
+                    this.selectedAccessories.item3.idMufta=undefined
+                    this.selectedAccessories.item3.selected=false
+                    this.selectedAccessories.item3.qty=0
+            }
+            if (id==4) {
+                this.tableData.vessel.selected=false
+                this.tableData.vessel.qty=0
+                this.selectedAccessories.item4.idVessel=undefined
+                this.selectedAccessories.item4.selected=false
+                this.selectedAccessories.item4.qty=0
+            }
+            if (id==5) {
+                    this.tableData.jacket.selected=false
+                    this.tableData.jacket.qty=0
+                    this.selectedAccessories.item5.idJacket=undefined
+                    this.selectedAccessories.item5.selected=false
+                    this.selectedAccessories.item5.qty=0
+            }         
+        }
     }
   }
 </script>
@@ -486,7 +490,6 @@ form.el-form.el-form--label-left {
     top: 8px;
 }
 #pumps-accessorias {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
 }
 #pumps-accessorias td:first-child {
@@ -523,8 +526,7 @@ div#el-popover {
     padding: 10px;
 }
 
-    table {
-    border: 1px solid #ccc;
+table {
     width: 100%;
     margin: 0;
     padding: 0;
@@ -532,49 +534,36 @@ div#el-popover {
     border-spacing: 0;
     }
 
-    table tr {
+table tr {
     border: 1px solid #ddd;
     padding: 5px;
     }
 
-    table th,
-    table td {
+table th,    table td {
     padding: 10px;
     text-align: center;
     }
-
-    table th {
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 1px;
-    }
-
-    @media screen and (max-width: 600px) {
+@media screen and (max-width: 600px) {
     table {
         border: 0;
     }
-
     table thead {
         display: none;
     }
-
     table tr {
         margin-bottom: 10px;
         display: block;
         border-bottom: 2px solid #ddd;
     }
-
     table td {
         display: block;
         text-align: right;
         font-size: 13px;
         border-bottom: 1px dotted #ccc;
     }
-
     table td:last-child {
         border-bottom: 0;
     }
-
     table td:before {
         content: attr(data-label);
         float: left;
@@ -582,6 +571,5 @@ div#el-popover {
         font-weight: bold;
     }
     }
-
 </style>
 
