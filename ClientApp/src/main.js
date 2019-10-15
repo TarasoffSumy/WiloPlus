@@ -31,6 +31,7 @@ import Step3HelperCableMufta from './components/Step3-helperCableMufta.vue';
 import Step3HelperVessel from './components/Step3-helperVessel.vue';
 import Step3HelperJacket from './components/Step3-helperJacket.vue';
 
+
 Vue.component('Home', Home);
 Vue.component('HeaderPart', HeaderPart);
 Vue.component('stepTile', stepTile);

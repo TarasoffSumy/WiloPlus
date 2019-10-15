@@ -3,14 +3,14 @@
 import { Line, Bar } from 'vue-chartjs'
 
 export default {
-  props: ['dataChart'],
+  props: ['dataChart', "service_dictionary"],
   extends: Line,
 
   mounted () {
   this.renderChart({
       datasets: [
       {
-        label: 'Напір насоса',
+        label:  this.service_dictionary[2],
         radius: 1,
         tension: 0.4,
         backgroundColor: 'transparent',
@@ -18,7 +18,7 @@ export default {
         data: this.dataChart.Hnas,
       },
       {
-        label: 'Напір системи',
+        label: this.service_dictionary[122],
         radius: 1,
         tension: 0.4,
         backgroundColor: 'transparent',
@@ -26,7 +26,7 @@ export default {
         data: this.dataChart.Hsis,
       },
       {
-        label: 'Розрахована точка',
+        label: this.service_dictionary[129],
         backgroundColor: 'transparent',
         pointStyle: 'cross',
         radius: 10,
@@ -35,7 +35,7 @@ export default {
         borderWidth: 3
       },
       {
-        label: 'Фактична точка',
+        label: this.service_dictionary[123],
         backgroundColor: 'transparent',
         pointStyle: 'cross',
         radius: 10,
@@ -69,7 +69,7 @@ export default {
         },
         scaleLabel: {
           display: true,
-          labelString: 'Напiр, м'
+          labelString: this.service_dictionary[124]
         }
       }],
         xAxes: [{
@@ -79,7 +79,7 @@ export default {
                 position: 'bottom',
                 scaleLabel: {
                   display: true,
-                  labelString: 'Витрата, м3/год'
+                  labelString: this.service_dictionary[125]
                 }
             }]
     }

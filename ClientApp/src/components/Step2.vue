@@ -9,17 +9,17 @@
         <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"
             @onInputHeadItems="onInputHeadItems" 
             :modelHeadItems="modelHeadItems"
-            :dictionary="dictionary"
+            :service_dictionary="service_dictionary"
             :volumeFlow="volumeFlow"
             :url="url"
         /> 
         <span slot="footer" class="dialog-footer">       
             <el-row class="navigation-footer">
             <el-col :span="12">
-                <el-button @click="dialogVisible = false">Назад</el-button>
+                <el-button @click="dialogVisible = false">{{service_dictionary[27]}}</el-button>
             </el-col>
             <el-col :span="12">
-                <el-button type="primary" @click="onDialogAccept">Підтвердити</el-button>
+                <el-button type="primary" @click="onDialogAccept">{{service_dictionary[28]}}</el-button>
             </el-col>
             </el-row>   
         </span>
@@ -31,13 +31,13 @@
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
             </svg> <span>2 </span>            
         </div>
-        <h2 class="title">Напір насоса</h2> 
+        <h2 class="title">{{service_dictionary[2]}}</h2> 
     </el-row> 
     <el-row>
         <el-tabs class="mobile"  v-model="activeTab">
-            <el-tab-pane label="Необхідна витрата насоса" name="first">
-                    <h3>Необхідний напір насоса</h3>                
-                    <el-row justify="center">Напір 
+            <el-tab-pane :label=service_dictionary[6] name="first">
+                    <h3>{{service_dictionary[6]}}</h3>                
+                    <el-row justify="center">{{service_dictionary[65]}} 
                         <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="1" :min="0"></el-input-number> м
                     </el-row >
             </el-tab-pane>
@@ -46,16 +46,16 @@
                     <Step2-helper @onComputeDeliveryHead="onComputeDeliveryHead"
                                 @onInputHeadItems="onInputHeadItems" 
                                 :modelHeadItems="modelHeadItems"
-                                :dictionary="dictionary"
+                                :service_dictionary="service_dictionary"
                                 :volumeFlow="volumeFlow"
                                 :url="url"
                     /> 
             <el-row class="navigation-footer">
             <el-col :span="12">
-                 <el-button @click="dialogVisible = false">Назад</el-button>
+                 <el-button @click="dialogVisible = false">{{service_dictionary[27]}}</el-button>
             </el-col>
             <el-col :span="12">
-                <el-button type="primary" @click="onDialogAccept">Підтвердити</el-button>
+                <el-button type="primary" @click="onDialogAccept">{{service_dictionary[28]}}</el-button>
             </el-col>
             </el-row>
             </el-tab-pane>
@@ -63,17 +63,17 @@
         <div class="desktop">
             <div class="greyBoxes-container">
                 <div class="greyBox">
-                        <h3>Необхідний напір насоса</h3>                
-                        <el-row justify="center">Напір 
+                        <h3>{{service_dictionary[30]}}</h3>                
+                        <el-row justify="center">{{service_dictionary[65]}} 
                             <el-input-number v-model="deliveryHeadInput" @change="onInputDeliveryHead" :precision="1" :min="0"></el-input-number> м
                         </el-row >
                 </div>
                 <div class="greyBox last-box">
                         <font-awesome-icon icon="lightbulb" />
-                        <h3 style="text-align:left">Невідомий напір? </h3>
-                        <p>Скористайтесь послугами нашого помічника!</p>
+                        <h3 style="text-align:left">{{service_dictionary[31]}} </h3>
+                        <p>{{service_dictionary[12]}}</p>
                         <div class="container-button">
-                        <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">Розрахувати</el-button>                                     
+                        <el-button class="calc-btn" type="primary" @click="dialogVisible = true"><img  width="20" :src="url+'assets/calc.png'">{{service_dictionary[13]}}</el-button>                                     
                         </div>
                 </div>
             </div>
@@ -83,7 +83,7 @@
 </template>
 <script>
   export default {
-    props: ['deliveryHead', 'modelHeadItems', 'url', 'dictionary', 'volumeFlow'],
+    props: ['deliveryHead', 'modelHeadItems', 'url', "service_dictionary", 'volumeFlow'],
     data() {
       return {
         activeTab:'first',

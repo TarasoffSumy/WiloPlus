@@ -2,7 +2,7 @@
 <div v-loading="loading">
 
 <div class="desktop">
-    <h2>Підбір приладдя до свердловинного насосу</h2>
+    <h2>{{service_dictionary[92]}}</h2>
     <el-row class="accesorias-top">
         <el-col :span="10" :offset="2" class="side-left-helper">            
             <el-button  v-for="item in accessories" @click="onFocusInput(item.id)" :key='item.id' :class="['circle_number number_'+item.id, {green: focusInput==item.id}]" type="text">                   
@@ -34,7 +34,8 @@
             <Step3-helperController
                 :selectedAccessories="selectedAccessories"
                 :url="url"
-                :dictionary="dictionary"
+               
+                :service_dictionary="service_dictionary"
                 :controllers="controllers"
                 :paramOfSelectedPump="paramOfSelectedPump"
                 :exchangeRates="exchangeRates"
@@ -47,7 +48,8 @@
             <Step3-helperCableMufta
                 :selectedAccessories="selectedAccessories"
                 :url="url"
-                :dictionary="dictionary"
+              
+                :service_dictionary="service_dictionary"
                 :cable="cable"
                 :mufts="mufts"
                 :computedCableSection="computedCableSection"
@@ -71,24 +73,24 @@
                             <el-collapse accordion> 
                             <el-collapse-item name="1">
                                 <template slot="title">
-                                Більше<i class="header-icon el-icon-info"></i>
+                                {{service_dictionary[69]}}<i class="header-icon el-icon-info"></i>
                                 </template>
-                                    <p>Тиск: <strong>{{vessels[computedVesselId].features.pressure}}</strong> Бар </p>
-                                    <p>Діаметр: <strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  мм</p>
-                                    <p>Висота:<strong>{{vessels[computedVesselId].features.dim_height}}</strong>  мм</p>
-                                    <p>Вага: <strong>{{vessels[computedVesselId].features.weight}}</strong>  кг</p>
-                                    <p>Діаметр з’єднання:  <strong>{{vessels[computedVesselId].features.dim_connection}}</strong>" </p>   
+                                    <p> {{service_dictionary[70]}}<strong>{{vessels[computedVesselId].features.pressure}}</strong>  {{service_dictionary[75]}}</p>
+                                    <p> {{service_dictionary[71]}}<strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  {{service_dictionary[76]}}</p>
+                                    <p> {{service_dictionary[72]}}<strong>{{vessels[computedVesselId].features.dim_height}}</strong>  {{service_dictionary[76]}}</p>
+                                    <p> {{service_dictionary[73]}}<strong>{{vessels[computedVesselId].features.weight}}</strong>  {{service_dictionary[77]}}</p>
+                                    <p> {{service_dictionary[74]}} <strong>{{vessels[computedVesselId].features.dim_connection}}</strong>" </p>   
                                 <p v-html="vessels[computedVesselId].features.description"></p>
                                
                             </el-collapse-item>
                             </el-collapse>
-                    <p>Ціна <span class="stronge-price">{{vessels[computedVesselId].price*exchangeRates | aroundPrice}}</span>грн з пдв</p>   
+                    <p>{{service_dictionary[58]}}<span class="stronge-price">{{vessels[computedVesselId].price*exchangeRates | aroundPrice}}</span>{{service_dictionary[59]}}</p>   
                     <p>   <el-popover
                             placement="top-start"
                             width="250"
                             trigger="hover"
-                            content='Рекомендуєм об’єм бака для зменшення кількості включень насоса. Допускається зменшення об‘єму бака у 2 рази при використанні Преміум прилада керування'>
-                            <span type="text" class="myTip" slot="reference">Рекомендований ВІЛО об'єм</span>
+                            :content=service_dictionary[79]>
+                            <span type="text" class="myTip" slot="reference">{{service_dictionary[78]}}</span>
                         </el-popover><strong> {{computedVessel}} л</strong>
                     </p>                       
                     <el-dropdown split-button @command="handleCommand">
@@ -100,8 +102,8 @@
                     </el-dropdown-menu>
                     </el-dropdown>
                     <div style="margin-left:10px; display: inline-block;">
-                        <el-checkbox-button v-if="!selectedAccessories.item4.selected"  type="primary"  checkbox-group="false" @change="onSelectVessel()" v-model="selectedAccessories.item4.selected">Вибрати</el-checkbox-button> 
-                        <el-button v-else  type="primary" @click="ClearVesselSelect()">Відмінити</el-button>   
+                        <el-checkbox-button v-if="!selectedAccessories.item4.selected"  type="primary"  checkbox-group="false" @change="onSelectVessel()" v-model="selectedAccessories.item4.selected">{{service_dictionary[80]}}</el-checkbox-button> 
+                        <el-button v-else  type="primary" @click="ClearVesselSelect()">{{service_dictionary[81]}}</el-button>   
                     </div>  
                 </el-col>
             </el-row>
@@ -119,8 +121,8 @@
                                     placement="top-start"
                                     width="250"
                                     trigger="hover"
-                                    :content=dictionary[11].full_text>
-                                    <span class="myTip" slot="reference">Для монтажу в свердловині</span>
+                                    :content=service_dictionary[151]>
+                                    <span class="myTip" slot="reference">{{service_dictionary[93]}}</span>
                                 </el-popover> 
                             </el-radio>                            
                         </div>
@@ -130,15 +132,15 @@
                                 placement="top-start"
                                 width="250"
                                 trigger="hover"
-                                :content=dictionary[12].full_text>
-                                <span class="myTip" slot="reference">Для монтажу в резервуарі </span>
+                                :content=service_dictionary[153]>
+                                <span class="myTip" slot="reference">{{service_dictionary[94]}}</span>
                             </el-popover>
                             </el-radio>                            
                         </div>
                 <Step3-helperJacket
                     :selectedAccessories="selectedAccessories"
                     :url="url"
-                    :dictionary="dictionary"
+                    :service_dictionary="service_dictionary"
                     :typeInstallationJackets="typeInstallationJackets"
                     :typeJackets="typeJackets"
                     :computedJacketsNotNeeded="computedJacketsNotNeeded"
@@ -175,13 +177,13 @@
         </div>
         <el-row class="navigation-footer">
             <el-col :xs="8" :sm="8" :md="12" :lg="12" :xl="12">
-                <el-button :disabled="!(focusInput>1)" type="primary" class="nextAccssorias" @click="back"><i class="el-icon-d-arrow-left el-icon-left"></i> Назад</el-button>
+                <el-button :disabled="!(focusInput>1)" type="primary" class="nextAccssorias" @click="back"><i class="el-icon-d-arrow-left el-icon-left"></i> {{service_dictionary[27]}}</el-button>
             </el-col>
             <el-col :xs="8" :sm="8" :md="6" :lg="6" :xl="6"> 
-                <el-button v-show="(focusInput<4)" type="primary" class="nextAccssorias" @click="next">Далі <i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
+                <el-button v-show="(focusInput<4)" type="primary" class="nextAccssorias" @click="next"> {{service_dictionary[14]}}<i class="el-icon-d-arrow-right el-icon-right"></i></el-button>
             </el-col>
             <el-col :xs="8" :sm="8" :md="6" :lg="6" :xl="6"> 
-                <el-button v-show="focusInput>=1" type="primary" class="nextAccssorias" @click="close">Готово <i class="el-icon-close el-icon-right"></i></el-button>
+                <el-button v-show="focusInput>=1" type="primary" class="nextAccssorias" @click="close">{{service_dictionary[133]}} <i class="el-icon-close el-icon-right"></i></el-button>
             </el-col>
         </el-row>
         <el-row>
@@ -197,7 +199,7 @@
             <Step3-helperController
                 :selectedAccessories="selectedAccessories"
                 :url="url"
-                :dictionary="dictionary"
+                :service_dictionary="service_dictionary"
                 :controllers="controllers"
                 :paramOfSelectedPump="paramOfSelectedPump"
                 :exchangeRates="exchangeRates"
@@ -209,7 +211,7 @@
                 <Step3-helperCableMufta
                     :selectedAccessories="selectedAccessories"
                     :url="url"
-                    :dictionary="dictionary"
+                    :service_dictionary="service_dictionary"
                     :cable="cable"
                     :mufts="mufts"
                     :computedCableSection="computedCableSection"
@@ -232,24 +234,22 @@
                             <el-collapse accordion> 
                             <el-collapse-item name="1">
                                 <template slot="title">
-                                Більше<i class="header-icon el-icon-info"></i>
+                                {{service_dictionary[69]}}<i class="header-icon el-icon-info"></i>
                                 </template>
-                                    <p>Тиск: <strong>{{vessels[computedVesselId].features.pressure}}</strong> Бар </p>
-                                    <p>Діаметр: <strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  мм</p>
-                                    <p>Висота:<strong>{{vessels[computedVesselId].features.dim_height}}</strong>  мм</p>
-                                    <p>Вага: <strong>{{vessels[computedVesselId].features.weight}}</strong>  кг</p>
-                                    <p>Діаметр з’єднання:  <strong>{{vessels[computedVesselId].features.dim_connection}}</strong>" </p>   
-                                <p v-html="vessels[computedVesselId].features.description"></p>
-                               
+                                    <p> {{service_dictionary[70]}}<strong>{{vessels[computedVesselId].features.pressure}}</strong>  {{service_dictionary[75]}}</p>
+                                    <p> {{service_dictionary[71]}}<strong>{{vessels[computedVesselId].features.dim_diam}}</strong>  {{service_dictionary[76]}}</p>
+                                    <p> {{service_dictionary[72]}}<strong>{{vessels[computedVesselId].features.dim_height}}</strong>  {{service_dictionary[76]}}</p>
+                                    <p> {{service_dictionary[73]}}<strong>{{vessels[computedVesselId].features.weight}}</strong>  {{service_dictionary[77]}}</p>
+                            <p v-html="vessels[computedVesselId].features.description"></p>
                             </el-collapse-item>
                             </el-collapse>
-                    <p>Ціна <span class="stronge-price">{{vessels[computedVesselId].price*exchangeRates | aroundPrice}}</span>грн з пдв</p>   
+                    <p>{{service_dictionary[58]}}<span class="stronge-price">{{vessels[computedVesselId].price*exchangeRates | aroundPrice}}</span>грн з пдв</p>   
                     <p>   <el-popover
                             placement="top-start"
                             width="250"
                             trigger="hover"
-                            content='Рекомендуєм об’єм бака для зменшення кількості включень насоса. Допускається зменшення об‘єму бака у 2 рази при використанні Преміум прилада керування'>
-                            <span type="text" class="myTip" slot="reference">Рекомендований ВІЛО об'єм</span>
+                            :content=service_dictionary[79]>
+                            <span type="text" class="myTip" slot="reference">{{service_dictionary[78]}}</span>
                         </el-popover><strong> {{computedVessel}} л</strong>
                     </p>                       
                     <el-dropdown split-button @command="handleCommand">
@@ -262,7 +262,7 @@
                     </el-dropdown>
                     <div style="margin-left:10px; display: inline-block;">
                         <el-checkbox-button v-if="!selectedAccessories.item4.selected"  type="primary"  checkbox-group="false" @change="onSelectVessel()" v-model="selectedAccessories.item4.selected">Вибрати</el-checkbox-button> 
-                        <el-button v-else  type="primary" @click="ClearVesselSelect()">Відмінити</el-button>   
+                        <el-button v-else  type="primary" @click="ClearVesselSelect()">{{service_dictionary[81]}}</el-button>   
                     </div>  
                 </el-col>
             </el-row>
@@ -279,8 +279,8 @@
                                     placement="top-start"
                                     width="250"
                                     trigger="hover"
-                                    :content=dictionary[11].full_text>
-                                    <span class="myTip" slot="reference">Для монтажу в свердловині</span>
+                                    :content=service_dictionary[151]>
+                                    <span class="myTip" slot="reference">service_dictionary[93]</span>
                                 </el-popover> 
                             </el-radio>                            
                         </div>
@@ -290,15 +290,15 @@
                                 placement="top-start"
                                 width="250"
                                 trigger="hover"
-                                :content=dictionary[12].full_text>
-                                <span class="myTip" slot="reference">Для монтажу в резервуарі </span>
+                                :content=service_dictionary[153]>
+                                <span class="myTip" slot="reference">{{service_dictionary[94]}}</span>
                             </el-popover>
                             </el-radio>                            
                         </div>
                 <Step3-helperJacket
                     :selectedAccessories="selectedAccessories"
                     :url="url"
-                    :dictionary="dictionary"
+                    :service_dictionary="service_dictionary"
                     :typeInstallationJackets="typeInstallationJackets"
                     :typeJackets="typeJackets"
                     :computedJacketsNotNeeded="computedJacketsNotNeeded"
@@ -319,35 +319,34 @@
 <script>
 import Axios from 'axios';
   export default {
-    props: ['url', "dictionary", "selectedAccessories", "paramOfSelectedPump", "volumeFlow", "deliveryHead", "dataChart", "exchangeRates"],
+    props: ['url', "service_dictionary", "controllers", "selectedAccessories", "paramOfSelectedPump", "volumeFlow", "deliveryHead", "dataChart", "exchangeRates"],
     data() {
       return {
         accessories: {
             item1: {
                 id:1,
-                title: 'Прилад керування і захисту насоса',
+                title: this.service_dictionary[95],
                 checked: false
             },
             item2: {
                 id:2,
-                title: 'Занурювальний кабель та з’єднання',
+                title:  this.service_dictionary[96],
                 checked: false
             },
             item3: {
                 id:3,
-                title: 'Мембранний напірний бак',
+                title:  this.service_dictionary[97],
                 checked: false
             },
             item4: {
                 id:4,
-                title: 'Кожух охолодження',
+                title:  this.service_dictionary[98],
                 checked: false
             }
         },
         loading: false,
         focusInput: 1,
-        activeAccessories: 'Прилад керування і захисту насоса',
-        controllers: '',
+        activeAccessories: this.service_dictionary[95],
         idController: this.selectedAccessories.item1.idController,
         cable:
             {
@@ -419,8 +418,7 @@ import Axios from 'axios';
                     obj.item4=false
                 }
                 if (this.selectedAccessories.item5.selected==true)  {
-                    obj.item4=true
-                
+                    obj.item4=true                
                 }
                 return obj
                 },
@@ -436,18 +434,17 @@ import Axios from 'axios';
                     }
                 },
             typeJackets() {
-                console.log(this.typeInstallationJackets)   
                 let type=this.typeInstallationJackets
                 return type
                 }
     },
     created:  function() {
-        this.loading=true
+       // this.loading=true
          if (this.dataChart.CalcPoint) {
              this.realNeedVessel=330*this.dataChart.CalcPoint[0].x*this.dataChart.Hnas[0]['y']/(20*(this.dataChart.Hnas[0]['y']-this.dataChart.CalcPoint[0].y))
          }
          this.postDataJackets()
-         this.postDataControllers(this.paramOfSelectedPump.current+'A')
+         //this.postDataControllers(this.paramOfSelectedPump.current+'A')
          this.postDataVessels()
         },
     methods: { 
@@ -481,12 +478,13 @@ import Axios from 'axios';
                     this.mufts=dataArray     
                     })
                     .catch(error => {
+                        console.log(error)
                     });
             },
         onSaveSelectCable(id, cable){
             this.$emit('onSelectCable', id, cable)        
             },
-        handleChangeCableLength(value){
+        handleChangeCableLength(){
             this.cable.checked=false
             },
         onComputeCableSection(value){
@@ -510,7 +508,7 @@ import Axios from 'axios';
             let strData=String(this.computedCableSection)
             this.postDataCables(strData.replace('.', ','))       
             },
-        onCheckCable(val) {        
+        onCheckCable() {        
             this.cable.selected=!this.cable.selected  
             this.onComputeCableSection(this.cable.length)
             },
@@ -538,7 +536,6 @@ import Axios from 'axios';
             }
             else {
                 this.velosityFlow=(1/3600)*this.volumeFlow/((Math.pow(this.diametrSkvagina*0.001, 2)-Math.pow(98*0.001, 2))*Math.PI/4)
-                console.log(this.velosityFlow)
                 if (this.velosityFlow >= 0.08)
                 {
                     this.computedJacketsNotNeeded=true
@@ -567,6 +564,7 @@ import Axios from 'axios';
                     this.jackets.horizontal=sourse.slice(2)             
                     })
                     .catch(error => {
+                         console.log(error)
                     });
             },        
         handleCommand(command) {
@@ -621,23 +619,14 @@ import Axios from 'axios';
             )
             this.$emit('onSelectMufta', id, dataMufta )        
             },
-        onSelectVessel(val) {
+        onSelectVessel() {
                 this.selectedAccessories.item4.selected==true
                 let obj=this.vessels[this.computedVesselId]
                 let id=obj.id
                 this.$emit('onSelectVessel', id, obj)    
             },
-        postDataControllers: function(current) {        
-            const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
-            getPromise.then(response => {
-            this.controllers = response.data;
-            let sourse=this.controllers
-            this.loading=false
-            })
-            .catch(error => {
-            });
-            },
-        postDataVessels: function(current) {        
+
+        postDataVessels: function() {        
             const getPromise = Axios.post(this.url+'db/getAllVessels');
             getPromise.then(response => {
                 this.vessels = response.data;
@@ -676,6 +665,7 @@ import Axios from 'axios';
                     }
                     })
                 .catch(error => {
+                    console.log(error)
                 });
         }
     }

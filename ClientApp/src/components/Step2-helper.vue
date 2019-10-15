@@ -1,6 +1,6 @@
 <template>
 <div>
-    <h2>Помічник визначення напору насоса</h2>
+    <h2>{{service_dictionary[32]}}</h2>
     <el-row>
         <el-col  :md="12" :sm="24" class="side-left-helper">
             <div v-for="item in helperHead" :key="item.id" class="row-item" :class="[{ activeLeftCircle: focusInput==item.id}]">
@@ -10,17 +10,19 @@
                     </svg><div class="symbolInCircle">{{item.letter}} </div> 
                     <div ></div>    
                 </div>
-                <span v-if="item.id==1" class="item">Висота від землі до 
+                <span v-if="item.id==1" class="item"> {{service_dictionary[33]}}
                     <el-popover
                     placement="top-start"
                     width="150"
                     trigger="hover"
-                    :content=dictionary[3].full_text>
-                    <el-button type="text" slot="reference"><span class="myTip">динамічного рівня</span></el-button>
+                    :content=service_dictionary[139]>
+                    <el-button type="text" slot="reference"><span class="myTip">{{service_dictionary[34]}}</span></el-button>
                   </el-popover>
-                  води в свердловині 
+                  {{service_dictionary[35]}}
                 </span>  
-                <span v-else-if="item.id==2 || item.id==3" v-html="item.title" class="item"></span>
+                <span v-if="item.id==2" class="item"> {{service_dictionary[42]}}</span>
+                <span v-if="item.id==3" class="item"> {{service_dictionary[43]}}</span>
+                <!-- <span v-else-if="item.id==2 || item.id==3" v-html="item.title" class="item"></span> -->
                 <span class="wrap-input ">
                 <el-input-number @focus="onFocusInput(item.id)" v-model="item.valueHead" @change="handleChange(item.valueHead, item.id)"  :precision="2" :min="0" ></el-input-number>
                 м 
@@ -31,8 +33,8 @@
                     placement="top-start"
                     width="150"
                     trigger="hover"
-                    :content=dictionary[4].full_text>
-                    <el-button type="text" slot="reference"><span class="myTip">Додатковий напір, якщо відомий</span></el-button>
+                    :content=service_dictionary[141]>
+                    <el-button type="text" slot="reference"><span class="myTip">{{service_dictionary[36]}}</span></el-button>
                   </el-popover>                
                 </div>  
                 <el-input-number @focus="onFocusInput(0)" v-model="additionalHead"  @change="handleChange(additionalHead, 4)"  :precision="2" :min="0"></el-input-number>
@@ -44,14 +46,14 @@
                     placement="top-start"
                     width="150"
                     trigger="hover"
-                    :content=dictionary[13].full_text>
-                    <el-button type="text" slot="reference"><span class="myTip">Рекомендований діаметр</span></el-button>
-                    </el-popover> трубопроводів для вашої витрати 
-                    <span v-if='compDiametr.equally'>дорівнює  <strong>DN{{compDiametr.max_around}}</strong>  </span>
-                    <span v-else>від <strong>DN{{compDiametr.min_around}}</strong>  до <strong>DN{{compDiametr.max_around}}</strong> </span>
+                    :content=service_dictionary[154]>
+                    <el-button type="text" slot="reference"><span class="myTip">{{service_dictionary[37]}}</span></el-button>
+                    </el-popover> {{service_dictionary[38]}} 
+                    <span v-if='compDiametr.equally'>{{service_dictionary[39]}}<strong>DN{{compDiametr.max_around}}</strong>  </span>
+                    <span v-else>{{service_dictionary[127]}}<strong>DN{{compDiametr.min_around}}</strong>  до <strong>DN{{compDiametr.max_around}}</strong> </span>
                 </p>
                 <div class="computed-deliveryHead">
-                    <span class="label">Розрахований напір</span>
+                    <span class="label">{{service_dictionary[40]}}</span>
                     <span class="number"> {{compTotal}}</span> м 
                 </div> 
             </div>
@@ -72,26 +74,27 @@
 <script>
 import { required, minLength, between } from 'vuelidate/lib/validators';
   export default {
-    props: ['modelHeadItems', 'url', 'dictionary', 'volumeFlow'],
+    props: ['modelHeadItems', 'url', "service_dictionary", 'volumeFlow'],
     data() {
       return {
         helperHead: {
             item_A: {
                 id:1,
                 letter: 'A',
-                title: 'Висота від землі до <span class="myTip" title="Рівень води при роботі насосу на дебіті.">динамічного рівня</span> води в свердловині',
+                //title: 'Висота від землі до <span class="myTip" title="Рівень води при роботі насосу на дебіті.">динамічного рівня</span> води в свердловині',
+                title:  this.service_dictionary[41],
                 valueHead: this.modelHeadItems.val1
             },
             item_B: {
                 id:2,
                 letter: 'B',
-                title: 'Відстань від свердловини до будинку',
+                title: this.service_dictionary[42],
                 valueHead: this.modelHeadItems.val2
             },
             item_C: {
                 id:3,
                 letter: 'C',
-                title: 'Висота від землі до найвищої точки водоспоживання',
+                title: this.service_dictionary[43],
                 valueHead: this.modelHeadItems.val3
             }
         },
@@ -286,7 +289,8 @@ import { required, minLength, between } from 'vuelidate/lib/validators';
     display: inline-table;
     padding: 0px 43px 15px 0px;
     text-align: left;
-    margin-left: 48px;
+    margin-left: 50px;
+    
 }
 .additional-volume-flow .link{
     color: #222222;

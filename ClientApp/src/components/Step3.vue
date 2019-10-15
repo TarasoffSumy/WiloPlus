@@ -14,7 +14,8 @@
             :volumeFlow="volumeFlow"
             :deliveryHead="deliveryHead"
             :exchangeRates="exchangeRates"
-            :dictionary="dictionary"
+            :service_dictionary="service_dictionary"
+            :controllers="controllers"
             @onSelectController="onSelectController"
             @onSelectCable="onSelectCable"
             @onSelectMufta="onSelectMufta"
@@ -33,14 +34,14 @@
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
             </svg> <span>3 </span>            
         </div>
-        <h2 class="title">Підбір насоса та приладдя </h2>
+        <h2 class="title">{{service_dictionary[3]}}</h2>
     </el-row> 
 
     <el-tabs class="mobile" v-model="activeTab">
-        <el-tab-pane label="Насос та приладдя" name="first">
+        <el-tab-pane :label=service_dictionary[128] name="first">
             <el-tabs type="border-card">
             <el-tab-pane>
-                <span slot="label">Насос</span>
+                <span slot="label">{{service_dictionary[44]}}</span>
                     <div class="greyBox">               
                     <div class="" v-if="refresh || isZeroHeadAndVolume">
                         <el-card >
@@ -48,19 +49,19 @@
                             class="inline-input"
                                 v-model="itemSelect"
                                 :fetch-suggestions="querySearch"
-                                placeholder="введіть серію насосу"
+                                :placeholder=service_dictionary[45]
                                 :trigger-on-focus="false"
                                 @select="handleSelect"
                                 ></el-autocomplete>                        
                         </el-card>                                                
                     </div>                 
-                    <ChartOut :dataOut="dataOut" v-show="!selectedPumpId" />             
+                    <ChartOut :dataOut="dataOut" v-show="!selectedPumpId" :service_dictionary="service_dictionary" />             
                     <div v-if="selectedPumpId">
                             <Step3-selectedPump
                                 @onDeletePump="onDeletePump"
                                 @handleChangePhase="handleChangePhase"
                                 :url="url"
-                                :dictionary="dictionary"
+                                :service_dictionary="service_dictionary"
                                 :objPump="objPump"
                                 :objSelectedPump="objSelectedPump"
                                 :dataChart="dataChart"
@@ -71,22 +72,23 @@
                     </div>
                 </div>
                 <div v-show="!selectedPumpId" class="greyBox">
-                    <h3 style="text-align:left">Неможливо підібрати насос на введені параметри </h3>
-                    <p><i class="el-icon-info"></i>Спробуйте змінити напір та витрату</p>
+                    <h3 style="text-align:left"> {{service_dictionary[46]}}</h3>
+                    <p><i class="el-icon-info"></i>{{service_dictionary[47]}}</p>
                 </div>
             </el-tab-pane>
             <el-tab-pane>
-                <span slot="label">Приладдя</span>
+                <span slot="label">{{service_dictionary[48]}}</span>
                 <Step3-accessoreis
                     :selectedAccessories="selectedAccessories"
                     :url="url"
+                    :service_dictionary="service_dictionary"
                     @onDeleteAccessories="onDeleteAccessories"
                     />
             </el-tab-pane>
             </el-tabs>
         </el-tab-pane>
-        <el-tab-pane label="Підібрати приладдя" name="second">
-           <span slot="label"><img class="calc-bg" width="20" :src="url+'assets/calc.png'"> Підібрати приладдя</span>
+        <el-tab-pane :label=service_dictionary[49] name="second">
+           <span slot="label"><img class="calc-bg" width="20" :src="url+'assets/calc.png'">{{service_dictionary[49]}}</span>
             <Step3-helper 
                 :url="url"
                 :paramOfSelectedPump="paramOfSelectedPump"
@@ -95,7 +97,8 @@
                 :volumeFlow="volumeFlow"
                 :deliveryHead="deliveryHead"
                 :exchangeRates="exchangeRates"
-                :dictionary="dictionary"
+                :service_dictionary="service_dictionary"
+                :controllers="controllers"
                 @onSelectController="onSelectController"
                 @onSelectCable="onSelectCable"
                 @onSelectMufta="onSelectMufta"
@@ -114,19 +117,19 @@
                         class="inline-input"
                             v-model="itemSelect"
                             :fetch-suggestions="querySearch"
-                            placeholder="введіть серію насосу"
+                            :placeholder="service_dictionary[45]"
                             :trigger-on-focus="false"
                             @select="handleSelect"
                             ></el-autocomplete>                        
                     </el-card>                                                
                 </div>                 
-                <ChartOut :dataOut="dataOut" v-show="!selectedPumpId" />             
+                <ChartOut :dataOut="dataOut" v-show="!selectedPumpId" :service_dictionary="service_dictionary"/>             
                 <div v-if="selectedPumpId">
                         <Step3-selectedPump
                             @onDeletePump="onDeletePump"
                             @handleChangePhase="handleChangePhase"
                             :url="url"
-                            :dictionary="dictionary"
+                            :service_dictionary="service_dictionary"
                             :objPump="objPump"
                             :objSelectedPump="objSelectedPump"
                             :dataChart="dataChart"
@@ -136,31 +139,31 @@
                 </div>
             </div>
             <div v-show="!selectedPumpId" class="greyBox">
-                <h3 style="text-align:left">Неможливо підібрати насос на введені параметри </h3>
-                <p><i class="el-icon-info"></i>Спробуйте змінити напір та витрату</p>
+                <h3 style="text-align:left"> {{service_dictionary[46]}}</h3>
+                <p><i class="el-icon-info"></i>{{service_dictionary[47]}}</p>
             </div>
             <div v-show="selectedPumpId" class="greyBox last-box">
                 <div class="box-helper-info">
                         <font-awesome-icon icon="lightbulb" />
-                        <h3 style="text-align:left">Підібрати приладдя до насосу!</h3>                    
+                        <h3 style="text-align:left">{{service_dictionary[50]}}</h3>                    
                         <div class="container-button">
                         <el-button class="calc-btn" style="margin-top: -20px;"  type="primary" @click="dialogVisible = true">
-                        <img  width="20" :src="url+'assets/calc.png'">Підібрати</el-button> 
+                        <img  width="20" :src="url+'assets/calc.png'">{{service_dictionary[51]}}</el-button> 
                         </div>                                    
                 </div>             
                 <div  v-if="existAccessories" class="item-selected">
-                    <h3>Підібране приладдя</h3>
+                    <h3>{{service_dictionary[52]}}</h3>
                     <Step3-accessoreis
                         :selectedAccessories="selectedAccessories"
                         :url="url"
+                        :service_dictionary="service_dictionary"
                         @onDeleteAccessories="onDeleteAccessories"
                         />
-                    <div style="margin:10px" v-if="allAccessoriesSelected"> Всі приладдя підбрані!</div>        
+                    <div style="margin:10px" v-if="allAccessoriesSelected"> {{service_dictionary[53]}}</div>        
                 </div>
             </div>         
         </div>
     </div>
-
 </div> 
 </template>
 
@@ -177,7 +180,7 @@ export default {
     "url",
     "selectedAccessories",
     "exchangeRates",
-    "dictionary"
+    "service_dictionary"
   ],
   data() {
     return {
@@ -186,6 +189,7 @@ export default {
       idPump: this.selectedPumpId,
       objPump:this.pump,
       objDataChart:this.dataChart,
+      controllers: 0,
       refresh:false,
       loading: false,
       selectedAccessoriesRefresh:this.selectedAccessories,
@@ -195,7 +199,7 @@ export default {
       itemSelect:'',
       paramOfSelectedPump: {
         phase: 0,
-        current: 0,
+        current: null,
         cosf: 0,
         U: 0,
         H2: 0
@@ -213,7 +217,11 @@ export default {
             }
     },
     mounted: function(){
-       this.onSaveSelectedAccessories()      
+       this.onSaveSelectedAccessories();
+       if (this.paramOfSelectedPump.current) {
+          this.postDataControllers(this.paramOfSelectedPump.current+'A')  
+       }
+
     },
     computed: {
         dataOut: function() {
@@ -247,6 +255,7 @@ export default {
                 }   
                 this.paramOfSelectedPump=obj
                 this.paramOfSelectedPump.U = obj.phase == 1 ? 230 : 400; 
+                this.postDataControllers(obj.current+'A')
                 return obj             
             }
             else 
@@ -281,7 +290,6 @@ export default {
             return true
             }
         }
-
   },  
   methods: {
     onDeletePump(){ 
@@ -331,7 +339,15 @@ export default {
     handleChangePhase(id) {
         this.idPump=id
         this.onSaveSelectedPumpId(id)
-        this.onClearAccessories()   
+        this.onClearAccessories()  
+        },
+    postDataControllers: function(current) {      
+            const getPromise = Axios.post(this.url+'db/controlSelect', {"current" : current});
+            getPromise.then(response => {           
+            this.controllers = response.data;
+            })
+            .catch(error => {
+            });
         },
     onSelectController(id, dataControlBox) {
         this.selectedAccessoriesRefresh.item1.idController = id;

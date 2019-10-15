@@ -12,8 +12,10 @@
         <el-col  :xs="24" :sm="24" :md="4" :lg="3" :xl="4">
             <img class="logo-img" @click="reload" width="120" src="https://www.wiloexpert.com.ua/wilo/assets/header_logo.png" alt=""> 
         </el-col>
-        <el-col justify="center" :xs="24" :sm="24" :md="20" :lg="17" :xl="20">
-            <h1> Підбір свердловинних насосів</h1>
+        <el-col justify="center" :xs="24" :sm="24" :md="16" :lg="17" :xl="16">
+            <h1>{{service_dictionary[0]}}</h1>
+        </el-col>
+        <el-col  :xs="24" :sm="24" :md="4" :lg="3" :xl="4">
         </el-col>   
     </el-row>  
 </div>
@@ -21,9 +23,10 @@
 
 <script>
 export default {
+    props: ["service_dictionary"],
     data() {
       return {
-          markIe: false
+          markIe: false,         
       }
       },
     created: function() {
@@ -36,6 +39,7 @@ export default {
         reload() {
             location.reload()
         }
+        
     }
 }
 </script>
@@ -44,6 +48,9 @@ export default {
     height: 200px;
     text-align: center;
     margin: 1% 0;
+}
+.header-bg {
+    padding: 25px 0;
 }
 </style>
 

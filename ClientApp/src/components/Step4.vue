@@ -7,17 +7,17 @@
                 :fullscreen="fullscreenOpen"
                 width="35%"                
                 top="5vh">
-            <h3>Ви можете зазначити свою особисту інформацію для відображення у верхньому колонтитулі</h3>
+            <h3> {{service_dictionary[101]}}</h3>
             <el-form :model="form" label-position="left" padding="25px">
-                <el-form-item label="ПІБ" >
+                <el-form-item :label=service_dictionary[102] >
                     <el-input v-model="form.name" autocomplete="off"></el-input>            
                 </el-form-item>
 
-                <el-form-item label="Фірма" >
+                <el-form-item :label=service_dictionary[103] >
                 <el-input v-model="form.company" autocomplete="off"></el-input>
                 </el-form-item>
 
-                <el-form-item label="Телефон" >
+                <el-form-item :label=service_dictionary[104] >
                 <el-input v-model="form.tel" autocomplete="off"></el-input>
                 </el-form-item>
 
@@ -25,7 +25,7 @@
                 <el-input v-model="form.email" autocomplete="off"></el-input>
                 </el-form-item>
 
-                <el-form-item label="Картка Wiloexpert">
+                <el-form-item :label=service_dictionary[105]>
                 <el-input v-model="form.wiloexpertCard" autocomplete="off"></el-input>
                 </el-form-item>
 
@@ -36,27 +36,25 @@
                         width="500"
                         trigger="click">
                         <div style="background:#efeded; padding: 1px 20px;">
-                            <p>Заповненням цієї форми  я надаю згоду на обробку моїх персональних даних з метою організації системи управління взаємовідносин з партнерами та контрагентами, зберігання в базах  даних ТОВ «ВІЛО УКРАЇНА»: 1С, CRM; на web-сайті  wiloexpert.ua; CRM-системі Групи компаній Wilo та на web-сайті <a href="https://wilo.com/en/Legal.html#.WbaDk9NJalM"></a>https://wilo.com</p>
-                            <p>Під обробкою моїх персональних даних, згоду на яку я надаю добровільно, мається на увазі будь-яка дія та/або сукупність дій, таких як збирання, реєстрація, накопичення, зберігання, адаптування, зміна, поновлення, використання і поширення (розповсюдження, реалізація, передача), знеособлення, знищення персональних даних, у тому числі з використанням інформаційних (автоматизованих) систем.</p>
-                            <p>Я підтверджую, що ознайомлений зі змістом ЗУ «Про захист персональних даних» та основними положеннями Регламенту (ЄС) 2016/679 Європейського парламенту та Європейської ради від 27 квітня 2016 року «Про захист фізичних осіб стосовно обробки персональних даних та про вільне переміщення таких даних та скасування Директиви 95/46 / ЄС (Загальний порядок захисту персональних даних)»</p>    
+                             <div v-html="service_dictionary[106]"></div>
                         </div>                        
-                        <el-button type="text"  slot="reference"><span>Згода на обробку моїх персональних даних</span></el-button>
+                        <el-button type="text"  slot="reference"><span>{{service_dictionary[131]}}</span></el-button>
                     </el-popover>                                
                     </el-checkbox> 
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">Відмінити</el-button>
-                <el-button  type="primary" @click="dialogSendForm(send)">Зберегти</el-button>
+                <el-button @click="dialogFormVisible = false">{{service_dictionary[81]}}</el-button>
+                <el-button  type="primary" @click="dialogSendForm(send)">{{service_dictionary[107]}}</el-button>
             </span>
 
                 <div  v-show="showValidationMesseges">
                     <span v-show="send" class="exeption-validation" v-if="!$v.form.email.required">
-                    Email обов'язковий </span>
+                    {{service_dictionary[108]}}</span>
                     <span v-show="send" class="exeption-validation" v-if="!$v.form.email.email">
-                    Невірний формат email адреси </span>
+                    {{service_dictionary[109]}}</span>
                     <span class="exeption-validation" v-if="!$v.form.condition.sameAs">
-                    Підтвердіть умову про обробку персональних данних </span>
+                    {{service_dictionary[110]}}</span>
                 </div>
             </el-dialog>
         <el-row>
@@ -65,92 +63,91 @@
             <circle cx="26" cy="26" r="24" stroke="" stroke-width="2" fill="" />
             </svg> <span>4 </span>            
         </div>
-        <h2 class="title">Комерційна пропозиція</h2>       
+        <h2 class="title">{{service_dictionary[111]}}</h2>       
         </el-row>
         <div class="alert-step4" v-if="message" >
-            <h4> Пропозиція не сформована!</h4>       
-        Скористайтеся кроком 3 для підбору насоса
+            <h4> {{service_dictionary[112]}}</h4>  
+        {{service_dictionary[113]}}
         </div>
         <div v-else>  
         <table  id="pumps-accessorias">
             <thead>
                 <colgroup span="4"></colgroup>
                 <tr>
-                    <th>{{thead.name}}</th>
-                    <th>{{thead.article}}</th>
-                    <th>{{thead.qty}}</th>                    
-                    <th>{{thead.price}}</th>
-                    <th>{{thead.total}}</th>
+                    <th>{{this.service_dictionary[117]}}</th>
+                    <th>{{this.service_dictionary[118]}}</th>
+                    <th>{{this.service_dictionary[119]}}</th>                    
+                    <th>{{this.service_dictionary[120]}}</th>
+                    <th>{{this.service_dictionary[121]}}</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="tableData.pump.selected" >
-                    <td style="text-align:left: paddin-left:10px">
+                    <td style="text-align:left; paddin-left:10px">
                         
                         <el-button type="text"  @click="handleDelete(0)"><i class="el-icon-error"></i></el-button>
-                        <span class="name-equipment">Насос {{tableData.pump.name}}</span>
+                        <span class="name-equipment">{{service_dictionary[44]}} {{tableData.pump.name}}</span>
                     </td>
-                    <td :data-label='thead.article'>{{tableData.pump.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.pump.qty" :min="1" ></el-input-number></td>
-                    
-                    <td :data-label='thead.price'>{{tableData.pump.price | aroundNumber}}</td>
-                    <td :data-label='thead.total'>{{tableData.pump.price*tableData.pump.qty | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[118]'>{{tableData.pump.article}}</td>
+                    <td :data-label='this.service_dictionary[119]'><el-input-number v-model="tableData.pump.qty" :min="1" ></el-input-number></td>
+                    <td :data-label='this.service_dictionary[120]'>{{tableData.pump.price | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[121]'>{{tableData.pump.price*tableData.pump.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.controller.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(1)"><i class="el-icon-error"></i></el-button>
                     <span class="name-equipment">{{tableData.controller.name}}</span></td>
-                    <td :data-label='thead.article'>{{tableData.controller.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.controller.qty" :min="1" ></el-input-number></td>
-                    <td :data-label='thead.price'>{{tableData.controller.price | aroundNumber}}</td>
-                    <td :data-label='thead.total'>{{tableData.controller.price*tableData.controller.qty | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[118]'>{{tableData.controller.article}}</td>
+                    <td :data-label='this.service_dictionary[119]'><el-input-number v-model="tableData.controller.qty" :min="1" ></el-input-number></td>
+                    <td :data-label='this.service_dictionary[120]'>{{tableData.controller.price | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[121]'>{{tableData.controller.price*tableData.controller.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.cable.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(2)"><i class="el-icon-error"></i></el-button>
                     <span class="name-equipment">{{tableData.cable.name}}</span></td>
-                    <td :data-label='thead.article'>{{tableData.cable.article}}</td>
+                    <td :data-label='this.service_dictionary[118]'>{{tableData.cable.article}}</td>
                     <td :data-label='thead.qty'>
-                        <el-tooltip content="Зміна можлива через вибір приладдя" placement="top">
+                        <el-tooltip :content=service_dictionary[114] placement="top">
                         <el-input-number  @change="handleChangeCable()" :disabled="true" v-model="tableData.cable.qty" :min="1" ></el-input-number>
                         </el-tooltip>
                     </td>
-                    <td :data-label='thead.price'>{{tableData.cable.price | aroundNumber}}</td>
-                    <td :data-label='thead.total'>{{tableData.cable.price*tableData.cable.qty | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[120]'>{{tableData.cable.price | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[121]'>{{tableData.cable.price*tableData.cable.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.mufta.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(3)"><i class="el-icon-error"></i></el-button>
                     <span class="name-equipment">{{tableData.mufta.name}}</span></td>
-                    <td :data-label='thead.article'>{{tableData.mufta.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.mufta.qty" :min="1"></el-input-number></td>
-                    <td :data-label='thead.price'>{{tableData.mufta.price | aroundNumber}}</td>
-                    <td :data-label='thead.total'>{{tableData.mufta.price*tableData.mufta.qty | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[118]'>{{tableData.mufta.article}}</td>
+                    <td :data-label='this.service_dictionary[119]'><el-input-number v-model="tableData.mufta.qty" :min="1"></el-input-number></td>
+                    <td :data-label='this.service_dictionary[120]'>{{tableData.mufta.price | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[121]'>{{tableData.mufta.price*tableData.mufta.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.vessel.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(4)"><i class="el-icon-error"></i></el-button>
                     <span class="name-equipment">{{tableData.vessel.name}}</span></td>
-                    <td :data-label='thead.article'>{{tableData.vessel.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.vessel.qty" :min="1"></el-input-number></td>
-                    <td :data-label='thead.price'>{{tableData.vessel.price | aroundNumber}}</td>
-                    <td :data-label='thead.total'>{{tableData.vessel.price*tableData.vessel.qty | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[118]'>{{tableData.vessel.article}}</td>
+                    <td :data-label='this.service_dictionary[119]'><el-input-number v-model="tableData.vessel.qty" :min="1"></el-input-number></td>
+                    <td :data-label='this.service_dictionary[120]'>{{tableData.vessel.price | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[121]'>{{tableData.vessel.price*tableData.vessel.qty | aroundNumber}}</td>
                 </tr>
                 <tr v-if="tableData.jacket.selected" >
                     <td><el-button type="text"
                     @click="handleDelete(5)"><i class="el-icon-error"></i></el-button>
                     <span class="name-equipment">{{tableData.jacket.name}}</span></td>
-                    <td :data-label='thead.article'>{{tableData.jacket.article}}</td>
-                    <td :data-label='thead.qty'><el-input-number v-model="tableData.jacket.qty" :min="1"></el-input-number></td>
-                    <td :data-label='thead.price'>{{tableData.jacket.price | aroundNumber}}</td>
-                    <td :data-label='thead.total'>{{tableData.jacket.price*tableData.jacket.qty | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[118]'>{{tableData.jacket.article}}</td>
+                    <td :data-label='this.service_dictionary[119]'><el-input-number v-model="tableData.jacket.qty" :min="1"></el-input-number></td>
+                    <td :data-label='this.service_dictionary[120]'>{{tableData.jacket.price | aroundNumber}}</td>
+                    <td :data-label='this.service_dictionary[121]'>{{tableData.jacket.price*tableData.jacket.qty | aroundNumber}}</td>
                 </tr>
             </tbody>
         </table> 
         <p style="text-align:center" class="sub-title price">Ціна <span class="stronge-price">{{qty | aroundNumber}}</span>грн з пдв</p>  
         <el-row>
-          <el-button  @click="dialogOpenEmail" type="info" icon="el-icon-message">Надіслати </el-button>
-          <el-button  @click="dialogOpenPrint" type="info" icon="el-icon-printer">Друк пропозиції </el-button>           
+          <el-button  @click="dialogOpenEmail" type="info" icon="el-icon-message"> {{service_dictionary[115]}}</el-button>
+          <el-button  @click="dialogOpenPrint" type="info" icon="el-icon-printer">{{service_dictionary[116]}}</el-button>           
         </el-row>
         </div>
     </div>   
@@ -160,16 +157,16 @@
 import Axios from 'axios';
 import { required, minLength, between, email, sameAs } from 'vuelidate/lib/validators';
   export default {
-    props: ['url', 'pump', 'qtyPump', 'selectedPumpId', 'selectedAccessories', "exchangeRates", "volumeFlow", "deliveryHead"],
+    props: ['url', 'pump', 'qtyPump', 'selectedPumpId', 'selectedAccessories', "exchangeRates", "volumeFlow", "deliveryHead", "service_dictionary"],
     data() {
       return {
         loading: false,
         thead: {
-            name :'Найменування',
-            article:'Артикул',
-            qty:'Кількість, од/м',
-            price:'Ціна, грн з пдв',
-            total:'Всього, грн з пдв'
+            name : this.service_dictionary[117],
+            article: this.service_dictionary[118],
+            qty: this.service_dictionary[119],
+            price: this.service_dictionary[120],
+            total: this.service_dictionary[121]
         },
         showValidationMesseges:false,
         pumpId: this.selectedPumpId,
