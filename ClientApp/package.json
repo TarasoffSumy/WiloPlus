@@ -14,13 +14,12 @@
     "apexcharts": "^2.4.2",
     "axios": "^0.18.0",
     "chart.js": "^2.7.3",
-    "cors": "^2.8.5",
+     "cors": "^2.8.5",
     "element-ui": "^2.4.11",
     "install": "^0.12.2",
     "jslint": "^0.12.0",
     "vue": "^2.5.17",
     "vue-chartjs": "^3.4.0",
-    "vue-html2canvas": "0.0.4",
     "vuelidate": "^0.7.4"
   },
   "devDependencies": {
